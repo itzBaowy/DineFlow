@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DineFlow - Đăng nhập Nhân viên</title>
+  <!-- Google Fonts: Be Vietnam Pro & Newsreader -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              ivory: '#f8f7f3',
+              pine: '#173e32',
+              'pine-dark': '#102d24',
+              'pine-light': '#1e4f40',
+              chartreuse: '#d9edb0',
+              'chartreuse-muted': '#c8e29a',
+              charcoal: '#252d27',
+              muted: '#526056',
+              sage: '#dbe4dd',
+              'sage-light': '#edf3ee',
+              card: '#ffffff'
+            }
+          },
+          fontFamily: {
+            sans: ['"Be Vietnam Pro"', 'sans-serif'],
+            serif: ['Newsreader', 'Georgia', 'serif'],
+          },
+          borderRadius: {
+            'card': '16px',
+          },
+          boxShadow: {
+            'restrained': '0 4px 20px -2px rgba(23, 62, 50, 0.05), 0 1px 3px 0 rgba(0, 0, 0, 0.03)',
+            'input-focus': '0 0 0 3px rgba(217, 237, 176, 0.7), 0 1px 2px 0 rgba(23, 62, 50, 0.06)',
+            'btn-hover': '0 8px 24px -4px rgba(23, 62, 50, 0.28)',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Be Vietnam Pro', sans-serif;
+      background-color: #f8f7f3;
+      color: #252d27;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+    .headline-editorial {
+      font-family: 'Newsreader', serif;
+      letter-spacing: -0.015em;
+    }
+    /* Smooth focus transitions */
+    input {
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .btn-press:active {
+      transform: scale(0.985);
+    }
+    /* Subtle custom grain / ambiance overlay */
+    .hero-glow {
+      background: radial-gradient(circle at 30% 20%, rgba(217, 237, 176, 0.12) 0%, rgba(23, 62, 50, 0) 70%);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-brand-ivory text-brand-charcoal flex flex-col justify-between selection:bg-brand-chartreuse selection:text-brand-pine">
+
+  <!-- Main Container -->
+  <main class="w-full min-h-screen lg:h-screen flex flex-col lg:flex-row overflow-x-hidden">
+
+    <!-- ==============================================
+         LEFT HALF: Immersive Editorial & Operations Panel (Deep Pine)
+         ============================================== -->
+    <section class="relative w-full lg:w-[50%] xl:w-[48%] bg-brand-pine text-white flex flex-col justify-between p-6 sm:p-10 lg:p-14 overflow-hidden order-1 lg:order-none shrink-0 min-h-[480px] lg:min-h-full">
+
+      <!-- High-res Culinary Photo with atmospheric Dark Duotone Overlay -->
+      <div class="absolute inset-0 z-0">
+        <img
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuA87P252mYUmqbYNdieCjbYHbTfBPU9AITRMdHpTTyd7vUCzonbEZI-DRcE-WVEXROn7QWNyT4O5c2WOEicZulW8726dhixGMxPX2hJ7eTO5pRj9dipBheZtutAesYT2ZGe9xJ-yZSLiZGXyX5Llh8ZIae4UtNC3PWetVCr3MrFvgGWrsqaySXYSnHIX7q0TQq8SvXuw2ExvPzYaTb2jUyQ8-MRnrn5gi4PzCLyPwdOLrwjHm_xSnVBTuOOhoV9W0DnmVuRZ796Fk0"
+          alt="Bàn ẩm thực Việt Nam tinh tế tại DineFlow bistro"
+          class="w-full h-full object-cover object-center scale-105 transform opacity-30 lg:opacity-35 mix-blend-luminosity filter contrast-125"
+        />
+        <!-- Deep Pine Multi-layer Gradient Overlay for Pristine Legibility -->
+        <div class="absolute inset-0 bg-gradient-to-t from-brand-pine via-brand-pine/85 to-brand-pine/70 z-10"></div>
+        <div class="absolute inset-0 hero-glow z-10 pointer-events-none"></div>
+      </div>
+
+      <!-- Top Branding: DineFlow Logo with Utensil Emblem -->
+      <header class="relative z-20 flex items-center justify-between">
+        <div class="flex items-center gap-3.5 group cursor-pointer">
+          <!-- Logo Icon: Utensils + Flowing QR Node motif -->
+          <div class="w-10 h-10 rounded-xl bg-brand-pine-dark border border-brand-chartreuse/30 flex items-center justify-center shadow-inner group-hover:border-brand-chartreuse transition-colors">
+            <svg class="w-5 h-5 text-brand-chartreuse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <!-- Spoon & Fork / Utensil Emblem -->
+              <path d="M18 2v8a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2V2" />
+              <path d="M15 12v10" />
+              <path d="M6 2v6a3 3 0 0 0 6 0V2" />
+              <path d="M9 11v11" />
+              <circle cx="9" cy="2" r="0.5" fill="currentColor" />
+            </svg>
+          </div>
+          <div>
+            <div class="flex items-center gap-1.5">
+              <span class="text-xl font-bold tracking-tight text-white font-sans">Dine<span class="text-brand-chartreuse">Flow</span></span>
+              <span class="inline-block w-1.5 h-1.5 rounded-full bg-brand-chartreuse"></span>
+            </div>
+            <p class="text-[11px] font-medium tracking-wider uppercase text-brand-chartreuse/80 font-sans">Hệ điều hành ẩm thực</p>
+          </div>
+        </div>
+
+        <!-- Operations Status Indicator -->
+        <div class="hidden sm:flex items-center gap-2 bg-brand-pine-dark/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10 text-xs font-medium text-emerald-200">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>Hệ thống FOH & BOH Sẵn sàng</span>
+        </div>
+      </header>
+
+      <!-- Middle Content: Editorial Hero Headline (Newsreader Serif) & Narrative -->
+      <div class="relative z-20 my-auto py-10 lg:py-12 max-w-xl">
+        <!-- Tasteful Eyebrow Pill -->
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-chartreuse/15 border border-brand-chartreuse/25 text-brand-chartreuse text-xs font-semibold tracking-wide uppercase mb-6 backdrop-blur-sm">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+          </svg>
+          <span>Nhịp vận hành nhà hàng chuẩn mực</span>
+        </div>
+
+        <!-- Hero Editorial Serif Headline -->
+        <h1 class="headline-editorial text-3xl sm:text-4xl xl:text-[42px] leading-[1.22] font-normal text-brand-ivory mb-5 text-balance">
+          Mỗi bữa ăn ngon, bắt đầu từ một nhịp phục vụ.
+        </h1>
+
+        <!-- Supporting Text -->
+        <p class="text-sm sm:text-base text-gray-200/90 leading-relaxed font-sans font-light max-w-lg mb-8">
+          Kết nối liền mạch từng bàn ăn, đội ngũ phục vụ sảnh và bếp nóng theo thời gian thực. Giữ trọn sự tinh tế trong trải nghiệm thực khách Việt.
+        </p>
+
+        <!-- Compact Tasteful Service Flow: 3 Steps -->
+        <div class="pt-6 border-t border-white/15">
+          <div class="text-[11px] font-semibold uppercase tracking-wider text-brand-chartreuse/90 mb-3.5 flex items-center gap-2">
+            <span>Quy trình vận hành khép kín</span>
+            <div class="h-px flex-1 bg-white/10"></div>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2.5 sm:gap-4">
+            <!-- Step 1 -->
+            <div class="bg-brand-pine-dark/60 backdrop-blur-sm border border-white/10 rounded-xl p-3 flex flex-col items-start hover:border-brand-chartreuse/40 transition-colors">
+              <div class="w-7 h-7 rounded-lg bg-brand-chartreuse/15 text-brand-chartreuse flex items-center justify-center mb-2.5">
+                <!-- QR scan icon -->
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect width="6" height="6" x="3" y="3" rx="1"/>
+                  <rect width="6" height="6" x="15" y="3" rx="1"/>
+                  <rect width="6" height="6" x="3" y="15" rx="1"/>
+                  <path d="M15 15h2v2h-2z"/>
+                  <path d="M19 19h2v2h-2z"/>
+                  <path d="M15 19v2"/>
+                  <path d="M19 15h2"/>
+                </svg>
+              </div>
+              <span class="text-[10px] uppercase font-bold text-gray-400">Bước 1</span>
+              <span class="text-xs font-medium text-white mt-0.5 leading-snug">Quét & gọi món</span>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="bg-brand-pine-dark/60 backdrop-blur-sm border border-white/10 rounded-xl p-3 flex flex-col items-start hover:border-brand-chartreuse/40 transition-colors">
+              <div class="w-7 h-7 rounded-lg bg-brand-chartreuse/15 text-brand-chartreuse flex items-center justify-center mb-2.5">
+                <!-- Kitchen flame / prep icon -->
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
+                </svg>
+              </div>
+              <span class="text-[10px] uppercase font-bold text-gray-400">Bước 2</span>
+              <span class="text-xs font-medium text-white mt-0.5 leading-snug">Bếp chuẩn bị</span>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="bg-brand-pine-dark/60 backdrop-blur-sm border border-white/10 rounded-xl p-3 flex flex-col items-start hover:border-brand-chartreuse/40 transition-colors">
+              <div class="w-7 h-7 rounded-lg bg-brand-chartreuse/15 text-brand-chartreuse flex items-center justify-center mb-2.5">
+                <!-- Serving cloche / table service icon -->
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 19h18"/>
+                  <path d="M4 15a8 8 0 0 1 16 0"/>
+                  <circle cx="12" cy="7" r="1"/>
+                </svg>
+              </div>
+              <span class="text-[10px] uppercase font-bold text-gray-400">Bước 3</span>
+              <span class="text-xs font-medium text-white mt-0.5 leading-snug">Phục vụ tận bàn</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Understated Brand Footer -->
+      <footer class="relative z-20 pt-4 border-t border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between text-xs text-gray-400 font-sans gap-2">
+        <p>© 2025 DineFlow Vietnam. Nền tảng quản lý ẩm thực số.</p>
+        <div class="flex items-center gap-4 text-[11px] text-gray-300">
+          <span class="hover:text-brand-chartreuse transition-colors cursor-pointer">Tiêu chuẩn FOH/BOH</span>
+          <span class="w-1 h-1 rounded-full bg-white/20"></span>
+          <span class="hover:text-brand-chartreuse transition-colors cursor-pointer">Bảo mật ca làm</span>
+        </div>
+      </footer>
+    </section>
+
+    <!-- ==============================================
+         RIGHT HALF: Warm Ivory Form Area (Maximum 400px Wide Form)
+         ============================================== -->
+    <section class="w-full lg:w-[50%] xl:w-[52%] bg-brand-ivory flex flex-col justify-between p-6 sm:p-10 lg:p-16 xl:p-20 order-2 lg:order-none overflow-y-auto">
+
+      <!-- Top Utility bar / Mobile Brand Header (shows on mobile only) -->
+      <div class="w-full flex items-center justify-between mb-8 lg:mb-0">
+        <!-- Mobile mini brand mark -->
+        <div class="lg:hidden flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-brand-pine flex items-center justify-center text-brand-chartreuse">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 2v8a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2V2M15 12v10M6 2v6a3 3 0 0 0 6 0V2M9 11v11"/>
+            </svg>
+          </div>
+          <span class="font-bold text-base text-brand-pine tracking-tight">Dine<span class="text-brand-pine-light">Flow</span></span>
+        </div>
+
+        <!-- Language / Terminal Switcher -->
+        <div class="ml-auto flex items-center gap-3 text-xs text-brand-muted font-medium">
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-brand-sage-light border border-brand-sage text-brand-charcoal">
+            <span class="w-1.5 h-1.5 rounded-full bg-brand-pine"></span>
+            Tiếng Việt (VN)
+          </span>
+          <span class="hidden sm:inline text-brand-sage">|</span>
+          <span class="hidden sm:inline text-[11px] text-brand-muted">Cổng POS & Quản lý Ca</span>
+        </div>
+      </div>
+
+      <!-- Centered Form Container (strictly capped at 400px width) -->
+      <div class="w-full max-w-[400px] mx-auto my-auto py-4">
+
+        <!-- Header Text Block -->
+        <div class="mb-8">
+          <div class="inline-flex items-center gap-2 mb-2.5">
+            <span class="w-2 h-2 rounded-full bg-brand-pine"></span>
+            <span class="text-[11px] font-bold tracking-widest uppercase text-brand-pine">KHÔNG GIAN NHÂN VIÊN</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-brand-charcoal mb-2 font-sans">
+            Chào mừng trở lại
+          </h2>
+          <p class="text-sm text-brand-muted leading-relaxed font-sans">
+            Đăng nhập tài khoản điều hành ca để quản lý sơ đồ bàn, duyệt món và theo dõi doanh thu.
+          </p>
+        </div>
+
+        <!-- Alert Notification Slot (Dynamic JS / Preview of validation) -->
+        <div id="form-feedback" class="hidden mb-5 p-3.5 rounded-xl text-xs font-medium border flex items-start gap-2.5"></div>
+
+        <!-- Login Form -->
+        <form id="staff-login-form" class="space-y-5" onsubmit="event.preventDefault(); handleSubmit();">
+
+          <!-- Field 1: Email nhân viên -->
+          <div class="space-y-1.5">
+            <label for="staff-email" class="block text-xs font-semibold text-brand-charcoal tracking-wide uppercase">
+              Email nhân viên
+            </label>
+            <div class="relative rounded-xl shadow-sm">
+              <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-brand-muted">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect width="20" height="16" x="2" y="4" rx="2"/>
+                  <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                </svg>
+              </div>
+              <input
+                type="email"
+                id="staff-email"
+                name="email"
+                autocomplete="username"
+                required
+                placeholder="ten.nhanvien@dineflow.vn"
+                class="block w-full h-12 pl-10 pr-3.5 bg-brand-card text-brand-charcoal text-sm rounded-xl border border-brand-sage placeholder:text-gray-400 focus:outline-none focus:border-brand-pine focus:ring-2 focus:ring-brand-chartreuse/70 transition duration-150"
+              />
+            </div>
+            <p id="email-error" class="hidden text-[11px] text-red-600 font-medium pl-1">Vui lòng nhập đúng định dạng email nhân viên.</p>
+          </div>
+
+          <!-- Field 2: Mật khẩu với Password Visibility Toggle -->
+          <div class="space-y-1.5">
+            <div class="flex items-center justify-between">
+              <label for="staff-password" class="block text-xs font-semibold text-brand-charcoal tracking-wide uppercase">
+                Mật khẩu
+              </label>
+              <span class="text-[11px] text-brand-muted">Tối thiểu 8 ký tự</span>
+            </div>
+            <div class="relative rounded-xl shadow-sm">
+              <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-brand-muted">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+              </div>
+              <input
+                type="password"
+                id="staff-password"
+                name="password"
+                autocomplete="current-password"
+                required
+                placeholder="••••••••••••"
+                class="block w-full h-12 pl-10 pr-12 bg-brand-card text-brand-charcoal text-sm rounded-xl border border-brand-sage placeholder:text-gray-400 focus:outline-none focus:border-brand-pine focus:ring-2 focus:ring-brand-chartreuse/70 transition duration-150 font-sans tracking-wide"
+              />
+              <!-- Toggle Button -->
+              <button
+                type="button"
+                id="toggle-password-btn"
+                aria-label="Hiển thị hoặc ẩn mật khẩu"
+                onclick="togglePasswordVisibility()"
+                class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-brand-muted hover:text-brand-pine focus:outline-none transition-colors"
+              >
+                <!-- Eye Icon -->
+                <svg id="eye-icon" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+                <!-- Eye Off Icon (hidden initially) -->
+                <svg id="eye-off-icon" class="w-4 h-4 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/>
+                  <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/>
+                  <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/>
+                  <line x1="2" x2="22" y1="2" y2="22"/>
+                </svg>
+              </button>
+            </div>
+            <p id="password-error" class="hidden text-[11px] text-red-600 font-medium pl-1">Vui lòng nhập mật khẩu tài khoản.</p>
+          </div>
+
+          <!-- Primary Submit Button: Large Deep Pine with Right Arrow -->
+          <div class="pt-2">
+            <button
+              type="submit"
+              id="submit-button"
+              class="w-full h-12 px-6 rounded-xl bg-brand-pine text-white text-sm font-semibold flex items-center justify-center gap-2 shadow-restrained hover:bg-brand-pine-light hover:shadow-btn-hover active:scale-[0.985] transition-all duration-150 group cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-chartreuse focus:ring-offset-2"
+            >
+              <span id="btn-text" class="tracking-wide">Đăng nhập</span>
+              <svg id="btn-arrow" class="w-4 h-4 text-brand-chartreuse transform group-hover:translate-x-1 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+              <!-- Loading spinner (hidden initially) -->
+              <svg id="btn-spinner" class="hidden w-4 h-4 animate-spin text-brand-chartreuse" viewBox="0 0 24 24" fill="none">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Security Callout Line -->
+          <div class="flex items-center justify-center gap-2 pt-1 text-xs text-brand-muted">
+            <svg class="w-3.5 h-3.5 text-brand-pine" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            <span class="font-medium">Chỉ dành cho nhân viên được cấp tài khoản</span>
+          </div>
+
+          <!-- Decorative subtle divider -->
+          <div class="relative py-2">
+            <div class="absolute inset-0 flex items-center">
+              <div class="w-full border-t border-brand-sage"></div>
+            </div>
+            <div class="relative flex justify-center text-[10px] uppercase font-bold tracking-wider text-brand-muted">
+              <span class="bg-brand-ivory px-3">Hỗ trợ vận hành</span>
+            </div>
+          </div>
+
+          <!-- Help Text Box -->
+          <div class="p-3.5 rounded-xl bg-brand-sage-light/60 border border-brand-sage/80 text-center">
+            <p class="text-xs text-brand-muted leading-relaxed font-sans">
+              Bạn chưa có tài khoản hoặc quên mật khẩu? <br class="hidden sm:inline">
+              <span class="font-semibold text-brand-charcoal">Liên hệ quản lý nhà hàng để được hỗ trợ.</span>
+            </p>
+          </div>
+
+        </form>
+
+      </div>
+
+      <!-- Bottom System Status & Quick Contact -->
+      <div class="w-full max-w-[400px] mx-auto pt-6 text-center lg:text-left flex flex-col sm:flex-row items-center justify-between text-[11px] text-brand-muted border-t border-brand-sage/60 gap-2">
+        <div class="flex items-center gap-2">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+          <span>Máy chủ FOH: v2.4.8 (Hà Nội & TP.HCM)</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <a href="#hotline" class="hover:text-brand-pine transition-colors font-medium">Hotline kỹ thuật: 1900 8922</a>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Interactive JavaScript for Production States -->
+  <script>
+    // Password visibility toggle
+    function togglePasswordVisibility() {
+      const pwdInput = document.getElementById('staff-password');
+      const eyeIcon = document.getElementById('eye-icon');
+      const eyeOffIcon = document.getElementById('eye-off-icon');
+
+      if (pwdInput.type === 'password') {
+        pwdInput.type = 'text';
+        eyeIcon.classList.add('hidden');
+        eyeOffIcon.classList.remove('hidden');
+      } else {
+        pwdInput.type = 'password';
+        eyeIcon.classList.remove('hidden');
+        eyeOffIcon.classList.add('hidden');
+      }
+    }
+
+    // Interactive form submission state
+    function handleSubmit() {
+      const email = document.getElementById('staff-email').value.trim();
+      const password = document.getElementById('staff-password').value.trim();
+      const feedback = document.getElementById('form-feedback');
+      const btnText = document.getElementById('btn-text');
+      const btnArrow = document.getElementById('btn-arrow');
+      const btnSpinner = document.getElementById('btn-spinner');
+      const submitBtn = document.getElementById('submit-button');
+
+      // Validation
+      if (!email || !password) {
+        feedback.className = "mb-5 p-3 rounded-xl text-xs font-medium border bg-amber-50 border-amber-200 text-amber-900 flex items-start gap-2.5";
+        feedback.innerHTML = `
+          <svg class="w-4 h-4 text-amber-700 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <span>Vui lòng nhập đầy đủ email nhân viên và mật khẩu ca trực.</span>
+        `;
+        feedback.classList.remove('hidden');
+        return;
+      }
+
+      // Enter loading state
+      btnText.textContent = "Đang xác thực...";
+      btnArrow.classList.add('hidden');
+      btnSpinner.classList.remove('hidden');
+      submitBtn.disabled = true;
+      submitBtn.classList.add('opacity-90', 'cursor-not-allowed');
+
+      // Simulate verification response
+      setTimeout(() => {
+        btnText.textContent = "Đăng nhập";
+        btnArrow.classList.remove('hidden');
+        btnSpinner.classList.add('hidden');
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('opacity-90', 'cursor-not-allowed');
+
+        // Display authentic response
+        feedback.className = "mb-5 p-3 rounded-xl text-xs font-medium border bg-emerald-50 border-emerald-200 text-emerald-900 flex items-start gap-2.5";
+        feedback.innerHTML = `
+          <svg class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <div>
+            <span class="font-bold">Xác thực thành công.</span> Đang đồng bộ ca trực và chuyển tiếp vào sơ đồ bàn ăn DineFlow...
+          </div>
+        `;
+        feedback.classList.remove('hidden');
+      }, 1100);
+    }
+  </script>
+</body>
+</html>

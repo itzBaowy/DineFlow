@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DineFlow - Thông tin nhà hàng</title>
+  <!-- Google Fonts: Be Vietnam Pro & Newsreader -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            pine: {
+              DEFAULT: '#173e32',
+              900: '#0f2921',
+              800: '#173e32',
+              700: '#1e5243',
+              600: '#266754',
+              100: '#e8f0ec',
+              50: '#f2f7f4',
+            },
+            ivory: {
+              DEFAULT: '#f8f7f3',
+              50: '#fbfbf9',
+              100: '#f8f7f3',
+              200: '#edebe3',
+              300: '#dfdcd2',
+            },
+            chartreuse: {
+              DEFAULT: '#d9edb0',
+              accent: '#c8e592',
+              soft: '#eff7de',
+            }
+          },
+          fontFamily: {
+            sans: ['"Be Vietnam Pro"', 'sans-serif'],
+            serif: ['Newsreader', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #f8f7f3;
+      color: #1a221f;
+      font-family: 'Be Vietnam Pro', sans-serif;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 5px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #dfdcd2;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-[#f8f7f3] text-[#1c2421] selection:bg-[#d9edb0] selection:text-[#173e32] flex flex-col md:flex-row">
+
+  <!-- ================= SIDEBAR (Fixed 248px desktop) ================= -->
+  <aside class="w-full md:w-[248px] md:fixed md:inset-y-0 md:left-0 bg-white border-r border-[#e8e6df] flex flex-col z-30 flex-shrink-0">
+    <!-- Brand Header -->
+    <div class="p-5 border-b border-[#f1efe9]">
+      <div class="flex items-center space-x-2.5">
+        <div class="w-9 h-9 rounded-xl bg-pine flex items-center justify-center text-white font-medium shadow-sm">
+          <svg class="w-4 h-4 text-chartreuse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"></path>
+            <path d="M7 2v20"></path>
+            <path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"></path>
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center space-x-1.5">
+            <span class="font-semibold text-[15px] tracking-tight text-[#173e32]">DineFlow</span>
+            <span class="inline-block w-1.5 h-1.5 rounded-full bg-[#10b981]"></span>
+          </div>
+          <p class="text-[11px] text-[#6e7773] uppercase tracking-wider font-medium">Hệ điều hành ẩm thực</p>
+        </div>
+      </div>
+
+      <!-- Restaurant identity pill -->
+      <div class="mt-4 p-2.5 rounded-xl bg-[#f7f6f1] border border-[#ece9df] flex items-center justify-between">
+        <div class="min-w-0 pr-2">
+          <p class="text-[12px] font-semibold text-[#1f2d27] truncate">Bếp Nhà DineFlow</p>
+          <p class="text-[10px] text-[#78827e] font-normal truncate">Điểm phục vụ ẩm thực</p>
+        </div>
+        <span class="text-[10px] font-medium px-2 py-0.5 rounded-md bg-white border border-[#dfdbcf] text-[#425049] tracking-tight">FOH</span>
+      </div>
+    </div>
+
+    <!-- Navigation links -->
+    <div class="flex-1 overflow-y-auto px-3 py-4 space-y-6 custom-scrollbar text-[13px]">
+      <div>
+        <nav class="space-y-1">
+          <!-- Overview -->
+          <a href="#" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-[#4a5651] hover:text-[#173e32] hover:bg-[#f3f2eb] transition group">
+            <svg class="w-4 h-4 text-[#7b8681] group-hover:text-[#173e32]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+              <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+              <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+              <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
+              <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+            </svg>
+            <span class="font-medium">Tổng quan</span>
+          </a>
+
+          <!-- Active: Restaurant Information -->
+          <a href="#" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl bg-pine text-white shadow-sm font-medium">
+            <svg class="w-4 h-4 text-chartreuse" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+            </svg>
+            <span>Thông tin nhà hàng</span>
+          </a>
+        </nav>
+      </div>
+
+      <!-- Roadmap / Upcoming -->
+      <div>
+        <div class="flex items-center justify-between px-3 mb-2">
+          <span class="text-[10px] font-semibold text-[#8a948e] uppercase tracking-wider">Sắp ra mắt</span>
+          <span class="text-[9px] font-medium px-1.5 py-0.5 rounded bg-[#f0eee6] text-[#717b76]">Lộ trình</span>
+        </div>
+        <div class="space-y-1">
+          <div class="flex items-center justify-between px-3 py-2 rounded-lg text-[#8f9a94] text-[12.5px] cursor-not-allowed">
+            <span class="flex items-center space-x-2.5">
+              <svg class="w-3.5 h-3.5 text-[#a8b2ac]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <circle cx="12" cy="12" r="9" stroke-width="1.8"></circle>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12h6"></path>
+              </svg>
+              <span>Bàn &amp; gọi món</span>
+            </span>
+            <span class="text-[10px] text-[#9ba59f] italic">Phase 2</span>
+          </div>
+
+          <div class="flex items-center justify-between px-3 py-2 rounded-lg text-[#8f9a94] text-[12.5px] cursor-not-allowed">
+            <span class="flex items-center space-x-2.5">
+              <svg class="w-3.5 h-3.5 text-[#a8b2ac]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+              <span>Thực đơn</span>
+            </span>
+            <span class="text-[10px] text-[#9ba59f] italic">Phase 2</span>
+          </div>
+
+          <div class="flex items-center justify-between px-3 py-2 rounded-lg text-[#8f9a94] text-[12.5px] cursor-not-allowed">
+            <span class="flex items-center space-x-2.5">
+              <svg class="w-3.5 h-3.5 text-[#a8b2ac]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <span>Màn hình bếp</span>
+            </span>
+            <span class="text-[10px] text-[#9ba59f] italic">Phase 2</span>
+          </div>
+
+          <div class="flex items-center justify-between px-3 py-2 rounded-lg text-[#8f9a94] text-[12.5px] cursor-not-allowed">
+            <span class="flex items-center space-x-2.5">
+              <svg class="w-3.5 h-3.5 text-[#a8b2ac]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <rect x="2" y="4" width="20" height="16" rx="2" stroke-width="1.8"></rect>
+                <line x1="2" y1="10" x2="22" y2="10" stroke-width="1.8"></line>
+              </svg>
+              <span>Thu ngân</span>
+            </span>
+            <span class="text-[10px] text-[#9ba59f] italic">Phase 3</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Signed-in Account / Footer -->
+    <div class="p-3 border-t border-[#f1efe9] bg-[#faf9f5]">
+      <div class="p-2.5 rounded-xl bg-white border border-[#ece8df] flex items-center justify-between shadow-2xs">
+        <div class="flex items-center space-x-2.5 min-w-0">
+          <div class="w-7 h-7 rounded-lg bg-pine text-white flex items-center justify-center text-[10px] font-semibold flex-shrink-0">
+            CN
+          </div>
+          <div class="min-w-0 pr-1">
+            <div class="flex items-center space-x-1">
+              <span class="text-[11.5px] font-medium text-[#1c2421] truncate">Chủ nhà hàng</span>
+              <span class="text-[8.5px] font-semibold bg-[#e7eee9] text-[#173e32] px-1 py-0.2 rounded uppercase">Owner</span>
+            </div>
+            <p class="text-[10.5px] text-[#7e8883] truncate">quanly@dineflow.vn</p>
+          </div>
+        </div>
+        <button title="Đăng xuất" class="text-[#8c9691] hover:text-[#b91c1c] p-1 rounded-lg hover:bg-[#f6f5ef] transition">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ================= MAIN CONTENT AREA ================= -->
+  <!-- Crucial fix: md:ml-[248px] with full clear bounds, no clipping -->
+  <main class="w-full md:ml-[248px] min-h-screen flex flex-col bg-[#f8f7f3] transition-all">
+
+    <!-- Top Topbar / Status Header -->
+    <header class="w-full bg-white/80 backdrop-blur border-b border-[#eae8e1] px-6 lg:px-10 py-3.5 flex items-center justify-between sticky top-0 z-20">
+      <!-- Breadcrumb -->
+      <div class="flex items-center space-x-2 text-[12.5px] text-[#6d7772]">
+        <span class="hover:text-[#173e32] transition cursor-pointer">Không gian làm việc</span>
+        <span class="text-[#b2bab5]">/</span>
+        <span class="font-medium text-[#173e32]">Thông tin nhà hàng</span>
+      </div>
+
+      <!-- Quick status indicator -->
+      <div class="flex items-center space-x-4">
+        <div class="hidden sm:flex items-center space-x-2 px-3 py-1 rounded-full bg-[#f3f6f4] border border-[#e2e8e4] text-[11.5px] text-[#245344]">
+          <span class="w-2 h-2 rounded-full bg-[#10b981] animate-pulse"></span>
+          <span class="font-medium">Hệ thống FOH &amp; BOH Sẵn sàng</span>
+        </div>
+        <span class="text-[12px] text-[#717b76] hidden md:inline">Thứ Năm, 8 tháng 10, 2026</span>
+      </div>
+    </header>
+
+    <!-- Page Body Content Container -->
+    <div class="p-6 lg:p-10 max-w-7xl w-full mx-auto flex-1 flex flex-col justify-between">
+      <div>
+        <!-- Return Link & Header Title Section -->
+        <div class="mb-7">
+          <div class="flex items-center justify-between flex-wrap gap-4 mb-3">
+            <a href="#" class="inline-flex items-center space-x-1.5 text-[13px] font-medium text-[#2d5c4d] hover:text-[#173e32] transition group">
+              <svg class="w-4 h-4 transform group-hover:-translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+              </svg>
+              <span>Về tổng quan</span>
+            </a>
+
+            <!-- Subtle read-only badge -->
+            <span class="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-[#eceae2] border border-[#dfdbcf] text-[11.5px] font-medium text-[#55625c]">
+              <svg class="w-3.5 h-3.5 text-[#6c7872]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+              </svg>
+              <span>Chế độ chỉ đọc</span>
+            </span>
+          </div>
+
+          <!-- Eyebrow, Title & Subtitle -->
+          <div class="space-y-1.5">
+            <span class="text-[11px] font-bold text-[#1e5243] tracking-[0.14em] uppercase">THIẾT LẬP NHÀ HÀNG</span>
+            <h1 class="text-3xl lg:text-[34px] font-semibold text-[#142620] tracking-tight flex items-baseline gap-2">
+              <span>Thông tin nhà hàng</span>
+            </h1>
+            <p class="text-[14px] text-[#5e6964] max-w-2xl font-normal">
+              Thông tin dùng chung cho đội ngũ.
+            </p>
+          </div>
+        </div>
+
+        <!-- Two Column Layout: Main White Details Card (65%) & Narrow Pine Companion Card (35%) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-7 items-start">
+
+          <!-- ================= LEFT: Large White Bordered Details Card (lg:col-span-8) ================= -->
+          <section class="lg:col-span-8 bg-white border border-[#e6e3da] rounded-[16px] shadow-[0_2px_12px_rgba(20,38,32,0.03)] overflow-hidden">
+
+            <!-- Restaurant Monogram & Header in Card -->
+            <div class="p-6 sm:p-8 border-b border-[#f1eee7] bg-[#faf9f5]/50 flex items-center justify-between">
+              <div class="flex items-center space-x-4">
+                <div class="w-14 h-14 rounded-2xl bg-[#173e32] text-white flex items-center justify-center text-xl font-bold font-serif shadow-sm border border-[#2b594b]">
+                  <span class="text-chartreuse">DF</span>
+                </div>
+                <div>
+                  <div class="flex items-center space-x-2.5">
+                    <h2 class="text-xl sm:text-2xl font-semibold text-[#142620] tracking-tight">Bếp Nhà DineFlow</h2>
+                    <span class="text-[11px] font-medium px-2 py-0.5 rounded-full bg-[#e7f1eb] text-[#173e32] border border-[#cfdfd5]">
+                      Đang phục vụ
+                    </span>
+                  </div>
+                  <p class="text-[12.5px] text-[#6d7973] mt-0.5">Không gian trải nghiệm ẩm thực đương đại</p>
+                </div>
+              </div>
+
+              <!-- Quiet architectural glyph -->
+              <div class="hidden sm:block text-[#97a39d]">
+                <svg class="w-7 h-7 text-[#c2cbc6]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.3">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Card Body with Structured Description Groups -->
+            <div class="p-6 sm:p-8 space-y-9">
+
+              <!-- Group 1: Thông tin cơ bản -->
+              <div>
+                <div class="flex items-center space-x-2.5 pb-3 border-b border-[#ece8df]">
+                  <span class="w-2 h-2 rounded-full bg-[#173e32]"></span>
+                  <h3 class="text-[14px] font-bold text-[#142620] uppercase tracking-wider">Thông tin cơ bản</h3>
+                </div>
+
+                <dl class="divide-y divide-[#f3f0e8] text-[13.5px]">
+                  <!-- Name -->
+                  <div class="py-3.5 grid grid-cols-1 sm:grid-cols-3 gap-2 items-baseline">
+                    <dt class="font-medium text-[#65716c] flex items-center space-x-2">
+                      <svg class="w-4 h-4 text-[#8a9690]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16"></path>
+                      </svg>
+                      <span>Tên nhà hàng</span>
+                    </dt>
+                    <dd class="sm:col-span-2 font-semibold text-[#142620]">
+                      Bếp Nhà DineFlow
+                    </dd>
+                  </div>
+
+                  <!-- Address -->
+                  <div class="py-3.5 grid grid-cols-1 sm:grid-cols-3 gap-2 items-baseline">
+                    <dt class="font-medium text-[#65716c] flex items-center space-x-2">
+                      <svg class="w-4 h-4 text-[#8a9690]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                      </svg>
+                      <span>Địa chỉ</span>
+                    </dt>
+                    <dd class="sm:col-span-2 text-[#1f2c26] font-normal">
+                      Thành phố Hồ Chí Minh
+                    </dd>
+                  </div>
+
+                  <!-- Phone -->
+                  <div class="py-3.5 grid grid-cols-1 sm:grid-cols-3 gap-2 items-baseline">
+                    <dt class="font-medium text-[#65716c] flex items-center space-x-2">
+                      <svg class="w-4 h-4 text-[#8a9690]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                      </svg>
+                      <span>Số điện thoại</span>
+                    </dt>
+                    <dd class="sm:col-span-2 text-[#7f8b85] italic font-normal">
+                      Chưa cập nhật
+                    </dd>
+                  </div>
+                </dl>
+              </div>
+
+              <!-- Group 2: Định dạng & thanh toán -->
+              <div>
+                <div class="flex items-center space-x-2.5 pb-3 border-b border-[#ece8df]">
+                  <span class="w-2 h-2 rounded-full bg-[#173e32]"></span>
+                  <h3 class="text-[14px] font-bold text-[#142620] uppercase tracking-wider">Định dạng &amp; thanh toán</h3>
+                </div>
+
+                <dl class="divide-y divide-[#f3f0e8] text-[13.5px]">
+                  <!-- Currency -->
+                  <div class="py-3.5 grid grid-cols-1 sm:grid-cols-3 gap-2 items-baseline">
+                    <dt class="font-medium text-[#65716c] flex items-center space-x-2">
+                      <svg class="w-4 h-4 text-[#8a9690]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                      </svg>
+                      <span>Đơn vị tiền tệ</span>
+                    </dt>
+                    <dd class="sm:col-span-2 flex items-center space-x-2 text-[#1f2c26]">
+                      <span class="font-semibold">VND</span>
+                      <span class="text-[#727e78]">— Việt Nam Đồng (₫)</span>
+                    </dd>
+                  </div>
+
+                  <!-- Timezone -->
+                  <div class="py-3.5 grid grid-cols-1 sm:grid-cols-3 gap-2 items-baseline">
+                    <dt class="font-medium text-[#65716c] flex items-center space-x-2">
+                      <svg class="w-4 h-4 text-[#8a9690]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6">
+                        <circle cx="12" cy="12" r="9"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                      </svg>
+                      <span>Múi giờ</span>
+                    </dt>
+                    <dd class="sm:col-span-2 flex items-center space-x-2 text-[#1f2c26]">
+                      <span class="font-medium">Asia/Ho_Chi_Minh</span>
+                      <span class="text-[12px] px-2 py-0.5 rounded bg-[#f1efe8] text-[#55615b] font-mono">GMT+7</span>
+                    </dd>
+                  </div>
+
+                  <!-- Service Fee -->
+                  <div class="py-3.5 grid grid-cols-1 sm:grid-cols-3 gap-2 items-baseline">
+                    <dt class="font-medium text-[#65716c] flex items-center space-x-2">
+                      <svg class="w-4 h-4 text-[#8a9690]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v14a2 2 0 01-2 2z"></path>
+                      </svg>
+                      <span>Phí dịch vụ</span>
+                    </dt>
+                    <dd class="sm:col-span-2 font-medium text-[#1f2c26]">
+                      0%
+                    </dd>
+                  </div>
+
+                  <!-- Tax -->
+                  <div class="py-3.5 grid grid-cols-1 sm:grid-cols-3 gap-2 items-baseline">
+                    <dt class="font-medium text-[#65716c] flex items-center space-x-2">
+                      <svg class="w-4 h-4 text-[#8a9690]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                      </svg>
+                      <span>Thuế</span>
+                    </dt>
+                    <dd class="sm:col-span-2 font-medium text-[#1f2c26]">
+                      0%
+                    </dd>
+                  </div>
+                </dl>
+
+                <!-- Neutral informational note -->
+                <div class="mt-4 p-3.5 rounded-xl bg-[#f7f6f1] border border-[#e8e4da] flex items-start space-x-3 text-[12.5px] text-[#55625c]">
+                  <svg class="w-4 h-4 text-[#73827b] mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                  </svg>
+                  <span>
+                    Các mức phí và thuế suất hiển thị theo cấu hình mặc định đang áp dụng cho phiếu thanh toán tại nhà hàng.
+                  </span>
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+          <!-- ================= RIGHT: Narrow Companion Pine Editorial Card (lg:col-span-4) ================= -->
+          <section class="lg:col-span-4 bg-[#173e32] text-white rounded-[16px] shadow-[0_4px_20px_rgba(23,62,50,0.15)] overflow-hidden flex flex-col border border-[#235848]">
+
+            <!-- Refined Culinary Photography Crop with smooth gradient overlay -->
+            <div class="relative h-48 sm:h-56 w-full overflow-hidden">
+              <img
+                src="https://lh3.googleusercontent.com/aida/AEtjO1Ws1WYqNkM2FRksAPWeV1F8NNgY9qHDVIyYbtXO0htaxyvZZSUE7_VOe155c-0-2M323k1Oj8YIKrYatVmXjx-cmArLKSCG_yeHhjMLTogAUHZPEO851Ca2M16xJkHWbwof-fmIh8-OyvEnj6LN0FjL2qAD6aOphdvjZZs5FQrluaz9SsjlDMQjrd5_AQVZYUMZexkOGXs_BCSuntfMfT0opq2wXJ3WGzEyN__moW-ITysnmskQYfKOW0g"
+                alt="Ẩm thực DineFlow"
+                class="w-full h-full object-cover object-center filter brightness-[0.9] contrast-[1.05]"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-[#173e32] via-[#173e32]/40 to-transparent"></div>
+
+              <!-- Subtle top tag -->
+              <div class="absolute top-4 left-4">
+                <span class="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-[#0e271f]/80 backdrop-blur-md border border-[#305f50] text-[11px] font-medium text-chartreuse">
+                  <span class="w-1.5 h-1.5 rounded-full bg-chartreuse"></span>
+                  <span>Nhịp vận hành FOH</span>
+                </span>
+              </div>
+            </div>
+
+            <!-- Editorial Copy Content -->
+            <div class="p-6 sm:p-7 flex-1 flex flex-col justify-between">
+              <div>
+                <!-- Accent title using Newsreader serif -->
+                <h3 class="font-serif text-2xl sm:text-[26px] leading-snug font-normal text-[#f5f8f6] tracking-tight">
+                  Một không gian. <br />
+                  <span class="italic text-chartreuse font-serif">Cùng một nhịp.</span>
+                </h3>
+
+                <p class="mt-3.5 text-[13px] leading-relaxed text-[#c0cfc8] font-light">
+                  Mỗi thông tin cấu hình là điểm tựa để giữ vững chất lượng phục vụ đồng nhất giữa sảnh bàn và không gian bếp, xuyên suốt mọi ca làm việc.
+                </p>
+              </div>
+
+              <!-- Refined quote / footer touch inside card -->
+              <div class="mt-7 pt-5 border-t border-[#255647] flex items-center justify-between text-[11.5px] text-[#9db3a9]">
+                <span class="font-medium text-[#d9edb0]/90">DineFlow Vietnam</span>
+                <span>Tiêu chuẩn ẩm thực số</span>
+              </div>
+            </div>
+
+          </section>
+
+        </div>
+      </div>
+
+      <!-- Page Bottom Footer -->
+      <footer class="mt-12 pt-6 border-t border-[#e7e4dc] flex flex-col sm:flex-row items-center justify-between text-[12px] text-[#78847e] gap-3">
+        <div class="flex items-center space-x-2">
+          <span class="font-medium text-[#173e32]">DineFlow</span>
+          <span>•</span>
+          <span class="italic font-serif">Nhịp phục vụ, cùng một nơi</span>
+        </div>
+        <div class="flex items-center space-x-4 text-[11.5px]">
+          <span>Phiên bản v2.4.8</span>
+          <span>•</span>
+          <span>Bảo mật dữ liệu vận hành</span>
+        </div>
+      </footer>
+    </div>
+
+  </main>
+
+</body>
+</html>

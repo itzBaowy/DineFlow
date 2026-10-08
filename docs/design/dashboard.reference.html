@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DineFlow - Tổng quan Nhân viên</title>
+  <!-- Google Fonts: Newsreader & Be Vietnam Pro -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Be Vietnam Pro"', 'sans-serif'],
+            serif: ['Newsreader', 'serif'],
+          },
+          colors: {
+            pine: {
+              800: '#173e32',
+              900: '#0f2921',
+              950: '#0a1d17',
+              700: '#1f5243',
+              50: '#f0f7f4'
+            },
+            ivory: {
+              50: '#faf9f5',
+              100: '#f5f4ee',
+              200: '#eceae1',
+              300: '#dedad0',
+              400: '#c5c0b2'
+            },
+            chartreuse: {
+              400: '#d9f99d',
+              500: '#bef264',
+              300: '#e2fbb0'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #faf9f5;
+      color: #1c1b18;
+      font-family: 'Be Vietnam Pro', sans-serif;
+    }
+    .font-serif {
+      font-family: 'Newsreader', serif;
+    }
+    /* Subtle custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f4f3ec;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #d8d4c7;
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col md:flex-row antialiased selection:bg-pine-800 selection:text-white">
+
+  <!-- Mobile Top Bar with Drawer Trigger -->
+  <header class="md:hidden flex items-center justify-between px-4 py-3 bg-[#f5f4ee] border-b border-ivory-200 sticky top-0 z-40">
+    <div class="flex items-center gap-2.5">
+      <div class="w-8 h-8 rounded-lg bg-pine-800 flex items-center justify-center text-ivory-50 text-sm shadow-sm">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 2v8a4 4 0 0 1-4 4H10A4 4 0 0 1 6 10V2"/>
+          <path d="M12 14v8"/>
+        </svg>
+      </div>
+      <div>
+        <span class="font-bold text-sm tracking-tight text-pine-950">DineFlow</span>
+        <span class="text-[10px] block text-stone-500 uppercase tracking-wider font-medium">Bếp Nhà DineFlow</span>
+      </div>
+    </div>
+    <button id="mobileMenuBtn" class="p-2 rounded-lg text-stone-700 hover:bg-ivory-200 transition" aria-label="Mở danh mục">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+      </svg>
+    </button>
+  </header>
+
+  <!-- SIDEBAR (248px desktop fixed, drawer on mobile) -->
+  <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-[248px] bg-[#f5f4ee] border-r border-ivory-200 flex flex-col justify-between transition-transform duration-300 transform -translate-x-full md:translate-x-0 md:static md:h-screen shrink-0">
+    <!-- Top Brand & Nav -->
+    <div class="flex flex-col h-full overflow-y-auto">
+      <!-- Brand Header -->
+      <div class="p-5 pb-4 border-b border-ivory-200/80">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-pine-800 flex items-center justify-center text-ivory-50 shadow-sm shrink-0">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 2v8a4 4 0 0 1-4 4H10A4 4 0 0 1 6 10V2"/>
+                <path d="M12 14v8"/>
+              </svg>
+            </div>
+            <div>
+              <div class="flex items-center gap-1.5">
+                <span class="font-bold text-base tracking-tight text-pine-950">DineFlow</span>
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+              </div>
+              <p class="text-[10px] tracking-wider font-semibold text-stone-500 uppercase">HỆ ĐIỀU HÀNH ẨM THỰC</p>
+            </div>
+          </div>
+          <!-- Close button on mobile -->
+          <button id="closeMobileMenuBtn" class="md:hidden p-1.5 text-stone-400 hover:text-stone-700">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Restaurant Unit Card -->
+        <div class="mt-4 p-2.5 rounded-xl bg-white/70 border border-ivory-200/90 flex items-center justify-between">
+          <div class="min-w-0 pr-1">
+            <h4 class="text-xs font-semibold text-stone-900 truncate">Bếp Nhà DineFlow</h4>
+            <span class="text-[11px] text-stone-500 block truncate">Chi nhánh 01 • Trung tâm</span>
+          </div>
+          <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-pine-50 text-pine-800 border border-pine-800/10">
+            FOH
+          </span>
+        </div>
+      </div>
+
+      <!-- Main Navigation -->
+      <nav class="p-3 space-y-1">
+        <!-- Active 'Tổng quan' -->
+        <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-pine-800 text-white font-medium text-sm shadow-sm transition">
+          <svg class="w-4 h-4 text-chartreuse-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect width="7" height="9" x="3" y="3" rx="1"/>
+            <rect width="7" height="5" x="14" y="3" rx="1"/>
+            <rect width="7" height="9" x="14" y="12" rx="1"/>
+            <rect width="7" height="5" x="3" y="16" rx="1"/>
+          </svg>
+          <span>Tổng quan</span>
+        </a>
+
+        <!-- Active 'Thông tin nhà hàng' -->
+        <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-stone-700 hover:text-pine-900 hover:bg-ivory-200/70 font-medium text-sm transition">
+          <svg class="w-4 h-4 text-stone-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+          <span>Thông tin nhà hàng</span>
+        </a>
+
+        <!-- Section: SẮP RA MẮT -->
+        <div class="pt-5 pb-1">
+          <div class="px-3 flex items-center justify-between">
+            <span class="text-[10px] font-bold text-stone-400 uppercase tracking-widest">SẮP RA MẮT</span>
+            <span class="text-[9px] bg-stone-200/80 text-stone-600 px-1.5 py-0.5 rounded font-medium">Lộ trình</span>
+          </div>
+        </div>
+
+        <!-- Future non-interactive items -->
+        <div class="space-y-0.5 opacity-60">
+          <div class="flex items-center justify-between px-3 py-2 text-stone-500 rounded-lg cursor-not-allowed select-none text-sm">
+            <div class="flex items-center gap-3">
+              <svg class="w-4 h-4 text-stone-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M8 12h8"/>
+              </svg>
+              <span>Bàn &amp; gọi món</span>
+            </div>
+            <span class="text-[10px] text-stone-400 italic">Phase 2</span>
+          </div>
+
+          <div class="flex items-center justify-between px-3 py-2 text-stone-500 rounded-lg cursor-not-allowed select-none text-sm">
+            <div class="flex items-center gap-3">
+              <svg class="w-4 h-4 text-stone-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="16" y1="13" x2="8" y2="13"/>
+                <line x1="16" y1="17" x2="8" y2="17"/>
+              </svg>
+              <span>Thực đơn</span>
+            </div>
+            <span class="text-[10px] text-stone-400 italic">Phase 2</span>
+          </div>
+
+          <div class="flex items-center justify-between px-3 py-2 text-stone-500 rounded-lg cursor-not-allowed select-none text-sm">
+            <div class="flex items-center gap-3">
+              <svg class="w-4 h-4 text-stone-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+              </svg>
+              <span>Màn hình bếp</span>
+            </div>
+            <span class="text-[10px] text-stone-400 italic">Phase 2</span>
+          </div>
+
+          <div class="flex items-center justify-between px-3 py-2 text-stone-500 rounded-lg cursor-not-allowed select-none text-sm">
+            <div class="flex items-center gap-3">
+              <svg class="w-4 h-4 text-stone-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="4" width="20" height="16" rx="2"/>
+                <line x1="6" y1="8" x2="6" y2="8"/>
+                <line x1="10" y1="8" x2="10" y2="8"/>
+                <line x1="14" y1="8" x2="14" y2="8"/>
+              </svg>
+              <span>Thu ngân</span>
+            </div>
+            <span class="text-[10px] text-stone-400 italic">Phase 3</span>
+          </div>
+        </div>
+      </nav>
+    </div>
+
+    <!-- Sidebar Footer: Profile -->
+    <div class="p-3 border-t border-ivory-200 bg-[#f1f0e8]/80">
+      <div class="flex items-center justify-between p-2 rounded-xl bg-white/80 border border-ivory-200">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <div class="w-8 h-8 rounded-lg bg-stone-800 text-white flex items-center justify-center font-bold text-xs tracking-wider shrink-0">
+            CN
+          </div>
+          <div class="truncate">
+            <div class="flex items-center gap-1.5">
+              <p class="text-xs font-semibold text-stone-900 truncate">Chủ nhà hàng</p>
+              <span class="text-[9px] font-bold px-1.5 py-0.2 rounded bg-pine-50 text-pine-800 border border-pine-800/20">OWNER</span>
+            </div>
+            <p class="text-[11px] text-stone-500 truncate">quanly@dineflow.vn</p>
+          </div>
+        </div>
+        <button title="Đăng xuất khỏi thiết bị" class="p-1.5 text-stone-400 hover:text-stone-800 rounded-lg hover:bg-ivory-200 transition" aria-label="Đăng xuất">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Mobile Backdrop -->
+  <div id="mobileBackdrop" class="fixed inset-0 bg-black/30 z-40 hidden md:hidden"></div>
+
+  <!-- MAIN VIEWPORT -->
+  <main class="flex-1 flex flex-col min-w-0 bg-[#faf9f5] overflow-y-auto min-h-screen">
+
+    <!-- Top Utility Bar -->
+    <header class="h-16 px-6 lg:px-10 border-b border-ivory-200 flex items-center justify-between bg-[#faf9f5]/90 sticky top-0 z-30 backdrop-blur-sm">
+      <!-- Breadcrumbs -->
+      <div class="flex items-center gap-2 text-xs">
+        <span class="font-medium text-stone-500">Bếp Nhà DineFlow</span>
+        <span class="text-stone-300">/</span>
+        <span class="font-semibold text-pine-900 bg-pine-50 px-2 py-0.5 rounded border border-pine-800/10">Tổng quan nhân viên</span>
+      </div>
+
+      <!-- Right Utility Status -->
+      <div class="flex items-center gap-5">
+        <!-- Live System Indicator -->
+        <div class="hidden sm:flex items-center gap-2 text-xs text-stone-600 bg-white px-3 py-1.5 rounded-full border border-ivory-200 shadow-2xs">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-600"></span>
+          </span>
+          <span class="font-medium text-[11px] text-stone-700">Hệ thống FOH &amp; BOH Sẵn sàng</span>
+        </div>
+
+        <!-- Live Vietnam Date -->
+        <div class="flex items-center gap-2 text-xs text-stone-600 font-medium">
+          <svg class="w-4 h-4 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <rect x="3" y="4" width="18" height="18" rx="2" stroke-width="2"/>
+            <line x1="16" y1="2" x2="16" y2="6" stroke-width="2"/>
+            <line x1="8" y1="2" x2="8" y2="6" stroke-width="2"/>
+            <line x1="3" y1="10" x2="21" y2="10" stroke-width="2"/>
+          </svg>
+          <span class="tracking-tight">Thứ Năm, 8 tháng 10, 2026</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content Workspace -->
+    <div class="p-6 lg:p-10 max-w-7xl w-full mx-auto space-y-7 flex-1">
+
+      <!-- Eyebrow & Editorial Greeting -->
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <div class="inline-flex items-center gap-2 text-[11px] font-bold text-pine-800 uppercase tracking-widest mb-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-pine-800"></span>
+            KHÔNG GIAN NHÂN VIÊN
+          </div>
+          <h1 class="font-serif text-3xl sm:text-4xl text-stone-900 tracking-tight leading-tight">
+            Chào mừng trở lại.
+          </h1>
+          <p class="text-sm text-stone-600 mt-1 max-w-xl">
+            Tất cả danh mục, thực đơn và số lượng bàn phục vụ đã sẵn sàng cho quy trình vận hành ca trực.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <button class="inline-flex items-center gap-2 text-xs font-medium px-3.5 py-2 rounded-lg bg-white border border-ivory-300 text-stone-700 hover:bg-ivory-100 transition shadow-2xs">
+            <svg class="w-3.5 h-3.5 text-stone-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+            </svg>
+            <span>Đồng bộ cấu hình</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- HERO BANNER: Deep Pine & Culinary Crop Overlay -->
+      <section class="relative rounded-2xl bg-pine-800 text-white overflow-hidden shadow-sm border border-pine-900">
+        <!-- Visual Background Image with gradient feathering -->
+        <div class="absolute inset-0 flex justify-end pointer-events-none">
+          <div class="relative w-full md:w-3/5 h-full">
+            <img src="https://lh3.googleusercontent.com/aida/AEtjO1Ws1WYqNkM2FRksAPWeV1F8NNgY9qHDVIyYbtXO0htaxyvZZSUE7_VOe155c-0-2M323k1Oj8YIKrYatVmXjx-cmArLKSCG_yeHhjMLTogAUHZPEO851Ca2M16xJkHWbwof-fmIh8-OyvEnj6LN0FjL2qAD6aOphdvjZZs5FQrluaz9SsjlDMQjrd5_AQVZYUMZexkOGXs_BCSuntfMfT0opq2wXJ3WGzEyN__moW-ITysnmskQYfKOW0g" alt="Bàn ăn ẩm thực Việt" class="w-full h-full object-cover object-center opacity-30 md:opacity-40 filter saturate-110 brightness-95">
+            <!-- Smooth linear overlay blending into pine-800 -->
+            <div class="absolute inset-0 bg-gradient-to-r from-pine-800 via-pine-800/85 to-transparent"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-pine-800/70 via-transparent to-pine-800/30"></div>
+          </div>
+        </div>
+
+        <!-- Banner Content -->
+        <div class="relative z-10 p-7 sm:p-9 max-w-2xl flex flex-col justify-between">
+          <div>
+            <!-- Status Pill with Chartreuse -->
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-chartreuse-400/30 backdrop-blur-sm mb-4">
+              <span class="w-2 h-2 rounded-full bg-chartreuse-400"></span>
+              <span class="text-xs font-medium text-chartreuse-300">Kết nối nhà hàng ổn định</span>
+            </div>
+
+            <!-- Headline with Newsreader font -->
+            <h2 class="font-serif italic text-2xl sm:text-3xl lg:text-4xl font-light text-[#f5faf0] tracking-tight leading-snug">
+              Một đội ngũ. Một nhịp phục vụ.
+            </h2>
+            <p class="text-sm text-stone-200 font-light mt-3 leading-relaxed max-w-lg">
+              Toàn bộ cơ sở dữ liệu đã nạp sẵn danh mục món, bàn ghế và phân quyền nhân viên. Sẵn sàng kết nối nhịp nhàng giữa sảnh phục vụ và khu vực bếp.
+            </p>
+          </div>
+
+          <!-- Working Action Button -->
+          <div class="mt-6 pt-2">
+            <a href="#" class="inline-flex items-center gap-2 text-xs font-semibold px-4 py-2.5 rounded-lg bg-ivory-50 text-pine-900 hover:bg-white transition shadow-sm">
+              <span>Thông tin nhà hàng</span>
+              <svg class="w-3.5 h-3.5 text-pine-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION: Real Configuration Metrics (4 Columns) -->
+      <div>
+        <div class="flex items-center justify-between mb-3 px-1">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-stone-500">THÔNG SỐ CẤU HÌNH THỰC TẾ</h3>
+          <span class="text-[11px] text-stone-400 font-medium">Dữ liệu gốc từ máy chủ</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- Card 1: Bàn phục vụ -->
+          <div class="bg-white rounded-xl p-5 border border-ivory-300/90 shadow-2xs flex flex-col justify-between hover:border-ivory-400 transition">
+            <div class="flex items-start justify-between">
+              <div>
+                <span class="text-xs font-medium text-stone-500">Bàn phục vụ</span>
+                <div class="font-sans font-bold text-3xl text-stone-900 mt-1.5 tracking-tight">10</div>
+              </div>
+              <div class="w-9 h-9 rounded-lg bg-ivory-100 flex items-center justify-center text-stone-600">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect width="18" height="18" x="3" y="3" rx="2"/>
+                  <path d="M3 9h18M9 21V9"/>
+                </svg>
+              </div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-ivory-100 flex items-center justify-between text-xs text-stone-600">
+              <span class="inline-flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                Bàn đã cấu hình
+              </span>
+              <span class="text-[11px] font-mono text-stone-400">Tầng 1 &amp; Sảnh</span>
+            </div>
+          </div>
+
+          <!-- Card 2: Danh mục món -->
+          <div class="bg-white rounded-xl p-5 border border-ivory-300/90 shadow-2xs flex flex-col justify-between hover:border-ivory-400 transition">
+            <div class="flex items-start justify-between">
+              <div>
+                <span class="text-xs font-medium text-stone-500">Danh mục món</span>
+                <div class="font-sans font-bold text-3xl text-stone-900 mt-1.5 tracking-tight">5</div>
+              </div>
+              <div class="w-9 h-9 rounded-lg bg-ivory-100 flex items-center justify-center text-stone-600">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                </svg>
+              </div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-ivory-100 flex items-center justify-between text-xs text-stone-600">
+              <span class="inline-flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                Danh mục đang hoạt động
+              </span>
+              <span class="text-[11px] font-mono text-stone-400">100% active</span>
+            </div>
+          </div>
+
+          <!-- Card 3: Món trong thực đơn -->
+          <div class="bg-white rounded-xl p-5 border border-ivory-300/90 shadow-2xs flex flex-col justify-between hover:border-ivory-400 transition">
+            <div class="flex items-start justify-between">
+              <div>
+                <span class="text-xs font-medium text-stone-500">Món trong thực đơn</span>
+                <div class="font-sans font-bold text-3xl text-stone-900 mt-1.5 tracking-tight">20</div>
+              </div>
+              <div class="w-9 h-9 rounded-lg bg-ivory-100 flex items-center justify-center text-stone-600">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M18 8h1a4 4 0 0 1 0 8h-1"/>
+                  <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/>
+                  <line x1="6" y1="1" x2="6" y2="4"/>
+                  <line x1="10" y1="1" x2="10" y2="4"/>
+                  <line x1="14" y1="1" x2="14" y2="4"/>
+                </svg>
+              </div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-ivory-100 flex items-center justify-between text-xs text-stone-600">
+              <span class="inline-flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                20 món đang bật bán
+              </span>
+              <span class="text-[11px] font-mono text-stone-400">Có hình ảnh</span>
+            </div>
+          </div>
+
+          <!-- Card 4: Nhân viên -->
+          <div class="bg-white rounded-xl p-5 border border-ivory-300/90 shadow-2xs flex flex-col justify-between hover:border-ivory-400 transition">
+            <div class="flex items-start justify-between">
+              <div>
+                <span class="text-xs font-medium text-stone-500">Nhân viên</span>
+                <div class="font-sans font-bold text-3xl text-stone-900 mt-1.5 tracking-tight">5</div>
+              </div>
+              <div class="w-9 h-9 rounded-lg bg-ivory-100 flex items-center justify-center text-stone-600">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                  <circle cx="9" cy="7" r="4"/>
+                  <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+              </div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-ivory-100 flex items-center justify-between text-xs text-stone-600">
+              <span class="inline-flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                Tài khoản đang hoạt động
+              </span>
+              <span class="text-[11px] font-mono text-stone-400">1 Owner • 4 Staff</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: Context Details (2 Column Grid) -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- Column 1 (2/3 width): "Không gian của bạn" -->
+        <div class="lg:col-span-2 bg-white rounded-xl p-6 sm:p-7 border border-ivory-300/90 shadow-2xs flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between pb-4 border-b border-ivory-200">
+              <div>
+                <h3 class="font-semibold text-base text-stone-900">Không gian của bạn</h3>
+                <p class="text-xs text-stone-500 mt-0.5">Thông tin định danh và tham số vùng của cơ sở kinh doanh</p>
+              </div>
+              <button class="text-xs font-medium text-pine-800 hover:text-pine-900 hover:underline inline-flex items-center gap-1">
+                <span>Xem chi tiết</span>
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+              </button>
+            </div>
+
+            <!-- Parameters Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-5">
+              <div class="p-3.5 rounded-lg bg-ivory-50 border border-ivory-200">
+                <span class="text-[11px] font-medium text-stone-500 uppercase tracking-wider block">Tên nhà hàng</span>
+                <span class="text-sm font-semibold text-stone-900 mt-1 block">Bếp Nhà DineFlow</span>
+                <span class="text-[11px] text-stone-500 mt-0.5 block">Hệ thống FOH &amp; BOH chính</span>
+              </div>
+
+              <div class="p-3.5 rounded-lg bg-ivory-50 border border-ivory-200">
+                <span class="text-[11px] font-medium text-stone-500 uppercase tracking-wider block">Đơn vị tiền tệ</span>
+                <span class="text-sm font-semibold text-stone-900 mt-1 block">VND (₫)</span>
+                <span class="text-[11px] text-stone-500 mt-0.5 block">Định dạng tiêu chuẩn Việt Nam</span>
+              </div>
+
+              <div class="p-3.5 rounded-lg bg-ivory-50 border border-ivory-200">
+                <span class="text-[11px] font-medium text-stone-500 uppercase tracking-wider block">Múi giờ hệ thống</span>
+                <span class="text-sm font-semibold text-stone-900 mt-1 block">Asia/Ho_Chi_Minh (GMT+7)</span>
+                <span class="text-[11px] text-stone-500 mt-0.5 block">Đồng bộ tự động với máy chủ NTP</span>
+              </div>
+
+              <div class="p-3.5 rounded-lg bg-ivory-50 border border-ivory-200">
+                <span class="text-[11px] font-medium text-stone-500 uppercase tracking-wider block">Trạng thái đồng bộ</span>
+                <div class="flex items-center gap-2 mt-1">
+                  <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
+                  <span class="text-sm font-semibold text-stone-900">Sẵn sàng nhận lệnh order</span>
+                </div>
+                <span class="text-[11px] text-stone-500 mt-0.5 block">Độ trễ phản hồi: 18ms</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-ivory-100 flex items-center justify-between text-xs text-stone-500">
+            <span>Mã định danh hệ thống: <strong class="font-mono text-stone-700">DF-VN-0921-HN</strong></span>
+            <span class="inline-flex items-center gap-1 text-emerald-700 font-medium">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+              </svg>
+              Cơ sở dữ liệu toàn vẹn
+            </span>
+          </div>
+        </div>
+
+        <!-- Column 2 (1/3 width): "Phiên làm việc" -->
+        <div class="bg-[#f5f4ed] rounded-xl p-6 sm:p-7 border border-ivory-300 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between pb-3 border-b border-ivory-300/80">
+              <h3 class="font-semibold text-base text-stone-900">Phiên làm việc</h3>
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-pine-800 text-chartreuse-400">
+                ACTIVE
+              </span>
+            </div>
+
+            <div class="mt-4 space-y-3.5">
+              <div>
+                <span class="text-xs text-stone-500 block">Tài khoản xác thực:</span>
+                <span class="text-sm font-bold text-stone-900">Chủ nhà hàng (OWNER)</span>
+                <span class="text-xs text-stone-600 block mt-0.5">Quyền hạn cao nhất trên hệ thống</span>
+              </div>
+
+              <div class="p-3 rounded-lg bg-white/70 border border-ivory-300 text-xs text-stone-600 space-y-1.5">
+                <div class="flex items-center gap-2 text-pine-900 font-semibold">
+                  <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                  </svg>
+                  <span>Bảo mật thiết bị chung</span>
+                </div>
+                <p class="leading-relaxed text-[11px] text-stone-600">
+                  Thiết bị tại sảnh hoặc quầy POS được dùng chung giữa các nhân viên. Luôn đăng xuất an toàn khi bàn giao ca trực.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-ivory-300/80 flex items-center justify-between">
+            <span class="text-xs text-stone-500">Ca hiện tại: <strong>Ca Sáng (08:00 - 16:00)</strong></span>
+            <button class="text-xs font-semibold text-rose-700 hover:text-rose-900 transition flex items-center gap-1">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+              </svg>
+              <span>Đăng xuất</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Footer Info -->
+      <footer class="pt-6 border-t border-ivory-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-stone-500">
+        <div class="flex items-center gap-2">
+          <span class="font-bold text-stone-700">DineFlow</span>
+          <span>•</span>
+          <span class="italic font-serif">Nhịp phục vụ, cùng một nơi</span>
+        </div>
+        <div class="flex items-center gap-4 text-[11px] text-stone-400">
+          <span>Máy chủ FOH: v2.4.8 (Hà Nội &amp; TP.HCM)</span>
+          <span>•</span>
+          <span>Tiêu chuẩn bảo mật FOH/BOH</span>
+          <span>•</span>
+          <span>Hotline hỗ trợ: 1900 8922</span>
+        </div>
+      </footer>
+
+    </div>
+  </main>
+
+  <!-- Mobile Drawer Toggle Script -->
+  <script>
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const closeMobileMenuBtn = document.getElementById('closeMobileMenuBtn');
+    const sidebar = document.getElementById('sidebar');
+    const mobileBackdrop = document.getElementById('mobileBackdrop');
+
+    function openSidebar() {
+      sidebar.classList.remove('-translate-x-full');
+      mobileBackdrop.classList.remove('hidden');
+    }
+
+    function closeSidebar() {
+      sidebar.classList.add('-translate-x-full');
+      mobileBackdrop.classList.add('hidden');
+    }
+
+    if (mobileMenuBtn) mobileMenuBtn.addEventListener('click', openSidebar);
+    if (closeMobileMenuBtn) closeMobileMenuBtn.addEventListener('click', closeSidebar);
+    if (mobileBackdrop) mobileBackdrop.addEventListener('click', closeSidebar);
+  </script>
+</body>
+</html>

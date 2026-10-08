@@ -1,0 +1,21 @@
+{
+  "name": "@dineflow/web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --hostname 0.0.0.0",
+    "build": "next build",
+    "start": "next start --hostname 0.0.0.0",
+    "lint": "eslint src tests next.config.ts playwright.config.ts",
+    "typecheck": "next typegen && tsc --noEmit",
+    "test:browser": "playwright test"
+  },
+  "dependencies": {
+    "@dineflow/shared": "workspace:*", "next": "16.4.0", "react": "19.3.0", "react-dom": "19.3.0",
+    "@tanstack/react-query": "5.104.1", "react-hook-form": "^7.0.0", "@hookform/resolvers": "^5.0.0",
+    "zod": "4.6.5", "lucide-react": "^0.577.0", "class-variance-authority": "^0.7.1", "clsx": "^2.1.1", "tailwind-merge": "^3.0.0", "radix-ui": "^1.0.0", "dotenv": "^17.0.0"
+  },
+  "devDependencies": {
+    "tailwindcss": "4.3.3", "@tailwindcss/postcss": "4.3.3", "@types/react": "19.3.0", "@types/react-dom": "^19.0.0", "eslint-config-next": "16.4.0", "@playwright/test": "^1.0.0"
+  }
+}
