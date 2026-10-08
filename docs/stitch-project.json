@@ -40,5 +40,11 @@
       "reference": "design/tables.reference.html"
     }
   ],
-  "imageSourceScreen": "87923eac0b4840f7b43f35591fe4e357"
+  "imageSourceScreen": "87923eac0b4840f7b43f35591fe4e357",
+  "customerMenuScreen": {
+    "id": "3b429f22b61846438982c78f382ccb66",
+    "route": "/t/[tableCode]",
+    "reference": "design/customer-menu.reference.html",
+    "prompt": "design/phase-3-prompts.md"
+  }
 }
