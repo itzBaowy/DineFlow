@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { type OrderStatus } from './ordering';
 export * from './setup';
 export * from './ordering';
+export * from './realtime';
 
 export const roles = ['OWNER', 'MANAGER', 'CASHIER', 'WAITER', 'KITCHEN'] as const;
 export const roleSchema = z.enum(roles);
