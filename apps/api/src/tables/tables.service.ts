@@ -97,7 +97,7 @@ export class TablesService {
       throw new NotFoundException('Mã bàn không hợp lệ hoặc đã được thay đổi');
     const table = await this.db.diningTable.findFirst({
       where: { publicCode, archivedAt: null, status: { not: 'OUT_OF_SERVICE' } },
-      include: { restaurant: true },
+      include: { restaurant: true, sessions: { where: { status: 'OPEN' }, select: { id: true } } },
     });
     if (!table) throw new NotFoundException('Mã bàn không hợp lệ hoặc bàn đang tạm ngưng');
     return {
@@ -107,7 +107,7 @@ export class TablesService {
         address: table.restaurant.address,
       },
       table: { name: table.name },
-      orderingEnabled: false,
+      orderingEnabled: table.status === 'OCCUPIED' && table.sessions.length > 0,
     };
   }
 }

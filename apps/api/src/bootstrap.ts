@@ -21,13 +21,13 @@ export async function createApp(logger: false | undefined = undefined) {
     response.setHeader('Cache-Control', 'no-store');
     next();
   });
-  app.useBodyParser('json', { limit: '32kb' });
+  app.useBodyParser('json', { limit: '128kb' });
   app.use(cookieParser());
   app.enableCors({ origin: config.APP_ORIGIN, credentials: true, allowedHeaders: ['Content-Type', 'X-DineFlow-Client'], methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'] });
   app.setGlobalPrefix('api/v1');
   app.useGlobalFilters(new HttpExceptionFilter());
   if (config.NODE_ENV !== 'production') {
-    const document = SwaggerModule.createDocument(app, new DocumentBuilder().setTitle('DineFlow API').setDescription('Staff auth, restaurant setup, tables/QR, menu and image storage').setVersion('0.2.0').addCookieAuth('df_access').build());
+    const document = SwaggerModule.createDocument(app, new DocumentBuilder().setTitle('DineFlow API').setDescription('Staff auth, restaurant setup, dining sessions and customer ordering').setVersion('0.3.0').addCookieAuth('df_access').addCookieAuth('df_guest').build());
     SwaggerModule.setup('api/docs', app, document, { swaggerOptions: { withCredentials: true } });
   }
   app.enableShutdownHooks();

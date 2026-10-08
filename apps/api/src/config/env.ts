@@ -12,6 +12,7 @@ export const envSchema = z.object({
   JWT_ACCESS_SECRET: secret,
   ACCESS_TOKEN_TTL_SECONDS: z.coerce.number().int().min(30).max(3600).default(900),
   REFRESH_TOKEN_TTL_SECONDS: z.coerce.number().int().min(300).max(2592000).default(604800),
+  GUEST_TOKEN_TTL_SECONDS: z.coerce.number().int().min(300).max(86400).default(14400),
   COOKIE_SECURE: z.enum(['true', 'false']).default('false').transform(value => value === 'true'),
   S3_ENDPOINT: z.url().default('http://localhost:9000'),
   S3_REGION: z.string().default('us-east-1'),

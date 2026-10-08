@@ -8,6 +8,8 @@ import { SetupModule } from './common/setup.module';
 import { MenuModule } from './menu/menu.module';
 import { TablesModule } from './tables/tables.module';
 import { StorageModule } from './storage/storage.module';
+import { DiningSessionsModule } from './dining-sessions/dining-sessions.module';
+import { OrdersModule } from './orders/orders.module';
 
-@Module({ imports: [ConfigModule, DatabaseModule, AuthModule, SetupModule, MenuModule, TablesModule, StorageModule], controllers: [HealthController, RestaurantController] })
+@Module({ imports: [ConfigModule, DatabaseModule, AuthModule, SetupModule, MenuModule, TablesModule, StorageModule, DiningSessionsModule, OrdersModule], controllers: [HealthController, RestaurantController] })
 export class AppModule {}
