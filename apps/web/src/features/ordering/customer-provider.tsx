@@ -18,6 +18,8 @@ import {
 import { api, ApiError } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { QueryState } from '@/features/setup/shared';
+import { LiveSync } from '@/features/realtime/live-sync';
+import { TableService } from '@/features/realtime/table-service';
 
 const cartLineSchema = orderLineInputSchema.extend({ cartId: z.uuid() });
 const cartSchema = z.object({
@@ -201,12 +203,18 @@ function CustomerSession({
           </Link>
         </Button>
       </header>
+      {guest && menu.diningSessionId && (
+        <LiveSync key={guest.id} ticketPath={`${path}/realtime-ticket`} />
+      )}
       {!menu.orderingEnabled ? (
         <section className="mt-5 rounded-2xl border bg-white p-5">
-          <h2 className="text-sm font-semibold">Chào mừng bạn đến bàn</h2>
+          <h2 className="text-sm font-semibold">
+            {menu.diningSessionId ? 'Bàn đang chờ thanh toán' : 'Chào mừng bạn đến bàn'}
+          </h2>
           <p className="mt-2 text-sm leading-6 text-muted-foreground">
-            Bàn chưa mở hoặc đã ngừng nhận đơn. Bạn có thể xem thực đơn; vui lòng báo nhân viên để
-            được phục vụ.
+            {menu.diningSessionId
+              ? 'Bàn tạm ngừng nhận món mới. Nhân viên sẽ đến hỗ trợ; tiền chưa được ghi nhận thanh toán.'
+              : 'Bàn chưa mở hoặc đã ngừng nhận đơn. Bạn có thể xem thực đơn; vui lòng báo nhân viên để được phục vụ.'}
           </p>
           <Button onClick={reload} variant="outline" className="mt-3" size="sm">
             <RefreshCw />
@@ -260,6 +268,9 @@ function CustomerSession({
       >
         {children}
       </CartProvider>
+      {guest && menu.diningSessionId && (
+        <TableService code={code} sessionId={menu.diningSessionId} />
+      )}
       <footer className="editorial mt-12 border-t pt-6 text-center text-sm italic text-muted-foreground">
         Một bữa ngon, một khoảng vui.
         <span className="mt-2 block font-sans text-[10px] not-italic">
@@ -387,7 +398,7 @@ export function CartProvider({
         menuHref,
         cartHref,
         ordersHref,
-        canOrder: !!(guest || manual),
+        canOrder: !!(guest || manual) && menu.orderingEnabled,
         isStaff: !!manual,
         menu,
         guest,

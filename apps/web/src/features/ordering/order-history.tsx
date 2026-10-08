@@ -70,6 +70,7 @@ export function OrderCards({ orders }: { orders: CustomerOrder[] }) {
                 Lý do hủy: {order.cancellationReason}
               </p>
             )}
+            <OrderProgress order={order} />
             <div className="flex justify-between border-t pt-4 text-sm font-semibold text-primary">
               <span>Tổng tiền món</span>
               <span>{formatVnd(order.totalAmount)}</span>
@@ -130,7 +131,8 @@ export function OrderHistory() {
               <>
                 <div className="mb-5 flex gap-3 rounded-xl bg-secondary p-4 text-xs leading-6 text-primary">
                   <CheckCircle2 className="mt-1 size-4 shrink-0" />
-                  Đơn đã được lưu. Nhấn Cập nhật để xem tiến độ phục vụ mới nhất.
+                  Tiến độ tự cập nhật khi đang đồng bộ. Bạn vẫn có thể nhấn Cập nhật để kiểm tra
+                  lại.
                 </div>
                 <OrderCards orders={query.data} />
               </>
@@ -144,8 +146,51 @@ export function OrderHistory() {
         )}
       </div>
       <Button asChild className="mt-6 w-full">
-        <Link href={`/t/${code}`}>Gọi thêm món</Link>
+        <Link href={`/t/${code}`}>{menu.orderingEnabled ? 'Gọi thêm món' : 'Xem thực đơn'}</Link>
       </Button>
     </section>
+  );
+}
+function OrderProgress({ order }: { order: CustomerOrder }) {
+  const steps = [
+    { status: 'PENDING_CONFIRMATION', label: 'Chờ xác nhận', at: order.createdAt },
+    { status: 'ACCEPTED', label: 'Đã nhận', at: order.acceptedAt },
+    { status: 'PREPARING', label: 'Chế biến', at: order.preparingAt },
+    { status: 'READY', label: 'Sẵn sàng', at: order.readyAt },
+    { status: 'SERVED', label: 'Đã phục vụ', at: order.servedAt },
+  ];
+  return (
+    <ol aria-label="Tiến độ đơn" className="grid grid-cols-2 gap-3 border-t pt-4 sm:grid-cols-3">
+      {steps
+        .filter((step) => order.status !== 'CANCELLED' || step.at)
+        .map((step, index) => (
+          <li
+            key={step.status}
+            aria-current={order.status === step.status ? 'step' : undefined}
+            className={`rounded-xl p-3 text-xs ${step.at ? 'bg-secondary text-primary' : 'bg-background text-muted-foreground'}`}
+          >
+            <p className="font-medium">
+              {index + 1}. {step.label}
+            </p>
+            <p className="mt-2">
+              {step.at
+                ? new Intl.DateTimeFormat('vi-VN', { hour: '2-digit', minute: '2-digit' }).format(
+                    new Date(step.at),
+                  )
+                : 'Chưa đến bước này'}
+            </p>
+          </li>
+        ))}
+      {order.cancelledAt && (
+        <li className="rounded-xl bg-red-50 p-3 text-xs text-destructive">
+          <p className="font-medium">Đã hủy lúc</p>
+          <p className="mt-2">
+            {new Intl.DateTimeFormat('vi-VN', { hour: '2-digit', minute: '2-digit' }).format(
+              new Date(order.cancelledAt),
+            )}
+          </p>
+        </li>
+      )}
+    </ol>
   );
 }

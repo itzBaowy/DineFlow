@@ -21,6 +21,7 @@ import {
   SlidersHorizontal,
   Armchair,
   ClipboardList,
+  Bell,
 } from 'lucide-react';
 import { Dialog } from 'radix-ui';
 import { roleLabels } from '@dineflow/shared';
@@ -29,6 +30,7 @@ import { Button } from '@/components/ui/button';
 import { api, ApiError } from '@/lib/api';
 import { cn } from '@/lib/utils';
 import { useStaff } from './use-staff';
+import { LiveSync } from '@/features/realtime/live-sync';
 
 export function Workspace({ children }: { children: React.ReactNode }) {
   const staffQuery = useStaff();
@@ -74,6 +76,7 @@ export function Workspace({ children }: { children: React.ReactNode }) {
       ? [
           { href: '/staff/tables', title: 'Phiên bàn', icon: Armchair },
           { href: '/staff/orders', title: 'Đơn gọi món', icon: ClipboardList },
+          { href: '/staff/requests', title: 'Yêu cầu phục vụ', icon: Bell },
         ]
       : []),
     ...(['OWNER', 'MANAGER', 'KITCHEN'].includes(staff.role)
@@ -228,6 +231,7 @@ export function Workspace({ children }: { children: React.ReactNode }) {
           </p>
         )}
         <main data-workspace-main className="mx-auto max-w-7xl p-5 sm:p-8 xl:p-10">
+          <LiveSync key={staff.authSessionId} ticketPath="/realtime/ticket" staff />
           {children}
         </main>
       </div>
