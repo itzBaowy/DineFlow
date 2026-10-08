@@ -67,13 +67,11 @@ test('owner configures category, modifier, uploaded menu item, tables and printa
       (response) =>
         response.url().endsWith('/api/v1/storage/images') && response.request().method() === 'POST',
     );
-    await page
-      .getByLabel('Tải ảnh món ăn')
-      .setInputFiles({
-        name: 'dining.jpeg',
-        mimeType: 'image/jpeg',
-        buffer: readFileSync(resolve(__dirname, '../public/images/dining-editorial.png')),
-      });
+    await page.getByLabel('Tải ảnh món ăn').setInputFiles({
+      name: 'dining.jpeg',
+      mimeType: 'image/jpeg',
+      buffer: readFileSync(resolve(__dirname, '../public/images/dining-editorial.png')),
+    });
     expect((await uploaded).status()).toBe(201);
     await expect(page.getByRole('img', { name: 'Ảnh món ăn', exact: true })).toBeVisible();
     await expect(page.getByRole('img', { name: 'Ảnh món ăn', exact: true })).toHaveJSProperty(
@@ -124,6 +122,17 @@ test('owner configures category, modifier, uploaded menu item, tables and printa
       printBackground: true,
     });
     expect(await page.locator('[data-print-label]:visible').count()).toBe(1);
+    await page.emulateMedia({ media: 'screen' });
+    await page.getByRole('button', { name: 'Chọn tất cả', exact: true }).click();
+    await expect(page.getByRole('button', { name: 'In nhãn đã chọn', exact: true })).toBeEnabled();
+    await page.emulateMedia({ media: 'print' });
+    await page.pdf({
+      path: resolve(qaDir, 'qr-all-labels.pdf'),
+      format: 'A4',
+      preferCSSPageSize: true,
+      printBackground: true,
+    });
+    expect(await page.locator('[data-print-label]:visible').count()).toBe(11);
     await page.emulateMedia({ media: 'screen' });
     await page.screenshot({ path: resolve(qaDir, 'qr-desktop.png'), fullPage: true });
     await card.getByRole('button', { name: 'Đổi mã QR', exact: true }).click();
