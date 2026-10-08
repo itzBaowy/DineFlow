@@ -6,24 +6,39 @@
   "visibility": "PRIVATE",
   "designSystem": "assets/23ff43d04b194e6c8c13fab28e1e0fc8",
   "screens": [
-  {
-    "id": "e3affef09703454698ffcfc9541e60d3",
-    "title": "DineFlow - Đăng nhập Nhân viên",
-    "route": "/staff/login",
-    "reference": "design/login.reference.html"
-  },
-  {
-    "id": "6afd0bfd768f413aad25f8a0863d140d",
-    "title": "DineFlow - Tổng quan Nhân viên",
-    "route": "/staff/dashboard",
-    "reference": "design/dashboard.reference.html"
-  },
-  {
-    "id": "18dbb7bbc659481385bbdd1a003017dc",
-    "title": "DineFlow - Thông tin nhà hàng",
-    "route": "/admin/settings",
-    "reference": "design/settings.reference.html"
-  }
-],
+    {
+      "id": "e3affef09703454698ffcfc9541e60d3",
+      "title": "DineFlow - Đăng nhập Nhân viên",
+      "route": "/staff/login",
+      "reference": "design/login.reference.html"
+    },
+    {
+      "id": "6afd0bfd768f413aad25f8a0863d140d",
+      "title": "DineFlow - Tổng quan Nhân viên",
+      "route": "/staff/dashboard",
+      "reference": "design/dashboard.reference.html"
+    },
+    {
+      "id": "18dbb7bbc659481385bbdd1a003017dc",
+      "title": "DineFlow - Thông tin nhà hàng",
+      "route": "/admin/settings",
+      "reference": "design/settings.reference.html"
+    },
+    {
+      "id": "e1215ee7766b4056998f9f8a36b535a6",
+      "title": "DineFlow - Quản lý Thực đơn",
+      "route": "/admin/menu",
+      "reference": "design/menu.reference.html"
+    },
+    {
+      "id": "28286b6e065a40099e85e90ec680c865",
+      "title": "DineFlow - Quản lý Bàn phục vụ & Mã QR",
+      "route": "/admin/tables",
+      "relatedRoutes": [
+        "/admin/qr-codes"
+      ],
+      "reference": "design/tables.reference.html"
+    }
+  ],
   "imageSourceScreen": "87923eac0b4840f7b43f35591fe4e357"
 }

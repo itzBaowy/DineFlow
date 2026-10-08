@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+
+<html class="h-full bg-surface" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DineFlow | Quản lý Bàn phục vụ và Mã QR</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "error": "#ba1a1a",
+            "on-tertiary-fixed": "#151d19",
+            "on-background": "#1b1c1a",
+            "tertiary-fixed": "#dce5de",
+            "primary-fixed-dim": "#a6cfbf",
+            "on-secondary-container": "#596a39",
+            "on-error-container": "#93000a",
+            "on-secondary": "#ffffff",
+            "on-primary-container": "#81a999",
+            "on-secondary-fixed": "#131f00",
+            "on-tertiary-fixed-variant": "#404944",
+            "on-tertiary-container": "#9aa39c",
+            "on-secondary-fixed-variant": "#3c4c1f",
+            "tertiary-fixed-dim": "#c0c9c2",
+            "secondary-fixed-dim": "#bace93",
+            "outline": "#717975",
+            "on-surface-variant": "#414845",
+            "on-primary-fixed": "#002117",
+            "surface": "#faf9f5",
+            "background": "#faf9f5",
+            "surface-dim": "#dbdad6",
+            "surface-tint": "#406658",
+            "tertiary": "#1b241f",
+            "on-primary": "#ffffff",
+            "tertiary-container": "#313934",
+            "on-tertiary": "#ffffff",
+            "surface-container-high": "#e9e8e4",
+            "inverse-primary": "#a6cfbf",
+            "error-container": "#ffdad6",
+            "outline-variant": "#c1c8c3",
+            "surface-container-low": "#f4f4f0",
+            "surface-bright": "#faf9f5",
+            "surface-container": "#efeeea",
+            "on-surface": "#1b1c1a",
+            "inverse-on-surface": "#f2f1ed",
+            "primary-container": "#173e32",
+            "surface-variant": "#e3e2df",
+            "on-primary-fixed-variant": "#284e41",
+            "surface-container-lowest": "#ffffff",
+            "inverse-surface": "#2f312e",
+            "secondary-fixed": "#d6eaad",
+            "on-error": "#ffffff",
+            "surface-container-highest": "#e3e2df",
+            "secondary-container": "#d6eaad",
+            "primary-fixed": "#c2ecda",
+            "primary": "#00281d",
+            "secondary": "#536434"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "margin": "1rem",
+            "margin-desktop": "3rem",
+            "space-xl": "2.5rem",
+            "gutter": "1rem",
+            "space-lg": "1.5rem",
+            "gutter-desktop": "1.5rem",
+            "space-xs": "0.25rem",
+            "space-md": "1rem",
+            "space-sm": "0.5rem",
+            "margin-tablet": "2rem"
+          },
+          "fontFamily": {
+            "label-md": ["Be Vietnam Pro"],
+            "body-sm": ["Be Vietnam Pro"],
+            "label-sm": ["Be Vietnam Pro"],
+            "headline-sm": ["Be Vietnam Pro"],
+            "body-lg": ["Be Vietnam Pro"],
+            "headline-display-mobile": ["Newsreader"],
+            "headline-display": ["Newsreader"],
+            "label-lg": ["Be Vietnam Pro"],
+            "headline-lg": ["Newsreader"],
+            "body-md": ["Be Vietnam Pro"],
+            "headline-lg-mobile": ["Newsreader"],
+            "headline-md": ["Be Vietnam Pro"]
+          },
+          "fontSize": {
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "600" }],
+            "body-sm": ["12px", { "lineHeight": "18px", "letterSpacing": "0.01em", "fontWeight": "400" }],
+            "label-sm": ["10px", { "lineHeight": "14px", "letterSpacing": "0.06em", "fontWeight": "700" }],
+            "headline-sm": ["18px", { "lineHeight": "26px", "letterSpacing": "0em", "fontWeight": "600" }],
+            "body-lg": ["16px", { "lineHeight": "26px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "headline-display-mobile": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "400" }],
+            "headline-display": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400" }],
+            "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.02em", "fontWeight": "600" }],
+            "headline-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.015em", "fontWeight": "500" }],
+            "body-md": ["14px", { "lineHeight": "22px", "letterSpacing": "0.005em", "fontWeight": "400" }],
+            "headline-lg-mobile": ["26px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+            "headline-md": ["22px", { "lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "600" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #faf9f5;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #dbe4dd;
+      border-radius: 9999px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #c1c8c3;
+    }
+  </style>
+</head>
+<body class="h-full font-body-md text-on-surface bg-surface antialiased overflow-x-hidden selection:bg-secondary-fixed selection:text-primary">
+<div class="min-h-screen flex flex-row">
+<!-- ==================== 1. FIXED SIDEBAR (256px / w-64) ==================== -->
+<aside class="w-64 min-h-screen flex flex-col fixed left-0 top-0 bottom-0 z-40 bg-primary text-on-primary border-r border-outline-variant/20">
+<!-- Top Branding Section -->
+<div class="p-5 border-b border-white/10">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center border border-white/15 text-primary-fixed shadow-sm">
+<span class="material-symbols-outlined text-[24px]">restaurant</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-display text-headline-sm font-medium text-surface tracking-tight">DineFlow</span>
+<span class="font-label-sm text-label-sm tracking-widest uppercase text-primary-fixed-dim">HỆ ĐIỀU HÀNH ẨM THỰC</span>
+</div>
+</div>
+<!-- Branch / Location Indicator -->
+<div class="mt-4 p-2.5 rounded-lg bg-white/5 border border-white/10 flex items-center justify-between">
+<div class="flex flex-col truncate pr-2">
+<span class="font-label-sm text-label-sm text-primary-fixed truncate">Bếp Nhà DineFlow</span>
+<span class="font-body-sm text-[11px] text-surface-dim">Điểm phục vụ FOH</span>
+</div>
+<span class="w-2 h-2 rounded-full bg-secondary-fixed shrink-0 animate-pulse"></span>
+</div>
+</div>
+<!-- Main Navigation Menu -->
+<nav class="flex-1 p-3 space-y-1 overflow-y-auto custom-scrollbar">
+<div class="px-3 py-1.5 font-label-sm text-label-sm text-white/40 uppercase tracking-wider">VẬN HÀNH CHÍNH</div>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-primary-container hover:text-surface hover:bg-white/5 font-label-md transition-colors" href="#dashboard">
+<span class="material-symbols-outlined text-[20px]">space_dashboard</span>
+<span>Tổng quan</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-primary-container hover:text-surface hover:bg-white/5 font-label-md transition-colors" href="#menu">
+<span class="material-symbols-outlined text-[20px]">restaurant_menu</span>
+<span>Thực đơn</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-primary-container hover:text-surface hover:bg-white/5 font-label-md transition-colors" href="#categories">
+<span class="material-symbols-outlined text-[20px]">category</span>
+<span>Danh mục</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-primary-container hover:text-surface hover:bg-white/5 font-label-md transition-colors" href="#modifiers">
+<span class="material-symbols-outlined text-[20px]">tune</span>
+<span>Size &amp; Topping</span>
+</a>
+<!-- ACTIVE NAV ITEM: Bàn phục vụ -->
+<a class="flex items-center justify-between px-3 py-2.5 rounded-lg bg-primary-container text-primary-fixed font-label-lg font-semibold shadow-inner border border-white/10" href="#tables">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">table_restaurant</span>
+<span>Bàn phục vụ</span>
+</div>
+<span class="px-2 py-0.5 rounded-full text-[11px] bg-secondary-fixed text-primary font-bold">10</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-primary-container hover:text-surface hover:bg-white/5 font-label-md transition-colors" href="#qr-codes">
+<span class="material-symbols-outlined text-[20px]">qr_code_2</span>
+<span>Mã QR</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-primary-container hover:text-surface hover:bg-white/5 font-label-md transition-colors" href="#settings">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+<span>Thông tin nhà hàng</span>
+</a>
+<!-- Coming Soon / Next Modules -->
+<div class="pt-4 pb-1 px-3 font-label-sm text-label-sm text-white/40 uppercase tracking-wider">HẠNG MỤC MỞ RỘNG</div>
+<div class="flex items-center justify-between px-3 py-2 rounded-lg text-white/40 font-label-md cursor-not-allowed">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[19px]">countertops</span>
+<span>Màn hình bếp</span>
+</div>
+<span class="text-[10px] uppercase font-label-sm px-1.5 py-0.5 rounded bg-white/10 text-white/60">Sắp ra mắt</span>
+</div>
+<div class="flex items-center justify-between px-3 py-2 rounded-lg text-white/40 font-label-md cursor-not-allowed">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[19px]">point_of_sale</span>
+<span>Thu ngân &amp; POS</span>
+</div>
+<span class="text-[10px] uppercase font-label-sm px-1.5 py-0.5 rounded bg-white/10 text-white/60">Sắp ra mắt</span>
+</div>
+</nav>
+<!-- User Account & Shift Footer -->
+<div class="p-4 border-t border-white/10 bg-primary/80">
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-full bg-secondary-fixed/20 border border-secondary-fixed/40 flex items-center justify-center text-secondary-fixed text-xs font-semibold">
+              DF
+            </div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-surface font-semibold truncate max-w-[110px]">Chủ nhà hàng</span>
+<span class="text-[11px] text-white/60 truncate max-w-[110px]">quanly@dineflow.vn</span>
+</div>
+</div>
+<button class="p-1.5 rounded-md text-white/60 hover:text-surface hover:bg-white/10 transition-colors" title="Đăng xuất">
+<span class="material-symbols-outlined text-[18px]">logout</span>
+</button>
+</div>
+<div class="flex items-center gap-1.5 text-[11px] text-primary-fixed-dim bg-white/5 py-1 px-2 rounded">
+<span class="material-symbols-outlined text-[14px]">shield</span>
+<span>Phân quyền: OWNER / Trưởng ca</span>
+</div>
+</div>
+</aside>
+<!-- ==================== MAIN CONTENT CANVAS (ml-64) ==================== -->
+<div class="flex-1 ml-64 flex flex-col min-h-screen bg-surface">
+<!-- ==================== 2. TOP PINE & IVORY BAR ==================== -->
+<header class="docked full-width top-0 sticky z-30 bg-surface/90 backdrop-blur-md border-b border-outline-variant/40 px-8 py-3.5 flex items-center justify-between shadow-[0_2px_8px_-2px_rgba(23,62,50,0.04)]">
+<!-- Breadcrumbs -->
+<div class="flex items-center gap-2 text-on-surface-variant font-label-md">
+<span class="flex items-center gap-1 text-outline hover:text-on-surface transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-[18px]">domain</span>
+<span>Không gian làm việc</span>
+</span>
+<span class="material-symbols-outlined text-[14px] text-outline">chevron_right</span>
+<span class="text-primary font-semibold">Bàn phục vụ &amp; Thiết lập vật lý</span>
+</div>
+<!-- Right System Indicators & Tab switcher -->
+<div class="flex items-center gap-4">
+<!-- View switcher Tabs -->
+<div class="bg-surface-container p-1 rounded-lg flex items-center border border-outline-variant/30 text-on-surface-variant font-label-md">
+<button class="px-3.5 py-1 rounded-md bg-surface text-primary font-semibold shadow-sm transition-all flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]">grid_view</span>
+<span>Sơ đồ bàn phục vụ</span>
+</button>
+<button class="px-3.5 py-1 rounded-md text-on-surface-variant hover:text-on-surface transition-all flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]">qr_code_scanner</span>
+<span>Mã QR tại bàn</span>
+</button>
+</div>
+<!-- Operational Readiness Pill -->
+<div class="hidden xl:flex items-center gap-2 pl-3 border-l border-outline-variant/40">
+<div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-fixed/30 border border-secondary text-primary font-label-sm">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span>Hệ thống FOH &amp; BOH Sẵn sàng</span>
+</div>
+<span class="text-[12px] font-body-sm text-on-surface-variant">Hôm nay, 14:32</span>
+</div>
+<!-- Notifications & Profile -->
+<div class="flex items-center gap-1.5 pl-2">
+<button class="p-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors relative" title="Thông báo hệ thống">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="p-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" title="Bàn &amp; Khu vực">
+<span class="material-symbols-outlined text-[20px]">table_bar</span>
+</button>
+</div>
+</div>
+</header>
+<!-- ==================== PAGE HERO & STATS OVERVIEW ==================== -->
+<main class="flex-1 px-8 py-8 space-y-8 max-w-[1440px] mx-auto w-full">
+<!-- Header & Description -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-primary/5 border border-primary/15 text-primary text-[11px] font-label-sm tracking-wider uppercase mb-2">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+              QUẢN LÝ VẬN HÀNH BÀN &amp; MÃ ĐẶT MÓN
+            </div>
+<h1 class="font-headline-display text-headline-display text-primary leading-tight font-medium">Bàn phục vụ</h1>
+<p class="font-body-md text-on-surface-variant max-w-2xl mt-1">
+              Thiết lập danh sách bàn vật lý, khu vực bố trí và tạo mã QR gọi món tự phục vụ cho khách qua thiết bị di động.
+            </p>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-4 py-2.5 rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface hover:bg-surface-container font-label-md flex items-center gap-2 transition-all shadow-[0_2px_8px_-2px_rgba(23,62,50,0.04)] active:scale-[0.98]">
+<span class="material-symbols-outlined text-[18px]">download</span>
+<span>Xuất danh sách</span>
+</button>
+<button class="px-4 py-2.5 rounded-lg bg-primary text-on-primary font-label-lg flex items-center gap-2 hover:bg-primary-container transition-all active:scale-[0.98] shadow-sm">
+<span class="material-symbols-outlined text-[18px] text-secondary-fixed">add_circle</span>
+<span>Thêm bàn mới</span>
+</button>
+</div>
+</div>
+<!-- Metric Summary Bento Cards (4 Cards) -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Card 1 -->
+<div class="p-5 rounded-xl bg-surface-container-lowest border border-outline-variant/60 shadow-[0_2px_8px_-2px_rgba(23,62,50,0.04)] relative overflow-hidden group hover:border-primary/40 transition-all">
+<div class="flex items-center justify-between text-on-surface-variant mb-3">
+<span class="font-label-sm uppercase tracking-wider text-[11px]">Tổng số bàn</span>
+<span class="p-2 rounded-lg bg-surface-container text-primary">
+<span class="material-symbols-outlined text-[18px]">table_restaurant</span>
+</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="text-3xl font-headline-display font-medium text-primary">10</span>
+<span class="font-label-md text-on-surface-variant">bàn vật lý</span>
+</div>
+<div class="mt-2 text-[12px] font-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-primary">groups</span>
+<span>Sức chứa tối đa: <strong class="text-on-surface font-semibold">40 khách</strong></span>
+</div>
+<div class="absolute bottom-0 left-0 right-0 h-1 bg-primary"></div>
+</div>
+<!-- Card 2 -->
+<div class="p-5 rounded-xl bg-surface-container-lowest border border-outline-variant/60 shadow-[0_2px_8px_-2px_rgba(23,62,50,0.04)] relative overflow-hidden group hover:border-secondary/40 transition-all">
+<div class="flex items-center justify-between text-on-surface-variant mb-3">
+<span class="font-label-sm uppercase tracking-wider text-[11px]">Sẵn sàng phục vụ</span>
+<span class="p-2 rounded-lg bg-secondary-fixed/30 text-secondary">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="text-3xl font-headline-display font-medium text-secondary">09</span>
+<span class="font-label-md text-on-surface-variant">bàn hoạt động</span>
+</div>
+<div class="mt-2 text-[12px] font-body-sm text-secondary flex items-center gap-1 font-medium">
+<span class="material-symbols-outlined text-[14px]">bolt</span>
+<span>Tỉ lệ khả dụng: 90% sàn phục vụ</span>
+</div>
+<div class="absolute bottom-0 left-0 right-0 h-1 bg-secondary"></div>
+</div>
+<!-- Card 3 -->
+<div class="p-5 rounded-xl bg-surface-container-lowest border border-outline-variant/60 shadow-[0_2px_8px_-2px_rgba(23,62,50,0.04)] relative overflow-hidden group hover:border-error/40 transition-all">
+<div class="flex items-center justify-between text-on-surface-variant mb-3">
+<span class="font-label-sm uppercase tracking-wider text-[11px]">Tạm ngưng hoạt động</span>
+<span class="p-2 rounded-lg bg-surface-container text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">build_circle</span>
+</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="text-3xl font-headline-display font-medium text-on-surface">01</span>
+<span class="font-label-md text-outline">bàn cần kiểm tra</span>
+</div>
+<div class="mt-2 text-[12px] font-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-outline">info</span>
+<span>Bàn 08 • Khu vực ngoài trời</span>
+</div>
+<div class="absolute bottom-0 left-0 right-0 h-1 bg-outline"></div>
+</div>
+<!-- Card 4 -->
+<div class="p-5 rounded-xl bg-surface-container-lowest border border-outline-variant/60 shadow-[0_2px_8px_-2px_rgba(23,62,50,0.04)] relative overflow-hidden group hover:border-primary/40 transition-all">
+<div class="flex items-center justify-between text-on-surface-variant mb-3">
+<span class="font-label-sm uppercase tracking-wider text-[11px]">Mã QR Đã Mã Hoá</span>
+<span class="p-2 rounded-lg bg-primary/10 text-primary">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="text-3xl font-headline-display font-medium text-primary">10/10</span>
+<span class="font-label-md text-on-surface-variant">Token an toàn</span>
+</div>
+<div class="mt-2 text-[12px] font-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-primary">lock_clock</span>
+<span>Định danh /t/public-token</span>
+</div>
+<div class="absolute bottom-0 left-0 right-0 h-1 bg-secondary-fixed"></div>
+</div>
+</div>
+<!-- ==================== 4. TOOLBAR & CONTROLS ==================== -->
+<div class="p-4 rounded-xl bg-surface-container-lowest border border-outline-variant/60 shadow-[0_2px_8px_-2px_rgba(23,62,50,0.04)] flex flex-col lg:flex-row items-center justify-between gap-4">
+<!-- Search & Filter Cluster -->
+<div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+<!-- Search Input -->
+<div class="relative w-full sm:w-72">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span>
+<input class="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-outline-variant/70 bg-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-outline/70 transition-colors" placeholder="Tìm theo tên bàn, khu vực..." type="text"/>
+</div>
+<!-- Filter Pills -->
+<div class="flex items-center gap-1.5 overflow-x-auto py-1">
+<button class="px-3 py-1.5 rounded-full text-xs font-label-md bg-primary text-on-primary font-medium shadow-sm">
+                Tất cả (10)
+              </button>
+<button class="px-3 py-1.5 rounded-full text-xs font-label-md bg-surface text-on-surface-variant border border-outline-variant/50 hover:bg-surface-container transition-colors">
+                Sẵn sàng (9)
+              </button>
+<button class="px-3 py-1.5 rounded-full text-xs font-label-md bg-surface text-on-surface-variant border border-outline-variant/50 hover:bg-surface-container transition-colors">
+                Tạm ngưng (1)
+              </button>
+<button class="px-3 py-1.5 rounded-full text-xs font-label-md bg-surface text-on-surface-variant border border-outline-variant/50 hover:bg-surface-container transition-colors">
+                Sảnh chính
+              </button>
+<button class="px-3 py-1.5 rounded-full text-xs font-label-md bg-surface text-on-surface-variant border border-outline-variant/50 hover:bg-surface-container transition-colors">
+                Sân vườn
+              </button>
+</div>
+</div>
+<!-- Actions Cluster -->
+<div class="flex items-center gap-2.5 w-full lg:w-auto justify-end">
+<!-- Print QR Sheet Button -->
+<button class="px-3.5 py-2 rounded-lg border border-outline-variant bg-surface text-primary hover:bg-surface-container font-label-md flex items-center gap-2 transition-all shadow-sm">
+<span class="material-symbols-outlined text-[18px]">print</span>
+<span>In toàn bộ mã QR (A4)</span>
+</button>
+<!-- Quick View Toggle -->
+<div class="flex items-center p-1 rounded-lg border border-outline-variant/50 bg-surface">
+<button class="p-1 rounded text-primary bg-surface-container-lowest shadow-sm" title="Xem dạng lưới">
+<span class="material-symbols-outlined text-[18px]">grid_view</span>
+</button>
+<button class="p-1 rounded text-outline hover:text-on-surface" title="Xem danh sách bảng">
+<span class="material-symbols-outlined text-[18px]">format_list_bulleted</span>
+</button>
+</div>
+</div>
+</div>
+<!-- ==================== 5. TABLES GRID (Bàn 01 -> Bàn 10) ==================== -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5">
+<!-- TABLE 01 -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant/70 p-5 shadow-[0_2px_8px_-2px_rgba(23,62,50,0.04)] hover:shadow-[0_8px_24px_-4px_rgba(23,62,50,0.08)] transition-all flex flex-col justify-between group">
+<div>
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center gap-2">
+<h3 class="font-headline-display text-2xl font-medium text-primary">Bàn 01</h3>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-label-sm bg-secondary-fixed/40 text-primary border border-secondary/30">
+                      Sẵn sàng
+                    </span>
+</div>
+<p class="font-body-sm text-[12px] text-on-surface-variant mt-0.5 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">chair</span> Sức chứa: 4 khách
+                  </p>
+</div>
+<button class="text-outline hover:text-on-surface p-1 rounded-md hover:bg-surface-container transition-colors" title="Thao tác khác">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</div>
+<!-- Zone & Token Pill -->
+<div class="mt-4 p-3 rounded-lg bg-surface border border-outline-variant/40 space-y-2">
+<div class="flex items-center justify-between text-xs font-body-sm">
+<span class="text-on-surface-variant">Khu vực vật lý:</span>
+<span class="font-semibold text-primary">Sảnh chính (Tầng 1)</span>
+</div>
+<div class="flex items-center justify-between text-xs font-body-sm">
+<span class="text-on-surface-variant">Mã định danh URL:</span>
+<span class="font-mono text-[11px] px-1.5 py-0.5 rounded bg-surface-container text-primary font-medium">/t/df_b01_7k9a</span>
+</div>
+</div>
+<!-- Miniature QR Visual preview -->
+<div class="mt-4 flex items-center gap-3">
+<div class="w-14 h-14 rounded-lg border border-outline-variant/50 p-1 bg-surface-container-lowest flex items-center justify-center shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-primary text-[42px]">qr_code_2</span>
+</div>
+<div class="flex flex-col text-xs text-on-surface-variant">
+<span class="font-label-md text-on-surface">Mã QR hợp lệ</span>
+<span class="text-[11px] text-outline">Tạo lúc: 12/04/2025</span>
+<a class="text-primary hover:underline text-[11px] font-medium mt-0.5" href="#preview">Mở liên kết thử nghiệm →</a>
+</div>
+</div>
+</div>
+<!-- Actions footer -->
+<div class="mt-5 pt-3 border-t border-outline-variant/30 flex items-center justify-between gap-2">
+<button class="flex-1 py-1.5 px-2.5 rounded-lg border border-outline-variant/60 hover:bg-surface-container text-xs font-label-md text-primary flex items-center justify-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-[16px]">qr_code</span>
+<span>Xem mã</span>
+</button>
+<button class="flex-1 py-1.5 px-2.5 rounded-lg border border-outline-variant/60 hover:bg-surface-container text-xs font-label-md text-on-surface flex items-center justify-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-[16px]">edit</span>
+<span>Chỉnh sửa</span>
+</button>
+<button class="p-1.5 rounded-lg border border-outline-variant/60 hover:bg-error-container text-outline hover:text-error transition-colors" title="Đổi mã QR mới">
+<span class="material-symbols-outlined text-[16px]">cached</span>
+</button>
+</div>
+</div>
+<!-- TABLE 02 -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant/70 p-5 shadow-[0_2px_8px_-2px_rgba(23,62,50,0.04)] hover:shadow-[0_8px_24px_-4px_rgba(23,62,50,0.08)] transition-all flex flex-col justify-between group">
+<div>
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center gap-2">
+<h3 class="font-headline-display text-2xl font-medium text-primary">Bàn 02</h3>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-label-sm bg-secondary-fixed/40 text-primary border border-secondary/30">
+                      Sẵn sàng
+                    </span>
+</div>
+<p class="font-body-sm text-[12px] text-on-surface-variant mt-0.5 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">chair</span> Sức chứa: 4 khách
+                  </p>
+</div>
+<button class="text-outline hover:text-on-surface p-1 rounded-md hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</div>
+<div class="mt-4 p-3 rounded-lg bg-surface border border-outline-variant/40 space-y-2">
+<div class="flex items-center justify-between text-xs font-body-sm">
+<span class="text-on-surface-variant">Khu vực vật lý:</span>
+<span class="font-semibold text-primary">Sảnh chính (Tầng 1)</span>
+</div>
+<div class="flex items-center justify-between text-xs font-body-sm">
+<span class="text-on-surface-variant">Mã định danh URL:</span>
+<span class="font-mono text-[11px] px-1.5 py-0.5 rounded bg-surface-container text-primary font-medium">/t/df_b02_3m8x</span>
+</div>
+</div>
+<div class="mt-4 flex items-center gap-3">
+<div class="w-14 h-14 rounded-lg border border-outline-variant/50 p-1 bg-surface-container-lowest flex items-center justify-center shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-primary text-[42px]">qr_code_2</span>
+</div>
+<div class="flex flex-col text-xs text-on-surface-variant">
+<span class="font-label-md text-on-surface">Mã QR hợp lệ</span>
+<span class="text-[11px] text-outline">Tạo lúc: 12/04/2025</span>
+<a class="text-primary hover:underline text-[11px] font-medium mt-0.5" href="#preview">Mở liên kết thử nghiệm →</a>
+</div>
+</div>
+</div>
+<div class="mt-5 pt-3 border-t border-outline-variant/30 flex items-center justify-between gap-2">
+<button class="flex-1 py-1.5 px-2.5 rounded-lg border border-outline-variant/60 hover:bg-surface-container text-xs font-label-md text-primary flex items-center justify-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-[16px]">qr_code</span>
+<span>Xem mã</span>
+</button>
+<button class="flex-1 py-1.5 px-2.5 rounded-lg border border-outline-variant/60 hover:bg-surface-container text-xs font-label-md text-on-surface flex items-center justify-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-[16px]">edit</span>
+<span>Chỉnh sửa</span>
+</button>
+<button class="p-1.5 rounded-lg border border-outline-variant/60 hover:bg-error-container text-outline hover:text-error transition-colors" title="Đổi mã QR mới">
+<span class="material-symbols-outlined text-[16px]">cached</span>
+</button>
+</div>
+</div>
+<!-- TABLE 03 (FOCUS CARD MATCHING THE DRAWER) -->
+<div class="bg-surface-container-lowest rounded-xl border-2 border-primary p-5 shadow-[0_8px_24px_-4px_rgba(23,62,50,0.12)] flex flex-col justify-between group relative">
+<span class="absolute -top-3 left-4 px-2 py-0.5 bg-primary text-secondary-fixed text-[10px] font-label-sm uppercase rounded tracking-wider">Đang chỉnh sửa</span>
+<div>
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center gap-2">
+<h3 class="font-headline-display text-2xl font-medium text-primary">Bàn 03</h3>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-label-sm bg-secondary-fixed/40 text-primary border border-secondary/30">
+                      Sẵn sàng
+                    </span>
+</div>
+<p class="font-body-sm text-[12px] text-on-surface-variant mt-0.5 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">chair</span> Sức chứa: 4 khách
+                  </p>
+</div>
+<button class="text-outline hover:text-on-surface p-1 rounded-md hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</div>
+<div class="mt-4 p-3 rounded-lg bg-surface border border-outline-variant/40 space-y-2">
+<div class="flex items-center justify-between text-xs font-body-sm">
+<span class="text-on-surface-variant">Khu vực vật lý:</span>
+<span class="font-semibold text-primary">Cửa sổ hoa đăng</span>
+</div>
+<div class="flex items-center justify-between text-xs font-body-sm">
+<span class="text-on-surface-variant">Mã định danh URL:</span>
+<span class="font-mono text-[11px] px-1.5 py-0.5 rounded bg-secondary-fixed/30 text-primary font-semibold">/t/df_b03_a89c</span>
+</div>
+</div>
+<div class="mt-4 flex items-center gap-3">
+<div class="w-14 h-14 rounded-lg border border-primary/30 p-1 bg-surface-container-lowest flex items-center justify-center shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-primary text-[42px]">qr_code_2</span>
+</div>
+<div class="flex flex-col text-xs text-on-surface-variant">
+<span class="font-label-md text-primary font-semibold">Mã QR hoạt động tốt</span>
+<span class="text-[11px] text-outline">Tạo lúc: 12/04/2025</span>
+<a class="text-primary hover:underline text-[11px] font-medium mt-0.5" href="#preview">Mở liên kết thử nghiệm →</a>
+</div>
+</div>
+</div>
+<div class="mt-5 pt-3 border-t border-outline-variant/30 flex items-center justify-between gap-2">
+<button class="flex-1 py-1.5 px-2.5 rounded-lg bg-primary text-on-primary text-xs font-label-md flex items-center justify-center gap-1.5 shadow-sm">
+<span class="material-symbols-outlined text-[16px]">qr_code</span>
+<span>Xem chi tiết</span>
+</button>
+<button class="flex-1 py-1.5 px-2.5 rounded-lg border border-primary text-primary hover:bg-surface-container text-xs font-label-md flex items-center justify-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-[16px]">edit</span>
+<span>Mở Drawer</span>
+</button>
+<button class="p-1.5 rounded-lg border border-outline-variant/60 hover:bg-error-container text-outline hover:text-error transition-colors" title="Đổi mã QR mới">
+<span class="material-symbols-outlined text-[16px]">cached</span>
+</button>
+</div>
+</div>
+<!-- TABLE 04 -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant/70 p-5 shadow-[0_2px_8px_-2px_rgba(23,62,50,0.04)] hover:shadow-[0_8px_24px_-4px_rgba(23,62,50,0.08)] transition-all flex flex-col justify-between group">
+<div>
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center gap-2">
+<h3 class="font-headline-display text-2xl font-medium text-primary">Bàn 04</h3>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-label-sm bg-secondary-fixed/40 text-primary border border-secondary/30">
+                      Sẵn sàng
+                    </span>
+</div>
+<p class="font-body-sm text-[12px] text-on-surface-variant mt-0.5 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">chair</span> Sức chứa: 4 khách
+                  </p>
+</div>
+<button class="text-outline hover:text-on-surface p-1 rounded-md hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</div>
+<div class="mt-4 p-3 rounded-lg bg-surface border border-outline-variant/40 space-y-2">
+<div class="flex items-center justify-between text-xs font-body-sm">
+<span class="text-on-surface-variant">Khu vực vật lý:</span>
+<span class="font-semibold text-primary">Cửa sổ hoa đăng</span>
+</div>
+<div class="flex items-center justify-between text-xs font-body-sm">
+<span class="text-on-surface-variant">Mã định danh URL:</span>
+<span class="font-mono text-[11px] px-1.5 py-0.5 rounded bg-surface-container text-primary font-medium">/t/df_b04_p3w1</span>
+</div>
+</div>
+<div class="mt-4 flex items-center gap-3">
+<div class="w-14 h-14 rounded-lg border border-outline-variant/50 p-1 bg-surface-container-lowest flex items-center justify-center shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-primary text-[42px]">qr_code_2</span>
+</div>
+<div class="flex flex-col text-xs text-on-surface-variant">
+<span class="font-label-md text-on-surface">Mã QR hợp lệ</span>
+<span class="text-[11px] text-outline">Tạo lúc: 12/04/2025</span>
+<a class="text-primary hover:underline text-[11px] font-medium mt-0.5" href="#preview">Mở liên kết thử nghiệm →</a>
+</div>
+</div>
+</div>
+<div class="mt-5 pt-3 border-t border-outline-variant/30 flex items-center justify-between gap-2">
+<button class="flex-1 py-1.5 px-2.5 rounded-lg border border-outline-variant/60 hover:bg-surface-container text-xs font-label-md text-primary flex items-center justify-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-[16px]">qr_code</span>
+<span>Xem mã</span>
+</button>
+<button class="flex-1 py-1.5 px-2.5 rounded-lg border border-outline-variant/60 hover:bg-surface-container text-xs font-label-md text-on-surface flex items-center justify-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-[16px]">edit</span>
+<span>Chỉnh sửa</span>
+</button>
+<button class="p-1.5 rounded-lg border border-outline-variant/60 hover:bg-error-container text-outline hover:text-error transition-colors">
+<span class="material-symbols-outlined text-[16px]">cached</span>
+</button>
+</div>
+</div>
+<!-- TABLE 05 -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant/70 p-5 shadow-[0_2px_8px_-2px_rgba(23,62,50,0.04)] hover:shadow-[0_8px_24px_-4px_rgba(23,62,50,0.08)] transition-all flex flex-col justify-between group">
+<div>
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center gap-2">
+<h3 class="font-headline-display text-2xl font-medium text-primary">Bàn 05</h3>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-label-sm bg-secondary-fixed/40 text-primary border border-secondary/30">
+                      Sẵn sàng
+                    </span>
+</div>
+<p class="font-body-sm text-[12px] text-on-surface-variant mt-0.5 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">chair</span> Sức chứa: 4 khách
+                  </p>
+</div>
+<button class="text-outline hover:text-on-surface p-1 rounded-md hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</div>
+<div class="mt-4 p-3 rounded-lg bg-surface border border-outline-variant/40 space-y-2">
+<div class="flex items-center justify-between text-xs font-body-sm">
+<span class="text-on-surface-variant">Khu vực vật lý:</span>
+<span class="font-semibold text-primary">Sảnh chính (Tầng 1)</span>
+</div>
+<div class="flex items-center justify-between text-xs font-body-sm">
+<span class="text-on-surface-variant">Mã định danh URL:</span>
+<span class="font-mono text-[11px] px-1.5 py-0.5 rounded bg-surface-container text-primary font-medium">/t/df_b05_9t6q</span>
+</div>
+</div>
+<div class="mt-4 flex items-center gap-3">
+<div class="w-14 h-14 rounded-lg border border-outline-variant/50 p-1 bg-surface-container-lowest flex items-center justify-center shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-primary text-[42px]">qr_code_2</span>
+</div>
+<div class="flex flex-col text-xs text-on-surface-variant">
+<span class="font-label-md text-on-surface">Mã QR hợp lệ</span>
+<span class="text-[11px] text-outline">Tạo lúc: 12/04/2025</span>
+<a class="text-primary hover:underline text-[11px] font-medium mt-0.5" href="#preview">Mở liên kết thử nghiệm →</a>
+</div>
+</div>
+</div>
+<div class="mt-5 pt-3 border-t border-outline-variant/30 flex items-center justify-between gap-2">
+<button class="flex-1 py-1.5 px-2.5 rounded-lg border border-outline-variant/60 hover:bg-surface-container text-xs font-label-md text-primary flex items-center justify-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-[16px]">qr_code</span>
+<span>Xem mã</span>
+</button>
+<button class="flex-1 py-1.5 px-2.5 rounded-lg border border-outline-variant/60 hover:bg-surface-container text-xs font-label-md text-on-surface flex items-center justify-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-[16px]">edit</span>
+<span>Chỉnh sửa</span>
+</button>
+<button class="p-1.5 rounded-lg border border-outline-variant/60 hover:bg-error-container text-outline hover:text-error transition-colors">
+<span class="material-symbols-outlined text-[16px]">cached</span>
+</button>
+</div>
+</div>
+<!-- TABLE 06 -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant/70 p-5 shadow-[0_2px_8px_-2px_rgba(23,62,50,0.04)] hover:shadow-[0_8px_24px_-4px_rgba(23,62,50,0.08)] transition-all flex flex-col justify-between group">
+<div>
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center gap-2">
+<h3 class="font-headline-display text-2xl font-medium text-primary">Bàn 06</h3>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-label-sm bg-secondary-fixed/40 text-primary border border-secondary/30">
+                      Sẵn sàng
+                    </span>
+</div>
+<p class="font-body-sm text-[12px] text-on-surface-variant mt-0.5 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">chair</span> Sức chứa: 4 khách
+                  </p>
+</div>
+<button class="text-outline hover:text-on-surface p-1 rounded-md hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</div>
+<div class="mt-4 p-3 rounded-lg bg-surface border border-outline-variant/40 space-y-2">
+<div class="flex items-center justify-between text-xs font-body-sm">
+<span class="text-on-surface-variant">Khu vực vật lý:</span>
+<span class="font-semibold text-primary">Sân vườn ngoài trời</span>
+</div>
+<div class="flex items-center justify-between text-xs font-body-sm">
+<span class="text-on-surface-variant">Mã định danh URL:</span>
+<span class="font-mono text-[11px] px-1.5 py-0.5 rounded bg-surface-container text-primary font-medium">/t/df_b06_6x2d</span>
+</div>
+</div>
+<div class="mt-4 flex items-center gap-3">
+<div class="w-14 h-14 rounded-lg border border-outline-variant/50 p-1 bg-surface-container-lowest flex items-center justify-center shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-primary text-[42px]">qr_code_2</span>
+</div>
+<div class="flex flex-col text-xs text-on-surface-variant">
+<span class="font-label-md text-on-surface">Mã QR hợp lệ</span>
+<span class="text-[11px] text-outline">Tạo lúc: 12/04/2025</span>
+<a class="text-primary hover:underline text-[11px] font-medium mt-0.5" href="#preview">Mở liên kết thử nghiệm →</a>
+</div>
+</div>
+</div>
+<div class="mt-5 pt-3 border-t border-outline-variant/30 flex items-center justify-between gap-2">
+<button class="flex-1 py-1.5 px-2.5 rounded-lg border border-outline-variant/60 hover:bg-surface-container text-xs font-label-md text-primary flex items-center justify-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-[16px]">qr_code</span>
+<span>Xem mã</span>
+</button>
+<button class="flex-1 py-1.5 px-2.5 rounded-lg border border-outline-variant/60 hover:bg-surface-container text-xs font-label-md text-on-surface flex items-center justify-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-[16px]">edit</span>
+<span>Chỉnh sửa</span>
+</button>
+<button class="p-1.5 rounded-lg border border-outline-variant/60 hover:bg-error-container text-outline hover:text-error transition-colors">
+<span class="material-symbols-outlined text-[16px]">cached</span>
+</button>
+</div>
+</div>
+<!-- TABLE 07 -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant/70 p-5 shadow-[0_2px_8px_-2px_rgba(23,62,50,0.04)] hover:shadow-[0_8px_24px_-4px_rgba(23,62,50,0.08)] transition-all flex flex-col justify-between group">
+<div>
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center gap-2">
+<h3 class="font-headline-display text-2xl font-medium text-primary">Bàn 07</h3>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-label-sm bg-secondary-fixed/40 text-primary border border-secondary/30">
+                      Sẵn sàng
+                    </span>
+</div>
+<p class="font-body-sm text-[12px] text-on-surface-variant mt-0.5 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">chair</span> Sức chứa: 4 khách
+                  </p>
+</div>
+<button class="text-outline hover:text-on-surface p-1 rounded-md hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</div>
+<div class="mt-4 p-3 rounded-lg bg-surface border border-outline-variant/40 space-y-2">
+<div class="flex items-center justify-between text-xs font-body-sm">
+<span class="text-on-surface-variant">Khu vực vật lý:</span>
+<span class="font-semibold text-primary">Sân vườn ngoài trời</span>
+</div>
+<div class="flex items-center justify-between text-xs font-body-sm">
+<span class="text-on-surface-variant">Mã định danh URL:</span>
+<span class="font-mono text-[11px] px-1.5 py-0.5 rounded bg-surface-container text-primary font-medium">/t/df_b07_2k4m</span>
+</div>
+</div>
+<div class="mt-4 flex items-center gap-3">
+<div class="w-14 h-14 rounded-lg border border-outline-variant/50 p-1 bg-surface-container-lowest flex items-center justify-center shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-primary text-[42px]">qr_code_2</span>
+</div>
+<div class="flex flex-col text-xs text-on-surface-variant">
+<span class="font-label-md text-on-surface">Mã QR hợp lệ</span>
+<span class="text-[11px] text-outline">Tạo lúc: 12/04/2025</span>
+<a class="text-primary hover:underline text-[11px] font-medium mt-0.5" href="#preview">Mở liên kết thử nghiệm →</a>
+</div>
+</div>
+</div>
+<div class="mt-5 pt-3 border-t border-outline-variant/30 flex items-center justify-between gap-2">
+<button class="flex-1 py-1.5 px-2.5 rounded-lg border border-outline-variant/60 hover:bg-surface-container text-xs font-label-md text-primary flex items-center justify-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-[16px]">qr_code</span>
+<span>Xem mã</span>
+</button>
+<button class="flex-1 py-1.5 px-2.5 rounded-lg border border-outline-variant/60 hover:bg-surface-container text-xs font-label-md text-on-surface flex items-center justify-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-[16px]">edit</span>
+<span>Chỉnh sửa</span>
+</button>
+<button class="p-1.5 rounded-lg border border-outline-variant/60 hover:bg-error-container text-outline hover:text-error transition-colors">
+<span class="material-symbols-outlined text-[16px]">cached</span>
+</button>
+</div>
+</div>
+<!-- TABLE 08 (TẠM NGƯNG - MAINTENANCE) -->
+<div class="bg-surface-container-low rounded-xl border border-outline-variant/80 p-5 shadow-[0_2px_8px_-2px_rgba(23,62,50,0.04)] flex flex-col justify-between group opacity-90">
+<div>
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center gap-2">
+<h3 class="font-headline-display text-2xl font-medium text-on-surface">Bàn 08</h3>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-label-sm bg-surface-container-highest text-on-surface-variant border border-outline-variant">
+                      Tạm ngưng
+                    </span>
+</div>
+<p class="font-body-sm text-[12px] text-on-surface-variant mt-0.5 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">chair</span> Sức chứa: 4 khách (Bảo trì cơ sở)
+                  </p>
+</div>
+<button class="text-outline hover:text-on-surface p-1 rounded-md hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</div>
+<div class="mt-4 p-3 rounded-lg bg-surface-container border border-outline-variant/40 space-y-2">
+<div class="flex items-center justify-between text-xs font-body-sm">
+<span class="text-on-surface-variant">Khu vực vật lý:</span>
+<span class="font-medium text-on-surface">Sân vườn ngoài trời</span>
+</div>
+<div class="flex items-center justify-between text-xs font-body-sm">
+<span class="text-on-surface-variant">Trạng thái mã:</span>
+<span class="font-mono text-[11px] px-1.5 py-0.5 rounded bg-surface-dim text-on-surface-variant">Tạm ngắt tiếp nhận món</span>
+</div>
+</div>
+<div class="mt-4 flex items-center gap-3">
+<div class="w-14 h-14 rounded-lg border border-outline-variant/50 p-1 bg-surface-container flex items-center justify-center shrink-0 opacity-60">
+<span class="material-symbols-outlined text-outline text-[42px]">qr_code_2</span>
+</div>
+<div class="flex flex-col text-xs text-on-surface-variant">
+<span class="font-label-md text-outline">Đang tạm dừng</span>
+<span class="text-[11px] text-outline">Khách quét sẽ thấy thông báo</span>
+<span class="text-secondary font-medium text-[11px] mt-0.5 cursor-pointer hover:underline">Kích hoạt lại bàn →</span>
+</div>
+</div>
+</div>
+<div class="mt-5 pt-3 border-t border-outline-variant/30 flex items-center justify-between gap-2">
+<button class="flex-1 py-1.5 px-2.5 rounded-lg border border-outline-variant/60 hover:bg-surface-container text-xs font-label-md text-on-surface-variant flex items-center justify-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-[16px]">qr_code</span>
+<span>Xem mã</span>
+</button>
+<button class="flex-1 py-1.5 px-2.5 rounded-lg border border-outline-variant/60 hover:bg-surface-container text-xs font-label-md text-on-surface flex items-center justify-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-[16px]">edit</span>
+<span>Chỉnh sửa</span>
+</button>
+<button class="p-1.5 rounded-lg border border-outline-variant/60 hover:bg-surface-container text-outline transition-colors">
+<span class="material-symbols-outlined text-[16px]">play_arrow</span>
+</button>
+</div>
+</div>
+<!-- TABLE 09 -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant/70 p-5 shadow-[0_2px_8px_-2px_rgba(23,62,50,0.04)] hover:shadow-[0_8px_24px_-4px_rgba(23,62,50,0.08)] transition-all flex flex-col justify-between group">
+<div>
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center gap-2">
+<h3 class="font-headline-display text-2xl font-medium text-primary">Bàn 09</h3>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-label-sm bg-secondary-fixed/40 text-primary border border-secondary/30">
+                      Sẵn sàng
+                    </span>
+</div>
+<p class="font-body-sm text-[12px] text-on-surface-variant mt-0.5 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">chair</span> Sức chứa: 4 khách
+                  </p>
+</div>
+<button class="text-outline hover:text-on-surface p-1 rounded-md hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</div>
+<div class="mt-4 p-3 rounded-lg bg-surface border border-outline-variant/40 space-y-2">
+<div class="flex items-center justify-between text-xs font-body-sm">
+<span class="text-on-surface-variant">Khu vực vật lý:</span>
+<span class="font-semibold text-primary">Góc Trà Thất</span>
+</div>
+<div class="flex items-center justify-between text-xs font-body-sm">
+<span class="text-on-surface-variant">Mã định danh URL:</span>
+<span class="font-mono text-[11px] px-1.5 py-0.5 rounded bg-surface-container text-primary font-medium">/t/df_b09_1a5v</span>
+</div>
+</div>
+<div class="mt-4 flex items-center gap-3">
+<div class="w-14 h-14 rounded-lg border border-outline-variant/50 p-1 bg-surface-container-lowest flex items-center justify-center shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-primary text-[42px]">qr_code_2</span>
+</div>
+<div class="flex flex-col text-xs text-on-surface-variant">
+<span class="font-label-md text-on-surface">Mã QR hợp lệ</span>
+<span class="text-[11px] text-outline">Tạo lúc: 12/04/2025</span>
+<a class="text-primary hover:underline text-[11px] font-medium mt-0.5" href="#preview">Mở liên kết thử nghiệm →</a>
+</div>
+</div>
+</div>
+<div class="mt-5 pt-3 border-t border-outline-variant/30 flex items-center justify-between gap-2">
+<button class="flex-1 py-1.5 px-2.5 rounded-lg border border-outline-variant/60 hover:bg-surface-container text-xs font-label-md text-primary flex items-center justify-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-[16px]">qr_code</span>
+<span>Xem mã</span>
+</button>
+<button class="flex-1 py-1.5 px-2.5 rounded-lg border border-outline-variant/60 hover:bg-surface-container text-xs font-label-md text-on-surface flex items-center justify-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-[16px]">edit</span>
+<span>Chỉnh sửa</span>
+</button>
+<button class="p-1.5 rounded-lg border border-outline-variant/60 hover:bg-error-container text-outline hover:text-error transition-colors">
+<span class="material-symbols-outlined text-[16px]">cached</span>
+</button>
+</div>
+</div>
+<!-- TABLE 10 -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant/70 p-5 shadow-[0_2px_8px_-2px_rgba(23,62,50,0.04)] hover:shadow-[0_8px_24px_-4px_rgba(23,62,50,0.08)] transition-all flex flex-col justify-between group">
+<div>
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center gap-2">
+<h3 class="font-headline-display text-2xl font-medium text-primary">Bàn 10</h3>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-label-sm bg-secondary-fixed/40 text-primary border border-secondary/30">
+                      Sẵn sàng
+                    </span>
+</div>
+<p class="font-body-sm text-[12px] text-on-surface-variant mt-0.5 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">chair</span> Sức chứa: 4 khách
+                  </p>
+</div>
+<button class="text-outline hover:text-on-surface p-1 rounded-md hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</div>
+<div class="mt-4 p-3 rounded-lg bg-surface border border-outline-variant/40 space-y-2">
+<div class="flex items-center justify-between text-xs font-body-sm">
+<span class="text-on-surface-variant">Khu vực vật lý:</span>
+<span class="font-semibold text-primary">Góc Trà Thất</span>
+</div>
+<div class="flex items-center justify-between text-xs font-body-sm">
+<span class="text-on-surface-variant">Mã định danh URL:</span>
+<span class="font-mono text-[11px] px-1.5 py-0.5 rounded bg-surface-container text-primary font-medium">/t/df_b10_4r8k</span>
+</div>
+</div>
+<div class="mt-4 flex items-center gap-3">
+<div class="w-14 h-14 rounded-lg border border-outline-variant/50 p-1 bg-surface-container-lowest flex items-center justify-center shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-primary text-[42px]">qr_code_2</span>
+</div>
+<div class="flex flex-col text-xs text-on-surface-variant">
+<span class="font-label-md text-on-surface">Mã QR hợp lệ</span>
+<span class="text-[11px] text-outline">Tạo lúc: 12/04/2025</span>
+<a class="text-primary hover:underline text-[11px] font-medium mt-0.5" href="#preview">Mở liên kết thử nghiệm →</a>
+</div>
+</div>
+</div>
+<div class="mt-5 pt-3 border-t border-outline-variant/30 flex items-center justify-between gap-2">
+<button class="flex-1 py-1.5 px-2.5 rounded-lg border border-outline-variant/60 hover:bg-surface-container text-xs font-label-md text-primary flex items-center justify-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-[16px]">qr_code</span>
+<span>Xem mã</span>
+</button>
+<button class="flex-1 py-1.5 px-2.5 rounded-lg border border-outline-variant/60 hover:bg-surface-container text-xs font-label-md text-on-surface flex items-center justify-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-[16px]">edit</span>
+<span>Chỉnh sửa</span>
+</button>
+<button class="p-1.5 rounded-lg border border-outline-variant/60 hover:bg-error-container text-outline hover:text-error transition-colors">
+<span class="material-symbols-outlined text-[16px]">cached</span>
+</button>
+</div>
+</div>
+</div>
+<!-- ==================== 7. A4 PRINT & SECURITY REFERENCE SECTION ==================== -->
+<section class="mt-12 rounded-2xl border border-outline-variant/60 bg-surface-container-lowest p-8 shadow-[0_2px_8px_-2px_rgba(23,62,50,0.04)]">
+<div class="flex flex-col lg:flex-row items-start justify-between gap-8">
+<div class="max-w-xl space-y-4">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary-fixed/40 text-primary font-label-sm uppercase tracking-wider text-[11px]">
+<span class="material-symbols-outlined text-[15px]">print</span>
+                QUY CHUẨN IN ẤN VÀ TEM DÁN BÀN VẬT LÝ
+              </div>
+<h2 class="font-headline-display text-3xl font-medium text-primary">Mẫu tem dán mica &amp; Mã định danh an toàn</h2>
+<p class="font-body-md text-on-surface-variant">
+                Toàn bộ mã QR được tạo từ thuật toán <code class="px-1.5 py-0.5 bg-surface-container rounded font-mono text-primary text-xs">hash token ngẫu nhiên</code>. Khách quét trực tiếp không yêu cầu đăng nhập tài khoản cá nhân, mã không chứa thông tin cơ sở dữ liệu nội bộ.
+              </p>
+<div class="p-4 rounded-xl bg-surface-container border border-outline-variant/40 flex items-start gap-3">
+<span class="material-symbols-outlined text-primary text-[20px] mt-0.5">verified_user</span>
+<div class="space-y-1">
+<h4 class="font-label-md text-primary font-semibold">Cơ chế an toàn FOH DineFlow</h4>
+<p class="font-body-sm text-[12px] text-on-surface-variant">
+                    Khi nhân viên bấm <strong>"Đổi mã QR"</strong>, mã dán cũ sẽ hết hiệu lực ngay lập tức, ngăn ngừa tình trạng khách mang liên kết về nhà để gọi món trái phép.
+                  </p>
+</div>
+</div>
+<div class="flex flex-wrap items-center gap-3 pt-2">
+<button class="px-5 py-2.5 rounded-lg bg-primary text-on-primary font-label-lg flex items-center gap-2 hover:bg-primary-container transition-all shadow-sm">
+<span class="material-symbols-outlined text-[18px]">download_for_offline</span>
+<span>Tải File In A4 (PDF Vector)</span>
+</button>
+<button class="px-4 py-2.5 rounded-lg border border-outline-variant text-on-surface font-label-md hover:bg-surface-container transition-colors">
+                  Xem hướng dẫn dán thẻ NFC
+                </button>
+</div>
+</div>
+<!-- Visual Physical Sticker Preview (Realistic Table Stand / Mica Mockup) -->
+<div class="w-full lg:w-96 flex flex-col items-center">
+<span class="text-xs font-label-sm text-outline uppercase tracking-wider mb-2">Xem trước mẫu tem mica để bàn (Tỉ lệ 1:1)</span>
+<div class="w-72 bg-surface rounded-2xl border-2 border-primary/20 p-6 shadow-xl relative overflow-hidden flex flex-col items-center text-center">
+<!-- Lacquer Top Header Accent -->
+<div class="w-12 h-1 bg-secondary-fixed rounded-full mb-4"></div>
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined text-[20px]">restaurant</span>
+<span class="font-headline-display text-lg tracking-tight font-semibold">DineFlow</span>
+</div>
+<span class="text-[10px] font-label-sm uppercase tracking-widest text-outline mt-0.5">BẾP NHÀ DINEFLOW</span>
+<!-- Table Identifier on Sticker -->
+<div class="my-4 px-4 py-1.5 rounded-full bg-primary text-surface font-headline-display text-xl font-medium tracking-wide">
+                  BÀN 04
+                </div>
+<!-- High Res QR Mockup -->
+<div class="p-3 bg-white rounded-xl shadow-inner border border-outline-variant/60 my-2">
+<div class="w-36 h-36 border-2 border-primary flex items-center justify-center relative p-1">
+<span class="material-symbols-outlined text-primary text-[130px]">qr_code_2</span>
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="w-8 h-8 rounded bg-primary text-secondary-fixed flex items-center justify-center shadow">
+<span class="material-symbols-outlined text-[18px]">table_bar</span>
+</div>
+</div>
+</div>
+</div>
+<p class="font-body-sm text-[12px] text-on-surface font-medium mt-2">
+                  Quét mã để gọi món &amp; thanh toán tiện lợi
+                </p>
+<p class="font-body-sm text-[10px] text-outline mt-0.5">
+                  Wifi: BepNha_Guest • Mật khẩu: dineflow2025
+                </p>
+<div class="mt-4 pt-3 border-t border-outline-variant/40 w-full flex items-center justify-center gap-1.5 text-[9px] text-outline font-label-sm">
+<span class="material-symbols-outlined text-[12px]">security</span>
+<span>Token bảo mật: /t/df_b04_p3w1</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- ==================== 8. FOOTER ==================== -->
+<footer class="docked full-width bottom-0 bg-surface-container-low border-t border-outline-variant/30 text-on-surface-variant font-label-sm">
+<div class="flex flex-col md:flex-row justify-between items-center px-8 py-4 w-full gap-3 text-xs">
+<div class="flex items-center gap-2">
+<span class="font-headline-display text-label-md text-primary font-semibold">DineFlow</span>
+<span class="text-outline">•</span>
+<span>Nhịp phục vụ, cùng một nơi</span>
+<span class="text-outline">•</span>
+<span class="px-2 py-0.5 rounded bg-surface-container text-primary font-mono text-[11px]">v2.4.8 (Production)</span>
+</div>
+<div class="flex flex-wrap items-center gap-5 text-[11px]">
+<span class="flex items-center gap-1 text-secondary font-medium">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+              Máy chủ FOH &amp; BOH: Sẵn sàng
+            </span>
+<a class="hover:text-primary transition-colors" href="#diagnostics">Trạng thái đồng bộ máy in</a>
+<a class="hover:text-primary transition-colors" href="#audit">Nhật ký đổi mã QR</a>
+<span class="text-outline">Hotline hỗ trợ: <strong class="text-on-surface">1900 8922</strong></span>
+</div>
+</div>
+</footer>
+</div>
+<!-- ==================== 6. SLIDE-OVER DRAWER (CHỈNH SỬA BÀN 03) ==================== -->
+<!-- Simulated Open Slide-over Drawer -->
+<div class="fixed inset-y-0 right-0 max-w-full flex pl-10 z-50 pointer-events-auto" id="drawer-container">
+<!-- Backdrop Dimmer (Whisper Light 8px blur) -->
+<div class="fixed inset-0 bg-primary/20 backdrop-blur-[2px] transition-opacity cursor-pointer"></div>
+<!-- Drawer Panel -->
+<div class="relative w-screen max-w-md bg-surface-container-lowest border-l border-outline-variant shadow-[0_16px_40px_-8px_rgba(23,62,50,0.16)] flex flex-col z-10">
+<!-- Drawer Header -->
+<div class="px-6 py-5 bg-surface border-b border-outline-variant/40 flex items-center justify-between">
+<div>
+<span class="text-[11px] font-label-sm text-secondary uppercase tracking-widest">THIẾT LẬP BÀN VẬT LÝ</span>
+<h2 class="font-headline-display text-2xl font-medium text-primary mt-0.5">Chỉnh sửa: Bàn 03</h2>
+</div>
+<button class="p-2 rounded-lg text-outline hover:text-on-surface hover:bg-surface-container transition-colors" title="Đóng Drawer">
+<span class="material-symbols-outlined text-[22px]">close</span>
+</button>
+</div>
+<!-- Drawer Form Body -->
+<div class="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
+<!-- Field 1: Table Name -->
+<div class="space-y-1.5">
+<label class="block font-label-md text-xs text-on-surface uppercase tracking-wider">Tên định danh bàn *</label>
+<input class="w-full px-3.5 py-2.5 rounded-lg border border-outline-variant bg-surface-container-lowest font-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" type="text" value="Bàn 03"/>
+<span class="text-[11px] text-outline font-body-sm">Tên này hiển thị trực tiếp trên hóa đơn, KDS bếp và tem dán tại chỗ.</span>
+</div>
+<!-- Field 2: Capacity -->
+<div class="space-y-1.5">
+<label class="block font-label-md text-xs text-on-surface uppercase tracking-wider">Sức chứa tối đa (Số khách)</label>
+<div class="flex items-center gap-3">
+<div class="flex items-center border border-outline-variant rounded-lg bg-surface">
+<button class="w-10 h-10 flex items-center justify-center text-outline hover:text-primary hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[18px]">remove</span>
+</button>
+<span class="w-12 text-center font-semibold text-primary font-body-lg">4</span>
+<button class="w-10 h-10 flex items-center justify-center text-outline hover:text-primary hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[18px]">add</span>
+</button>
+</div>
+<span class="text-xs text-outline font-body-sm">ghế ngồi tiêu chuẩn</span>
+</div>
+</div>
+<!-- Field 3: Zone Selection -->
+<div class="space-y-1.5">
+<label class="block font-label-md text-xs text-on-surface uppercase tracking-wider">Khu vực / Tầng bố trí *</label>
+<select class="w-full px-3.5 py-2.5 rounded-lg border border-outline-variant bg-surface-container-lowest font-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all">
+<option selected="">Cửa sổ hoa đăng</option>
+<option>Sảnh chính (Tầng 1)</option>
+<option>Sân vườn ngoài trời</option>
+<option>Góc Trà Thất</option>
+<option>Phòng riêng VIP (Tầng 2)</option>
+</select>
+</div>
+<!-- Field 4: Status Toggle -->
+<div class="p-4 rounded-xl bg-surface border border-outline-variant/60 flex items-center justify-between">
+<div>
+<span class="font-label-md text-sm text-primary font-semibold block">Trạng thái tiếp nhận món</span>
+<span class="text-[11px] text-outline">Bật để cho phép quét mã QR đặt món trực tiếp</span>
+</div>
+<!-- Custom Toggle -->
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-dim peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
+</label>
+</div>
+<!-- Section: QR Token Preview & Management -->
+<div class="p-4 rounded-xl border border-outline-variant/60 bg-surface-container-low space-y-4">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-xs uppercase tracking-wider text-primary font-semibold flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]">qr_code_2</span>
+                MÃ QR GỌI MÓN HIỆN HÀNH
+              </span>
+<span class="px-2 py-0.5 rounded text-[10px] bg-secondary-fixed/50 text-primary font-bold">Hoạt động</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-24 h-24 bg-white p-2 rounded-lg border border-outline-variant shadow-sm flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary text-[76px]">qr_code_2</span>
+</div>
+<div class="flex-1 space-y-2 text-xs">
+<div>
+<span class="text-outline text-[11px] block">URL công khai mã hóa:</span>
+<div class="font-mono text-primary font-semibold truncate bg-surface px-2 py-1 rounded border border-outline-variant/40 mt-0.5">
+                    dineflow.vn/t/df_b03_a89c
+                  </div>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-2.5 py-1.5 rounded bg-surface border border-outline-variant text-[11px] font-label-md hover:bg-surface-container transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">download</span>
+                    PNG
+                  </button>
+<button class="px-2.5 py-1.5 rounded bg-surface border border-outline-variant text-[11px] font-label-md hover:bg-surface-container transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">download</span>
+                    SVG
+                  </button>
+<button class="p-1.5 rounded bg-surface border border-outline-variant text-outline hover:text-primary transition-colors" title="Sao chép liên kết">
+<span class="material-symbols-outlined text-[14px]">content_copy</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Warning Alert Box -->
+<div class="p-3 rounded-lg bg-surface border border-outline-variant/60 flex items-start gap-2.5">
+<span class="material-symbols-outlined text-outline text-[18px] shrink-0 mt-0.5">info</span>
+<p class="text-[11px] text-on-surface-variant leading-relaxed">
+                Khi cần thu hồi bàn hoặc đổi tem mới, chọn nút <strong>Cấp lại mã QR</strong> bên dưới. Mã QR cũ sẽ lập tức vô hiệu hóa.
+              </p>
+</div>
+<button class="w-full py-2 px-3 rounded-lg border border-error/30 text-error hover:bg-error-container/40 text-xs font-label-md flex items-center justify-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-[16px]">refresh</span>
+<span>Cấp lại mã QR mới (Thu hồi mã cũ)</span>
+</button>
+</div>
+</div>
+<!-- Drawer Actions Footer -->
+<div class="p-5 bg-surface border-t border-outline-variant/40 flex items-center justify-end gap-3">
+<button class="px-4 py-2.5 rounded-lg border border-outline-variant text-on-surface-variant hover:text-on-surface hover:bg-surface-container font-label-md transition-colors">
+            Hủy thao tác
+          </button>
+<button class="px-5 py-2.5 rounded-lg bg-primary text-on-primary font-label-lg hover:bg-primary-container transition-all shadow-sm active:scale-[0.98]">
+            Lưu thay đổi bàn
+          </button>
+</div>
+</div>
+</div>
+</div>
+</body></html>
