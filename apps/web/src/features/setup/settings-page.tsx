@@ -25,10 +25,10 @@ import { ImageUpload } from './image-upload';
 
 function SettingsForm({ restaurant, close }: { restaurant: RestaurantInput; close: () => void }) {
   const [uploading, setUploading] = useState(false);
-  const { name, address, phone, logoUrl, timezone, serviceChargeBps, taxBps } = restaurant;
+  const { name, address, phone, logoUrl, timezone, serviceChargeBps, taxBps, cashierMaxDiscountBps } = restaurant;
   const form = useForm<RestaurantInput>({
     resolver: zodResolver(restaurantInputSchema),
-    defaultValues: { name, address, phone, logoUrl, timezone, serviceChargeBps, taxBps },
+    defaultValues: { name, address, phone, logoUrl, timezone, serviceChargeBps, taxBps, cashierMaxDiscountBps: cashierMaxDiscountBps ?? 0 },
   });
   const {
     register,
@@ -68,6 +68,7 @@ function SettingsForm({ restaurant, close }: { restaurant: RestaurantInput; clos
           [
             { key: 'serviceChargeBps', label: 'Phí dịch vụ (%)' },
             { key: 'taxBps', label: 'Thuế (%)' },
+            { key: 'cashierMaxDiscountBps', label: 'Thu ngân giảm giá tối đa (%)' },
           ] as const
         ).map(({ key, label }) => (
           <Field key={key} label={label} error={errors[key]?.message}>
@@ -83,7 +84,7 @@ function SettingsForm({ restaurant, close }: { restaurant: RestaurantInput; clos
                   name={field.name}
                   ref={field.ref}
                   onBlur={field.onBlur}
-                  value={Number.isNaN(field.value) ? '' : field.value / 100}
+                  value={Number.isNaN(field.value) ? '' : (field.value ?? 0) / 100}
                   onChange={(event) =>
                     field.onChange(
                       event.target.value === ''
@@ -165,6 +166,7 @@ export function SettingsPage() {
                       ['Múi giờ', restaurant.timezone],
                       ['Phí dịch vụ', `${restaurant.serviceChargeBps / 100}%`],
                       ['Thuế', `${restaurant.taxBps / 100}%`],
+                      ['Hạn mức giảm giá thu ngân', `${restaurant.cashierMaxDiscountBps / 100}% tiền món`],
                     ],
                   },
                 ].map((group) => (

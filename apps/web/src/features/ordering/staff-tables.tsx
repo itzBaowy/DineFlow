@@ -196,6 +196,9 @@ function TableCard({ table, openDetail }: { table: SessionTable; openDetail: () 
             Xem đơn của phiên
           </Button>
         )}
+        {table.session && (
+          <Button asChild variant="outline" className="w-full"><Link href={`/staff/cashier/${table.session.id}`}>Xem hóa đơn</Link></Button>
+        )}
         {table.session?.status === 'OPEN' && table.session.orderCount === 0 && canClose && (
           <Button variant="ghost" className="w-full" onClick={() => setClosing(true)}>
             Đóng phiên chưa có đơn

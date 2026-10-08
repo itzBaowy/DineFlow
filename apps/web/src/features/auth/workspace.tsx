@@ -77,6 +77,7 @@ export function Workspace({ children }: { children: React.ReactNode }) {
           { href: '/staff/tables', title: 'Phiên bàn', icon: Armchair },
           { href: '/staff/orders', title: 'Đơn gọi món', icon: ClipboardList },
           { href: '/staff/requests', title: 'Yêu cầu phục vụ', icon: Bell },
+          { href: '/staff/cashier', title: 'Thu ngân', icon: Receipt },
         ]
       : []),
     ...(['OWNER', 'MANAGER', 'KITCHEN'].includes(staff.role)
@@ -134,7 +135,7 @@ export function Workspace({ children }: { children: React.ReactNode }) {
         <p className="mb-3 px-3 text-[9px] font-semibold tracking-[0.15em] text-muted-foreground">
           SẮP RA MẮT
         </p>
-        {[{ icon: Receipt, title: 'Thu ngân' }].map(({ icon: Icon, title }) => (
+        {[{ icon: Receipt, title: 'Báo cáo' }].map(({ icon: Icon, title }) => (
           <div
             key={title}
             className="flex h-10 items-center gap-3 px-3 text-xs text-muted-foreground/70"

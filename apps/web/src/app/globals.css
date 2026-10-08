@@ -56,4 +56,8 @@ button:not(:disabled), a { cursor: pointer; }
   [data-print-label] { break-inside: avoid; border: 1px solid #d4d8d1; box-shadow: none; }
   [data-print-selected="false"] { display: none; }
   [data-print-sheet] .print\:hidden { display: none; }
+  @page receipt { size: A5; margin: 10mm; }
+  [data-print-hide], [data-live-connected] { display: none !important; }
+  [data-receipt] { page: receipt; border: 0 !important; padding: 0 !important; }
+  [data-receipt] article { break-inside: avoid; }
 }

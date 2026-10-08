@@ -203,6 +203,7 @@ function CustomerSession({
           </Link>
         </Button>
       </header>
+      {guest && <nav className="mt-4 flex flex-wrap gap-3 text-xs" aria-label="Lượt phục vụ"><Link className="font-semibold text-primary underline underline-offset-4" href={`/t/${code}/bill`}>Hóa đơn tạm tính</Link></nav>}
       {guest && menu.diningSessionId && (
         <LiveSync key={guest.id} ticketPath={`${path}/realtime-ticket`} />
       )}
