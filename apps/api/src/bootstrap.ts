@@ -27,7 +27,7 @@ export async function createApp(logger: false | undefined = undefined) {
   app.setGlobalPrefix('api/v1');
   app.useGlobalFilters(new HttpExceptionFilter());
   if (config.NODE_ENV !== 'production') {
-    const document = SwaggerModule.createDocument(app, new DocumentBuilder().setTitle('DineFlow API').setDescription('Phase 1 — auth, health, restaurant foundation').setVersion('0.1.0').addCookieAuth('df_access').build());
+    const document = SwaggerModule.createDocument(app, new DocumentBuilder().setTitle('DineFlow API').setDescription('Staff auth, restaurant setup, tables/QR, menu and image storage').setVersion('0.2.0').addCookieAuth('df_access').build());
     SwaggerModule.setup('api/docs', app, document, { swaggerOptions: { withCredentials: true } });
   }
   app.enableShutdownHooks();

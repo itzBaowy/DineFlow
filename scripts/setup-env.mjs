@@ -2,7 +2,12 @@ import { randomBytes } from 'node:crypto';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 
 if (existsSync('.env')) {
-  console.log('.env đã tồn tại, giữ nguyên cấu hình.');
+  const existing = readFileSync('.env', 'utf8');
+  const value = key => existing.match(new RegExp(`^${key}=(.*)$`, 'm'))?.[1]?.trim();
+  const additions = { S3_REGION: 'us-east-1', S3_AUTO_CREATE_BUCKET: 'true', S3_ACCESS_KEY_ID: value('MINIO_ROOT_USER'), S3_SECRET_ACCESS_KEY: value('MINIO_ROOT_PASSWORD') };
+  const missing = Object.entries(additions).filter(([key, content]) => value(key) === undefined && content !== undefined);
+  if (missing.length) writeFileSync('.env', existing.trimEnd() + '\n' + missing.map(([key, content]) => `${key}=${content}`).join('\n') + '\n', { mode: 0o600 });
+  console.log('.env đã tồn tại; giữ nguyên giá trị cũ, chỉ bổ sung cấu hình S3 còn thiếu từ MinIO local.');
 } else {
   const dbPassword = randomBytes(24).toString('hex');
   const values = {
