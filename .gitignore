@@ -6,6 +6,7 @@ dist/
 .next/
 coverage/
 *.tsbuildinfo
+next-env.d.ts
 apps/api/src/generated/
 playwright-report/
 test-results/
