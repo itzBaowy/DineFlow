@@ -196,6 +196,10 @@ test('mobile setup stays within viewport and public QR context reveals no sessio
     .first()
     .getAttribute('href');
   await page.goto(url!);
-  await expect(page.getByRole('heading', { name: 'Chào mừng bạn đến bàn' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /Một bữa ngon/ })).toBeVisible();
+  await expect(page.getByRole('button', { name: /^Chọn / }).first()).toBeDisabled();
   await page.screenshot({ path: resolve(qaDir, 'public-table-mobile.png'), fullPage: true });
+  await page.getByRole('link', { name: 'Đơn đã đặt', exact: true }).click();
+  await expect(page.getByText('Bắt đầu gọi món tại bàn để xem đơn của bạn.', { exact: true })).toBeVisible();
+  await expect(page.locator('article')).toHaveCount(0);
 });

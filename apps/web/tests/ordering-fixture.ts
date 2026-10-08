@@ -17,7 +17,7 @@ export async function orderingFixture() {
   const db = new PrismaService({ DATABASE_URL: process.env.DATABASE_URL });
   const suffix = randomUUID(),
     restaurantId = randomUUID(),
-    userIds = [randomUUID(), randomUUID()];
+    userIds = Array.from({ length: 5 }, () => randomUUID());
   const slug = `e2e-ordering-${suffix}`,
     password = randomBytes(24).toString('base64url');
   async function cleanup() {
@@ -53,7 +53,7 @@ export async function orderingFixture() {
     });
     const passwordHash = await hashPassword(password);
     const users = await Promise.all(
-      (['OWNER', 'WAITER'] as const).map((role, index) =>
+      (['OWNER', 'WAITER', 'MANAGER', 'KITCHEN', 'CASHIER'] as const).map((role, index) =>
         db.user.create({
           data: {
             id: userIds[index]!,
@@ -138,6 +138,9 @@ export async function orderingFixture() {
       password,
       owner: users[0]!,
       waiter: users[1]!,
+      manager: users[2]!,
+      kitchen: users[3]!,
+      cashier: users[4]!,
       table: tables[0]!,
       emptyTable: tables[1]!,
       item,
