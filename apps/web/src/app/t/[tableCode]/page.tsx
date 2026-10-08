@@ -1,5 +1,4 @@
-import { TableContext } from '@/features/setup/table-context';
-export default async function Page({ params }: { params: Promise<{ tableCode: string }> }) {
-  const { tableCode } = await params;
-  return <TableContext code={tableCode} />;
+import { CustomerMenu } from '@/features/ordering/customer-menu';
+export default function Page() {
+  return <CustomerMenu />;
 }
