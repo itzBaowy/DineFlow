@@ -57,6 +57,13 @@
     "reference": "design/cashier.reference.html",
     "prompt": "design/phase-6-prompts.md"
   },
+  "reportsScreen": {
+    "id": "b352c7f92d5e45ce92c795188410b3e2",
+    "route": "/admin/reports",
+    "relatedRoutes": ["/admin/orders", "/admin/activity", "/admin/staff"],
+    "reference": "design/reports.reference.html",
+    "prompt": "design/phase-7-prompts.md"
+  },
   "customerMenuScreen": {
     "id": "3b429f22b61846438982c78f382ccb66",
     "route": "/t/[tableCode]",
