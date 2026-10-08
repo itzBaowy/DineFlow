@@ -51,6 +51,12 @@
     "reference": "design/guest-tracking.reference.html",
     "prompt": "design/phase-5-prompts.md"
   },
+  "cashierScreen": {
+    "id": "1ea9154da32d4af09ba92db2aaca0b61",
+    "route": "/staff/cashier",
+    "reference": "design/cashier.reference.html",
+    "prompt": "design/phase-6-prompts.md"
+  },
   "customerMenuScreen": {
     "id": "3b429f22b61846438982c78f382ccb66",
     "route": "/t/[tableCode]",
