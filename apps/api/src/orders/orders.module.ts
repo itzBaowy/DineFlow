@@ -2,6 +2,11 @@ import { Module } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { PublicOrdersController, SessionOrdersController } from './orders.controller';
 import { OperationsService } from './operations.service';
+import { ServiceRequestsService } from './service-requests.service';
+import {
+  GuestServiceRequestsController,
+  StaffServiceRequestsController,
+} from './service-requests.controller';
 import {
   OperationsController,
   KitchenController,
@@ -14,7 +19,9 @@ import {
     OperationsController,
     KitchenController,
     ManualOrdersController,
+    GuestServiceRequestsController,
+    StaffServiceRequestsController,
   ],
-  providers: [OrdersService, OperationsService],
+  providers: [OrdersService, OperationsService, ServiceRequestsService],
 })
 export class OrdersModule {}

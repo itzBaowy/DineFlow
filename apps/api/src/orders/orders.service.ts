@@ -8,10 +8,16 @@ import {
 import { createHash, randomBytes } from 'node:crypto';
 import type { CreateOrderInput, StaffPrincipal } from '@dineflow/shared';
 import { PrismaService } from '../database/prisma.service';
-import type { Prisma } from '../generated/prisma/client';
+import type {
+  Prisma,
+  DiningTable,
+  DiningSession,
+  GuestSession,
+} from '../generated/prisma/client';
 import { CONFIG, type AppConfig } from '../config/env';
 import { priceOrder } from './order-pricing';
 import { lockSession, lockTable } from '../dining-sessions/dining-sessions.service';
+import { RealtimeService } from '../realtime/realtime.service';
 
 const digest = (value: string) => createHash('sha256').update(value).digest('hex');
 export const orderInclude = {
@@ -58,10 +64,41 @@ export function orderDto(order: StoredOrder) {
 export class OrdersService {
   constructor(
     private readonly db: PrismaService,
+    private readonly realtime: RealtimeService,
     @Inject(CONFIG) private readonly config: AppConfig,
   ) {}
   cookiePath(code: string) {
     return `/api/v1/public/tables/${code}`;
+  }
+  withGuest<T>(
+    code: string,
+    token: string | undefined,
+    work: (
+      tx: Prisma.TransactionClient,
+      context: { table: DiningTable; session: DiningSession; guest: GuestSession },
+    ) => Promise<T>,
+  ) {
+    return this.withTable(code, async (tx, table, session) => {
+      const guest = await this.authenticate(tx, token, session?.id);
+      if (!session || table.status !== 'OCCUPIED')
+        throw new UnauthorizedException('Phiên bàn không còn phục vụ');
+      return work(tx, { table, session, guest });
+    });
+  }
+  async realtimeTicket(code: string, token?: string) {
+    const identity = await this.withGuest(
+      code,
+      token,
+      async (_tx, { table, session, guest }) => ({
+        kind: 'guest' as const,
+        restaurantId: table.restaurantId,
+        tableId: table.id,
+        diningSessionId: session.id,
+        guestId: guest.id,
+        code,
+      }),
+    );
+    return this.realtime.guestTicket(identity);
   }
   private async table(code: string) {
     if (!/^[A-Za-z0-9_-]{32}$/.test(code)) throw new NotFoundException('Mã bàn không hợp lệ');
@@ -229,7 +266,11 @@ export class OrdersService {
         },
       });
       return {
-        guest: { id: guest.id, diningSessionId: guest.diningSessionId, expiresAt: guest.expiresAt },
+        guest: {
+          id: guest.id,
+          diningSessionId: guest.diningSessionId,
+          expiresAt: guest.expiresAt,
+        },
         token: newToken,
       };
     });
@@ -237,7 +278,11 @@ export class OrdersService {
   me(code: string, token?: string) {
     return this.withTable(code, async (tx, _table, session) => {
       const guest = await this.authenticate(tx, token, session?.id);
-      return { id: guest.id, diningSessionId: guest.diningSessionId, expiresAt: guest.expiresAt };
+      return {
+        id: guest.id,
+        diningSessionId: guest.diningSessionId,
+        expiresAt: guest.expiresAt,
+      };
     });
   }
   history(code: string, token?: string) {
@@ -271,7 +316,7 @@ export class OrdersService {
       })
     ).map(orderDto);
   }
-  create(code: string, input: CreateOrderInput, token?: string) {
+  async create(code: string, input: CreateOrderInput, token?: string) {
     // Canonical modifier IDs prevent harmless selection order changes from breaking retries.
     const requestHash = digest(
       JSON.stringify({
@@ -282,7 +327,7 @@ export class OrdersService {
         })),
       }),
     );
-    return this.withTable(code, async (tx, table, session) => {
+    const result = await this.withTable(code, async (tx, table, session) => {
       const guest = await this.authenticate(tx, token, session?.id);
       if (
         table.status !== 'OCCUPIED' ||
@@ -303,7 +348,7 @@ export class OrdersService {
       if (existing) {
         if (existing.guestSessionId !== guest.id || existing.requestHash !== requestHash)
           throw new ConflictException('Mã gửi đơn đã được sử dụng cho yêu cầu khác');
-        return orderDto(existing);
+        return { order: orderDto(existing), scope: null };
       }
       const { items, totalAmount } = await priceOrder(tx, table.restaurantId, input);
       const order = await tx.order.create({
@@ -329,7 +374,18 @@ export class OrdersService {
           metadata: { diningSessionId: session.id, guestSessionId: guest.id },
         },
       });
-      return orderDto(order);
+      return {
+        order: orderDto(order),
+        scope: {
+          restaurantId: table.restaurantId,
+          tableId: table.id,
+          diningSessionId: session.id,
+          guestId: guest.id,
+        },
+      };
     });
+    if (result.scope)
+      await this.realtime.publish('order.created', result.scope, result.order.id);
+    return result.order;
   }
 }

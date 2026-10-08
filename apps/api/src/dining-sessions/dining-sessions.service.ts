@@ -5,9 +5,15 @@ import { PrismaService } from '../database/prisma.service';
 import { SetupMutationService } from '../common/setup-mutation.service';
 
 // All menu/setup/session/order writers acquire Restaurant -> DiningTable -> DiningSession.
-export async function lockTable(tx: Prisma.TransactionClient, restaurantId: string, id: string) {
+export async function lockTable(
+  tx: Prisma.TransactionClient,
+  restaurantId: string,
+  id: string,
+) {
   await tx.$queryRaw`SELECT id FROM "DiningTable" WHERE id = ${id}::uuid AND "restaurantId" = ${restaurantId}::uuid FOR UPDATE`;
-  const table = await tx.diningTable.findFirst({ where: { id, restaurantId, archivedAt: null } });
+  const table = await tx.diningTable.findFirst({
+    where: { id, restaurantId, archivedAt: null },
+  });
   if (!table) throw new NotFoundException('Không tìm thấy bàn');
   return table;
 }
@@ -69,27 +75,39 @@ export class DiningSessionsService {
     });
   }
   closeEmpty(staff: StaffPrincipal, tableId: string, reason: string) {
-    return this.mutations.run(staff, 'dining_session.closed_empty', 'DiningSession', async (tx) => {
-      const table = await lockTable(tx, staff.restaurantId, tableId);
-      const session = await lockSession(tx, tableId);
-      if (table.status !== 'OCCUPIED' || !session || session.status !== 'OPEN')
-        throw new ConflictException('Bàn không có phiên đang mở');
-      if (await tx.order.count({ where: { diningSessionId: session.id } }))
-        throw new ConflictException(
-          'Phiên đã có đơn. Cần hoàn tất quy trình thanh toán để đóng bàn',
-        );
-      const now = new Date();
-      await tx.diningSession.update({
-        where: { id: session.id },
-        data: { status: 'CLOSED', closedAt: now, closeReason: reason },
-      });
-      await tx.guestSession.updateMany({
-        where: { diningSessionId: session.id, revokedAt: null },
-        data: { revokedAt: now },
-      });
-      await tx.diningTable.update({ where: { id: tableId }, data: { status: 'NEEDS_CLEANING' } });
-      return { id: session.id };
-    });
+    return this.mutations.run(
+      staff,
+      'dining_session.closed_empty',
+      'DiningSession',
+      async (tx) => {
+        const table = await lockTable(tx, staff.restaurantId, tableId);
+        const session = await lockSession(tx, tableId);
+        if (table.status !== 'OCCUPIED' || !session || session.status !== 'OPEN')
+          throw new ConflictException('Bàn không có phiên đang mở');
+        if (await tx.order.count({ where: { diningSessionId: session.id } }))
+          throw new ConflictException(
+            'Phiên đã có đơn. Cần hoàn tất quy trình thanh toán để đóng bàn',
+          );
+        const now = new Date();
+        await tx.diningSession.update({
+          where: { id: session.id },
+          data: { status: 'CLOSED', closedAt: now, closeReason: reason },
+        });
+        await tx.guestSession.updateMany({
+          where: { diningSessionId: session.id, revokedAt: null },
+          data: { revokedAt: now },
+        });
+        await tx.serviceRequest.updateMany({
+          where: { diningSessionId: session.id, status: { in: ['PENDING', 'ACKNOWLEDGED'] } },
+          data: { status: 'RESOLVED', resolvedAt: now },
+        });
+        await tx.diningTable.update({
+          where: { id: tableId },
+          data: { status: 'NEEDS_CLEANING' },
+        });
+        return { id: session.id };
+      },
+    );
   }
   clean(staff: StaffPrincipal, tableId: string) {
     return this.mutations.run(staff, 'table.cleaned', 'DiningTable', async (tx) => {

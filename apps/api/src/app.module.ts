@@ -10,6 +10,7 @@ import { TablesModule } from './tables/tables.module';
 import { StorageModule } from './storage/storage.module';
 import { DiningSessionsModule } from './dining-sessions/dining-sessions.module';
 import { OrdersModule } from './orders/orders.module';
+import { RealtimeModule } from './realtime/realtime.module';
 
-@Module({ imports: [ConfigModule, DatabaseModule, AuthModule, SetupModule, MenuModule, TablesModule, StorageModule, DiningSessionsModule, OrdersModule], controllers: [HealthController, RestaurantController] })
+@Module({ imports: [ConfigModule, DatabaseModule, AuthModule, RealtimeModule, SetupModule, MenuModule, TablesModule, StorageModule, DiningSessionsModule, OrdersModule], controllers: [HealthController, RestaurantController] })
 export class AppModule {}

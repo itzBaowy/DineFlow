@@ -14,6 +14,7 @@ import { Throttle } from '@nestjs/throttler';
 import type { Request, Response } from 'express';
 import {
   admissionInputSchema,
+  emptyInputSchema,
   createOrderInputSchema,
   type CreateOrderInput,
   type StaffPrincipal,
@@ -24,7 +25,7 @@ import { ZodPipe } from '../common/zod.pipe';
 import { CONFIG, type AppConfig } from '../config/env';
 import { OrdersService } from './orders.service';
 
-function guestToken(request: Request): string | undefined {
+export function guestToken(request: Request): string | undefined {
   const token: unknown = (request.cookies as Record<string, unknown> | undefined)?.df_guest;
   return typeof token === 'string' ? token : undefined;
 }
@@ -39,6 +40,16 @@ export class PublicOrdersController {
   ) {}
   @Get('menu') menu(@Param('code') code: string) {
     return this.orders.menu(code);
+  }
+  @Post('realtime-ticket')
+  @Throttle({ default: { limit: 30, ttl: 60000 } })
+  realtimeTicket(
+    @Param('code') code: string,
+    @Req() request: Request,
+    @Body(new ZodPipe(emptyInputSchema)) _input: Record<string, never>,
+  ) {
+    void _input;
+    return this.orders.realtimeTicket(code, guestToken(request));
   }
   @Throttle({ default: { limit: 20, ttl: 60000 } })
   @Post('guest')

@@ -7,10 +7,14 @@ import {
 import type { StaffPrincipal } from '@dineflow/shared';
 import { PrismaService } from '../database/prisma.service';
 import { Prisma } from '../generated/prisma/client';
+import { RealtimeService } from '../realtime/realtime.service';
 
 @Injectable()
 export class SetupMutationService {
-  constructor(private readonly db: PrismaService) {}
+  constructor(
+    private readonly db: PrismaService,
+    private readonly realtime: RealtimeService,
+  ) {}
   async run<T extends { id: string }>(
     staff: StaffPrincipal,
     action: string,
@@ -18,7 +22,7 @@ export class SetupMutationService {
     work: (tx: Prisma.TransactionClient) => Promise<T>,
   ): Promise<T> {
     try {
-      return await this.db.$transaction(async (tx) => {
+      const result = await this.db.$transaction(async (tx) => {
         // Setup mutations share this lock: reference validation and writes cannot race with archives.
         await tx.$queryRaw`SELECT id FROM "Restaurant" WHERE id = ${staff.restaurantId}::uuid FOR UPDATE`;
         const result = await work(tx);
@@ -33,6 +37,28 @@ export class SetupMutationService {
         });
         return result;
       });
+      if (entityType === 'DiningTable')
+        await this.realtime.publish('table.status_changed', {
+          restaurantId: staff.restaurantId,
+          tableId: result.id,
+        });
+      if (entityType === 'DiningSession') {
+        const session = await this.db.diningSession
+          .findUnique({ where: { id: result.id }, select: { id: true, tableId: true } })
+          .catch(() => null);
+        if (session)
+          await this.realtime.publish(
+            action === 'dining_session.closed_empty'
+              ? 'dining_session.closed'
+              : 'table.status_changed',
+            {
+              restaurantId: staff.restaurantId,
+              tableId: session.tableId,
+              diningSessionId: session.id,
+            },
+          );
+      }
+      return result;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2002')

@@ -18,19 +18,24 @@ import type { Prisma } from '../generated/prisma/client';
 import { lockSession, lockTable } from '../dining-sessions/dining-sessions.service';
 import { OrdersService, orderDto, orderInclude } from './orders.service';
 import { priceOrder } from './order-pricing';
+import { RealtimeService } from '../realtime/realtime.service';
 
 @Injectable()
 export class OperationsService {
   constructor(
     private readonly db: PrismaService,
     private readonly orders: OrdersService,
+    private readonly realtime: RealtimeService,
   ) {}
   async overview(restaurantId: string) {
     return this.db.$transaction(
       async (tx) => {
         const rows = await tx.order.groupBy({
           by: ['status'],
-          where: { restaurantId, diningSession: { status: { in: ['OPEN', 'PAYMENT_REQUESTED'] } } },
+          where: {
+            restaurantId,
+            diningSession: { status: { in: ['OPEN', 'PAYMENT_REQUESTED'] } },
+          },
           _count: { _all: true },
         });
         const counts = Object.fromEntries(
@@ -81,7 +86,10 @@ export class OperationsService {
           take: query.pageSize,
         });
         return {
-          orders: orders.map((order) => ({ ...orderDto(order), table: order.diningSession.table })),
+          orders: orders.map((order) => ({
+            ...orderDto(order),
+            table: order.diningSession.table,
+          })),
           total,
           page: query.page,
           pageSize: query.pageSize,
@@ -100,7 +108,8 @@ export class OperationsService {
   }
   async menu(staff: StaffPrincipal, sessionId: string) {
     const session = await this.context(staff, sessionId);
-    if (session.status !== 'OPEN') throw new ConflictException('Phiên bàn không còn nhận thêm đơn');
+    if (session.status !== 'OPEN')
+      throw new ConflictException('Phiên bàn không còn nhận thêm đơn');
     const menu = await this.orders.menu(session.table.publicCode);
     if (menu.diningSessionId !== sessionId || !menu.orderingEnabled)
       throw new ConflictException('Phiên bàn đã thay đổi');
@@ -122,7 +131,7 @@ export class OperationsService {
         }),
       )
       .digest('hex');
-    return this.db.$transaction(
+    const result = await this.db.$transaction(
       async (tx) => {
         await tx.$queryRaw`SELECT id FROM "Restaurant" WHERE id = ${staff.restaurantId}::uuid FOR UPDATE`;
         const table = await lockTable(tx, staff.restaurantId, context.tableId);
@@ -146,7 +155,7 @@ export class OperationsService {
         if (existing) {
           if (existing.source !== 'STAFF' || existing.requestHash !== requestHash)
             throw new ConflictException('Mã gửi đơn đã được sử dụng cho yêu cầu khác');
-          return orderDto(existing);
+          return { order: orderDto(existing), created: false };
         }
         const { items, totalAmount } = await priceOrder(tx, staff.restaurantId, input);
         const order = await tx.order.create({
@@ -173,18 +182,33 @@ export class OperationsService {
             metadata: { diningSessionId: sessionId, source: 'STAFF' },
           },
         });
-        return orderDto(order);
+        return { order: orderDto(order), created: true };
       },
       { maxWait: 10000, timeout: 15000 },
     );
+    if (result.created)
+      await this.realtime.publish(
+        'order.created',
+        {
+          restaurantId: staff.restaurantId,
+          tableId: context.tableId,
+          diningSessionId: sessionId,
+        },
+        result.order.id,
+      );
+    return result.order;
   }
   async transition(staff: StaffPrincipal, id: string, input: OrderStatusInput) {
     const context = await this.db.order.findFirst({
       where: { id, restaurantId: staff.restaurantId },
-      select: { diningSessionId: true, diningSession: { select: { tableId: true } } },
+      select: {
+        diningSessionId: true,
+        guestSessionId: true,
+        diningSession: { select: { tableId: true } },
+      },
     });
     if (!context) throw new NotFoundException('Không tìm thấy đơn');
-    return this.db.$transaction(
+    const order = await this.db.$transaction(
       async (tx) => {
         await tx.$queryRaw`SELECT id FROM "Restaurant" WHERE id = ${staff.restaurantId}::uuid FOR UPDATE`;
         const table = await lockTable(tx, staff.restaurantId, context.diningSession.tableId);
@@ -233,5 +257,17 @@ export class OperationsService {
       },
       { maxWait: 10000, timeout: 15000 },
     );
+    await this.realtime.publish(
+      input.to === 'ACCEPTED' ? 'order.accepted' : 'order.status_changed',
+      {
+        restaurantId: staff.restaurantId,
+        tableId: context.diningSession.tableId,
+        diningSessionId: context.diningSessionId,
+        guestId: context.guestSessionId,
+        kitchen: input.to !== 'CANCELLED' || input.from === 'ACCEPTED',
+      },
+      id,
+    );
+    return order;
   }
 }
