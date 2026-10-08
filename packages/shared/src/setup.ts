@@ -4,7 +4,7 @@ const name = z.string().trim().min(1, 'Nhập tên').max(120, 'Tên tối đa 12
 const description = z.string().trim().max(2000).nullable();
 const position = z.number().int().min(0).max(10000);
 const money = z.number().int().min(0, 'Giá không được âm').max(100000000, 'Giá vượt giới hạn');
-export const imageUrlSchema = z.string().regex(/^\/api\/v1\/storage\/images\/[0-9a-f-]{36}$/).nullable();
+export const imageUrlSchema = z.string().regex(/^\/api\/v1\/storage\/images\/[0-9a-f-]{36}$/).refine(value => z.uuid().safeParse(value.split('/').at(-1)).success, 'Mã ảnh không hợp lệ').nullable();
 export const restaurantInputSchema = z.object({ name, address: z.string().trim().max(500).nullable(), phone: z.string().trim().max(30).nullable(), logoUrl: imageUrlSchema, timezone: z.string().max(100).refine(value => { try { new Intl.DateTimeFormat('vi-VN', { timeZone: value }); return true; } catch { return false; } }, 'Múi giờ không hợp lệ'), serviceChargeBps: z.number().int().min(0).max(10000), taxBps: z.number().int().min(0).max(10000) }).strict();
 export const restaurantSettingsSchema = restaurantInputSchema.extend({ id: z.uuid(), currency: z.literal('VND') }).strip();
 export const categoryInputSchema = z.object({ name, description, position, isActive: z.boolean() }).strict();

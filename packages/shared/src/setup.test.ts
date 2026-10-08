@@ -5,7 +5,7 @@ import { menuInputSchema, modifierInputSchema, restaurantInputSchema, tableInput
 test('setup rejects money fractions, arbitrary image URLs and foreign scope overrides', () => {
   const menu = { name: 'Trà', description: null, categoryId: '187780c4-32a9-4a1c-b79b-563f8797a6a1', imageUrl: null, basePrice: 35000, isAvailable: true, position: 0, modifierGroupIds: [] };
   assert.equal(menuInputSchema.safeParse(menu).success, true);
-  for (const extra of [{ basePrice: -1 }, { basePrice: 0.5 }, { imageUrl: 'https://attacker.example/image.svg' }, { restaurantId: menu.categoryId }]) assert.equal(menuInputSchema.safeParse({ ...menu, ...extra }).success, false);
+  for (const extra of [{ basePrice: -1 }, { basePrice: 0.5 }, { imageUrl: 'https://attacker.example/image.svg' }, { imageUrl: '/api/v1/storage/images/' + '-'.repeat(36) }, { restaurantId: menu.categoryId }]) assert.equal(menuInputSchema.safeParse({ ...menu, ...extra }).success, false);
   assert.equal(tableInputSchema.safeParse({ name: 'Bàn', capacity: 4, position: 0, status: 'OCCUPIED' }).success, false);
 });
 test('modifier minimum is bounded by available options and option IDs cannot repeat', () => {
