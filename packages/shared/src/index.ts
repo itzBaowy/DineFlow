@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { type OrderStatus } from './ordering';
 export * from './setup';
 export * from './ordering';
 
@@ -23,8 +24,6 @@ export const overviewSchema = z.object({
 });
 export type RestaurantOverview = z.infer<typeof overviewSchema>;
 
-export const orderStatuses = ['PENDING_CONFIRMATION', 'ACCEPTED', 'PREPARING', 'READY', 'SERVED', 'CANCELLED'] as const;
-export type OrderStatus = typeof orderStatuses[number];
 const orderTransitions: Record<OrderStatus, readonly OrderStatus[]> = {
   PENDING_CONFIRMATION: ['ACCEPTED', 'CANCELLED'], ACCEPTED: ['PREPARING', 'CANCELLED'],
   PREPARING: ['READY'], READY: ['SERVED'], SERVED: [], CANCELLED: [],
