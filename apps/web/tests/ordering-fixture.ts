@@ -29,6 +29,7 @@ export async function orderingFixture() {
       await db.orderItemModifier.deleteMany({ where: { restaurantId } });
       await db.orderItem.deleteMany({ where: { restaurantId } });
       await db.order.deleteMany({ where: { restaurantId } });
+      await db.serviceRequest.deleteMany({ where: { restaurantId } });
       await db.guestSession.deleteMany({ where: { diningSession: { restaurantId } } });
       await db.diningSession.deleteMany({ where: { restaurantId } });
       await db.diningTable.deleteMany({ where: { restaurantId } });

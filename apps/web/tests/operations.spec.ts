@@ -191,16 +191,30 @@ test('cashier reads orders without actions; kitchen cannot access staff orders a
     const ticket = page.locator(`[data-order-id="${order.id}"]`);
     await expect(ticket.getByRole('button', { name: 'Xác nhận đơn', exact: true })).toBeVisible();
     await login(manager, fixture.manager.email, fixture.password);
+    let release!: () => void, intercepted!: () => void;
+    const held = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    const started = new Promise<void>((resolve) => {
+      intercepted = resolve;
+    });
+    await page.route(`**/orders/${order.id}/status`, async (route) => {
+      intercepted();
+      await held;
+      await route.continue();
+    });
+    const conflict = page.waitForResponse(
+      (r) => r.url().endsWith(`/orders/${order.id}/status`) && r.request().method() === 'PATCH',
+    );
+    await ticket.getByRole('button', { name: 'Xác nhận đơn', exact: true }).click();
+    await started;
     const response = await managerContext.request.patch(`/api/v1/orders/${order.id}/status`, {
       headers: { 'X-DineFlow-Client': 'web', Origin: 'http://localhost:3000' },
       data: { from: 'PENDING_CONFIRMATION', to: 'ACCEPTED', reason: null },
     });
     expect(response.status()).toBe(200);
-    // The waiter still sees a stale pending ticket: this request must receive 409, then refetch.
-    const conflict = page.waitForResponse(
-      (r) => r.url().endsWith(`/orders/${order.id}/status`) && r.request().method() === 'PATCH',
-    );
-    await ticket.getByRole('button', { name: 'Xác nhận đơn', exact: true }).click();
+    // Release the already-sent stale request after the manager's real transaction commits.
+    release();
     expect((await conflict).status()).toBe(409);
     await expect(ticket).toHaveCount(0);
     await page
