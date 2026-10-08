@@ -154,7 +154,7 @@ export function Workspace({ children }: { children: React.ReactNode }) {
   );
   return (
     <div className="min-h-screen lg:flex">
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col overflow-y-auto border-r bg-[#f3f3ed] px-5 py-7 lg:flex">
+      <aside data-workspace-sidebar className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col overflow-y-auto border-r bg-[#f3f3ed] px-5 py-7 lg:flex">
         {sidebar}
       </aside>
       <Dialog.Root open={menuOpen} onOpenChange={setMenuOpen}>
@@ -169,8 +169,8 @@ export function Workspace({ children }: { children: React.ReactNode }) {
           </Dialog.Content>
         </Dialog.Portal>
       </Dialog.Root>
-      <div className="min-w-0 flex-1 lg:ml-64">
-        <header className="flex min-h-20 items-center justify-between gap-3 border-b bg-background/80 px-4 py-4 sm:px-8">
+      <div data-workspace-content className="min-w-0 flex-1 lg:ml-64">
+        <header data-workspace-header className="flex min-h-20 items-center justify-between gap-3 border-b bg-background/80 px-4 py-4 sm:px-8">
           <div className="flex min-w-0 items-center gap-2 sm:gap-3">
             <Button
               variant="ghost"
@@ -214,7 +214,7 @@ export function Workspace({ children }: { children: React.ReactNode }) {
             {logout.error.message}
           </p>
         )}
-        <main className="mx-auto max-w-7xl p-5 sm:p-8 xl:p-10">{children}</main>
+        <main data-workspace-main className="mx-auto max-w-7xl p-5 sm:p-8 xl:p-10">{children}</main>
       </div>
     </div>
   );

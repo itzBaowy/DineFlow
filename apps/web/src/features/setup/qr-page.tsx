@@ -24,7 +24,7 @@ export function QrPage({ initialTable }: { initialTable?: string }) {
       downloadFile(`/tables/${id}/qr.${format}`, `dineflow-${id}.${format}`),
   });
   return (
-    <div className="space-y-7">
+    <div data-qr-page className="space-y-7">
       <div className="print:hidden">
         <PageHeader
           title="Mã QR tại bàn"

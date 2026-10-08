@@ -48,9 +48,11 @@ button:not(:disabled), a { cursor: pointer; }
 @media print {
   @page { size: A4; margin: 12mm; }
   body { background: white; }
-  body * { visibility: hidden; }
-  [data-print-sheet], [data-print-sheet] * { visibility: visible; }
-  [data-print-sheet] { position: absolute; left: 0; top: 0; width: 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8mm; }
+  [data-workspace-sidebar], [data-workspace-header], .print\:hidden { display: none !important; }
+  [data-workspace-content] { margin: 0 !important; width: 100%; }
+  [data-workspace-main] { padding: 0 !important; margin: 0 !important; max-width: none; }
+  [data-qr-page] > * { margin: 0 !important; }
+  [data-print-sheet] { width: 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8mm; }
   [data-print-label] { break-inside: avoid; border: 1px solid #d4d8d1; box-shadow: none; }
   [data-print-selected="false"] { display: none; }
   [data-print-sheet] .print\:hidden { display: none; }
