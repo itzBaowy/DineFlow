@@ -82,9 +82,9 @@ export class DiningSessionsService {
       async (tx) => {
         const table = await lockTable(tx, staff.restaurantId, tableId);
         const session = await lockSession(tx, tableId);
-        if (table.status !== 'OCCUPIED' || !session || session.status !== 'OPEN')
+        if (table.status !== 'OCCUPIED' || !session)
           throw new ConflictException('Bàn không có phiên đang mở');
-        if (await tx.order.count({ where: { diningSessionId: session.id } }))
+        if (await tx.order.count({ where: { diningSessionId: session.id, status: { not: 'CANCELLED' } } }))
           throw new ConflictException(
             'Phiên đã có đơn. Cần hoàn tất quy trình thanh toán để đóng bàn',
           );

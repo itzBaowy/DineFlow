@@ -23,5 +23,6 @@ import {
     StaffServiceRequestsController,
   ],
   providers: [OrdersService, OperationsService, ServiceRequestsService],
+  exports: [OrdersService],
 })
 export class OrdersModule {}

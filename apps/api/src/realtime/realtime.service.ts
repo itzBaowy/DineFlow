@@ -149,11 +149,16 @@ export class RealtimeService implements OnModuleDestroy {
     );
   }
   private matches(identity: Identity, scope: EventScope, kind: RealtimeEvent['kind']) {
+    if (kind === 'payment.completed' && (identity.kind === 'guest' || identity.staff.role === 'KITCHEN'))
+      return false;
+    if (kind === 'billing.updated' && identity.kind === 'guest' && !scope.diningSessionId)
+      return identity.restaurantId === scope.restaurantId;
     if (identity.kind === 'guest')
       return kind.startsWith('order.')
         ? !!scope.guestId && scope.guestId === identity.guestId
         : scope.diningSessionId === identity.diningSessionId;
     if (identity.staff.restaurantId !== scope.restaurantId) return false;
+    if (identity.staff.role === 'KITCHEN' && kind === 'billing.updated') return false;
     if (identity.staff.role === 'KITCHEN')
       return kind.startsWith('order.') ? !!scope.kitchen : !kind.startsWith('service_request.');
     return true;

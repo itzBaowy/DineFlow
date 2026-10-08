@@ -66,6 +66,7 @@ export class RestaurantController {
         timezone: true,
         serviceChargeBps: true,
         taxBps: true,
+        cashierMaxDiscountBps: true,
       },
     });
   }

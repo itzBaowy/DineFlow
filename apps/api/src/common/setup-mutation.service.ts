@@ -42,6 +42,8 @@ export class SetupMutationService {
           restaurantId: staff.restaurantId,
           tableId: result.id,
         });
+      if (entityType === 'Restaurant')
+        await this.realtime.publish('billing.updated', { restaurantId: staff.restaurantId });
       if (entityType === 'DiningSession') {
         const session = await this.db.diningSession
           .findUnique({ where: { id: result.id }, select: { id: true, tableId: true } })
