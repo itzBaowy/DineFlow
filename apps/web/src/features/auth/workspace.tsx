@@ -71,7 +71,13 @@ export function Workspace({ children }: { children: React.ReactNode }) {
   const links = [
     { href: '/staff/dashboard', title: 'Tổng quan', icon: LayoutDashboard },
     ...(['OWNER', 'MANAGER', 'WAITER', 'CASHIER'].includes(staff.role)
-      ? [{ href: '/staff/tables', title: 'Phiên bàn', icon: Armchair }]
+      ? [
+          { href: '/staff/tables', title: 'Phiên bàn', icon: Armchair },
+          { href: '/staff/orders', title: 'Đơn gọi món', icon: ClipboardList },
+        ]
+      : []),
+    ...(['OWNER', 'MANAGER', 'KITCHEN'].includes(staff.role)
+      ? [{ href: '/staff/kitchen', title: 'Màn hình bếp', icon: ChefHat }]
       : []),
     ...(admin
       ? [
@@ -108,10 +114,10 @@ export function Workspace({ children }: { children: React.ReactNode }) {
             key={href}
             href={href}
             onClick={() => setMenuOpen(false)}
-            aria-current={path === href ? 'page' : undefined}
+            aria-current={path === href || path.startsWith(`${href}/`) ? 'page' : undefined}
             className={cn(
               'flex min-h-12 items-center gap-3 rounded-xl px-3 text-xs font-medium transition-colors',
-              path === href
+              path === href || path.startsWith(`${href}/`)
                 ? 'bg-primary text-white shadow-sm'
                 : 'text-muted-foreground hover:bg-muted',
             )}
@@ -125,11 +131,7 @@ export function Workspace({ children }: { children: React.ReactNode }) {
         <p className="mb-3 px-3 text-[9px] font-semibold tracking-[0.15em] text-muted-foreground">
           SẮP RA MẮT
         </p>
-        {[
-          { icon: ClipboardList, title: 'Xác nhận đơn' },
-          { icon: ChefHat, title: 'Màn hình bếp' },
-          { icon: Receipt, title: 'Thu ngân' },
-        ].map(({ icon: Icon, title }) => (
+        {[{ icon: Receipt, title: 'Thu ngân' }].map(({ icon: Icon, title }) => (
           <div
             key={title}
             className="flex h-10 items-center gap-3 px-3 text-xs text-muted-foreground/70"
@@ -158,7 +160,10 @@ export function Workspace({ children }: { children: React.ReactNode }) {
   );
   return (
     <div className="min-h-screen lg:flex">
-      <aside data-workspace-sidebar className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col overflow-y-auto border-r bg-[#f3f3ed] px-5 py-7 lg:flex">
+      <aside
+        data-workspace-sidebar
+        className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col overflow-y-auto border-r bg-[#f3f3ed] px-5 py-7 lg:flex"
+      >
         {sidebar}
       </aside>
       <Dialog.Root open={menuOpen} onOpenChange={setMenuOpen}>
@@ -174,7 +179,10 @@ export function Workspace({ children }: { children: React.ReactNode }) {
         </Dialog.Portal>
       </Dialog.Root>
       <div data-workspace-content className="min-w-0 flex-1 lg:ml-64">
-        <header data-workspace-header className="flex min-h-20 items-center justify-between gap-3 border-b bg-background/80 px-4 py-4 sm:px-8">
+        <header
+          data-workspace-header
+          className="flex min-h-20 items-center justify-between gap-3 border-b bg-background/80 px-4 py-4 sm:px-8"
+        >
           <div className="flex min-w-0 items-center gap-2 sm:gap-3">
             <Button
               variant="ghost"
@@ -189,7 +197,8 @@ export function Workspace({ children }: { children: React.ReactNode }) {
               <p className="truncate text-xs font-semibold">{staff.restaurant.name}</p>
               <p className="mt-1 truncate text-[10px] text-muted-foreground">
                 Không gian làm việc /{' '}
-                {links.find((link) => link.href === path)?.title ?? 'Thiết lập'}
+                {links.find((link) => path === link.href || path.startsWith(`${link.href}/`))
+                  ?.title ?? 'Thiết lập'}
               </p>
             </div>
           </div>
@@ -218,7 +227,9 @@ export function Workspace({ children }: { children: React.ReactNode }) {
             {logout.error.message}
           </p>
         )}
-        <main data-workspace-main className="mx-auto max-w-7xl p-5 sm:p-8 xl:p-10">{children}</main>
+        <main data-workspace-main className="mx-auto max-w-7xl p-5 sm:p-8 xl:p-10">
+          {children}
+        </main>
       </div>
     </div>
   );

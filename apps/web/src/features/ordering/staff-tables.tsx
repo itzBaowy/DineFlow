@@ -185,6 +185,11 @@ function TableCard({ table, openDetail }: { table: SessionTable; openDetail: () 
             Xác nhận đã dọn
           </Button>
         )}
+        {table.session?.status === 'OPEN' && canOpen && (
+          <Button asChild className="w-full">
+            <Link href={`/staff/tables/${table.session.id}/order`}>Ghi đơn cho khách</Link>
+          </Button>
+        )}
         {table.session && (
           <Button variant="outline" className="w-full" onClick={openDetail}>
             <ClipboardList />
@@ -249,6 +254,9 @@ function CurrentOrders({ table }: { table: SessionTable }) {
       <p className="mb-4 text-xs leading-6 text-muted-foreground">
         Đơn mới chờ nhân viên xác nhận trước khi nhà bếp chuẩn bị.
       </p>
+      <Button asChild className="mb-5" variant="outline" size="sm">
+        <Link href="/staff/orders">Xử lý đơn gọi món</Link>
+      </Button>
       <Button
         className="mb-5"
         variant="outline"

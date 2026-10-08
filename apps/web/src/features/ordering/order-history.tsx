@@ -65,6 +65,11 @@ export function OrderCards({ orders }: { orders: CustomerOrder[] }) {
                 Ghi chú đơn: {order.note}
               </p>
             )}
+            {order.cancellationReason && (
+              <p className="rounded-xl bg-red-50 p-3 text-xs leading-6 text-destructive">
+                Lý do hủy: {order.cancellationReason}
+              </p>
+            )}
             <div className="flex justify-between border-t pt-4 text-sm font-semibold text-primary">
               <span>Tổng tiền món</span>
               <span>{formatVnd(order.totalAmount)}</span>
@@ -125,7 +130,7 @@ export function OrderHistory() {
               <>
                 <div className="mb-5 flex gap-3 rounded-xl bg-secondary p-4 text-xs leading-6 text-primary">
                   <CheckCircle2 className="mt-1 size-4 shrink-0" />
-                  Đơn đã được lưu. Nhân viên sẽ kiểm tra và xác nhận trước khi chế biến.
+                  Đơn đã được lưu. Nhấn Cập nhật để xem tiến độ phục vụ mới nhất.
                 </div>
                 <OrderCards orders={query.data} />
               </>

@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useQuery } from '@tanstack/react-query';
 import { overviewSchema, roleLabels } from '@dineflow/shared';
+import { OperationsSummary } from '@/features/operations/operations-summary';
 import { z } from 'zod';
 import { ArrowRight, Armchair, Layers3, UtensilsCrossed, Users, CircleCheck, Building2, CalendarDays, Leaf, ShieldCheck, RefreshCw } from 'lucide-react';
 import { api } from '@/lib/api';
@@ -42,6 +43,7 @@ export default function DashboardPage() {
         </div>
       </section>
 
+      <OperationsSummary />
       <section aria-labelledby="setup-heading">
         <div className="mb-4 flex items-center justify-between gap-3"><h2 id="setup-heading" className="text-sm font-semibold">Cấu hình nhà hàng</h2><Button variant="ghost" size="sm" className="h-9 px-2 text-[10px]" onClick={() => void overview.refetch()} disabled={overview.isFetching}><RefreshCw className={overview.isFetching ? 'animate-spin' : ''} />{overview.isFetching ? 'Đang cập nhật…' : 'Làm mới'}</Button></div>
         {overview.isError ? <Card className="p-6"><p role="alert" className="text-sm text-destructive">{overview.error.message}</p><Button className="mt-4" variant="outline" onClick={() => void overview.refetch()}>Thử lại</Button></Card> : (
