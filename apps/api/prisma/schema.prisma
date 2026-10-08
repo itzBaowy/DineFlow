@@ -87,6 +87,7 @@ model Restaurant {
   timezone String @default("Asia/Ho_Chi_Minh")
   serviceChargeBps Int @default(0)
   taxBps Int @default(0)
+  cashierMaxDiscountBps Int @default(0)
   createdAt DateTime @default(now()) @db.Timestamptz(3)
   updatedAt DateTime @updatedAt @db.Timestamptz(3)
   memberships StaffMembership[]
@@ -171,6 +172,8 @@ model DiningSession {
   paymentRequestedAt DateTime? @db.Timestamptz(3)
   closedAt DateTime? @db.Timestamptz(3)
   closeReason String?
+  discount Int @default(0)
+  discountReason String?
   updatedAt DateTime @updatedAt @db.Timestamptz(3)
   restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Restrict)
   table DiningTable @relation(fields: [tableId, restaurantId], references: [id, restaurantId], onDelete: Restrict)
@@ -359,6 +362,9 @@ model Payment {
   total Int
   paidAmount Int
   reference String?
+  idempotencyKey String? @db.Uuid
+  requestHash String? @db.Char(64)
+  receiptSnapshot Json?
   completedAt DateTime @default(now()) @db.Timestamptz(3)
   restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Restrict)
   diningSession DiningSession @relation(fields: [diningSessionId, restaurantId], references: [id, restaurantId], onDelete: Restrict)
