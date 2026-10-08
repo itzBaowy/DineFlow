@@ -1,0 +1,27 @@
+{
+  "name": "dineflow",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@9.15.9",
+  "engines": { "node": ">=22.12.0", "pnpm": ">=9 <10" },
+  "scripts": {
+    "setup:env": "node scripts/setup-env.mjs",
+    "infra:up": "docker compose up -d --wait postgres redis",
+    "infra:down": "docker compose down",
+    "db:generate": "pnpm --filter @dineflow/api db:generate",
+    "db:migrate": "pnpm --filter @dineflow/api db:migrate",
+    "db:seed": "pnpm build:shared && pnpm --filter @dineflow/api db:seed",
+    "build:shared": "pnpm --filter @dineflow/shared build",
+    "predev": "pnpm db:generate && pnpm build:shared",
+    "dev": "pnpm --parallel --filter @dineflow/shared --filter @dineflow/api --filter @dineflow/web dev",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm db:generate && pnpm build:shared && pnpm -r typecheck",
+    "test": "pnpm db:generate && pnpm --filter @dineflow/shared test && pnpm --filter @dineflow/api test",
+    "test:integration": "pnpm db:generate && pnpm build:shared && pnpm --filter @dineflow/api test:integration",
+    "test:browser": "pnpm --filter @dineflow/web test:browser",
+    "prebuild": "pnpm db:generate",
+    "build": "pnpm -r build",
+    "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm build"
+  },
+  "devDependencies": { "@eslint/js": "^9.39.5", "eslint": "^9.39.5", "typescript-eslint": "^8.0.0", "typescript": "6.0.3", "@types/node": "^22.0.0" }
+}
