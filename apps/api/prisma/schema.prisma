@@ -1,0 +1,397 @@
+generator client {
+  provider = "prisma-client"
+  output = "../src/generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  OWNER
+  MANAGER
+  CASHIER
+  WAITER
+  KITCHEN
+}
+
+enum TableStatus {
+  AVAILABLE
+  OCCUPIED
+  NEEDS_CLEANING
+  OUT_OF_SERVICE
+}
+
+enum DiningSessionStatus {
+  OPEN
+  PAYMENT_REQUESTED
+  CLOSED
+}
+
+enum OrderStatus {
+  PENDING_CONFIRMATION
+  ACCEPTED
+  PREPARING
+  READY
+  SERVED
+  CANCELLED
+}
+
+enum OrderSource {
+  GUEST
+  STAFF
+}
+
+enum PaymentMethod {
+  CASH
+  BANK_TRANSFER
+}
+
+enum PaymentStatus {
+  COMPLETED
+}
+
+enum ServiceRequestType {
+  CALL_STAFF
+  REQUEST_PAYMENT
+}
+
+enum ServiceRequestStatus {
+  PENDING
+  ACKNOWLEDGED
+  RESOLVED
+}
+
+model User {
+  id String @id @default(uuid()) @db.Uuid
+  email String @unique @db.VarChar(254)
+  name String @db.VarChar(120)
+  passwordHash String
+  isActive Boolean @default(true)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+  memberships StaffMembership[]
+  authSessions AuthSession[]
+  activityLogs ActivityLog[]
+}
+
+model Restaurant {
+  id String @id @default(uuid()) @db.Uuid
+  slug String @unique
+  name String
+  logoUrl String?
+  address String?
+  phone String?
+  currency String @default("VND") @db.VarChar(3)
+  timezone String @default("Asia/Ho_Chi_Minh")
+  serviceChargeBps Int @default(0)
+  taxBps Int @default(0)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+  memberships StaffMembership[]
+  tables DiningTable[]
+  sessions DiningSession[]
+  categories MenuCategory[]
+  menuItems MenuItem[]
+  modifierGroups ModifierGroup[]
+  modifierOptions ModifierOption[]
+  orders Order[]
+  payments Payment[]
+  serviceRequests ServiceRequest[]
+  activityLogs ActivityLog[]
+}
+
+model StaffMembership {
+  id String @id @default(uuid()) @db.Uuid
+  userId String @db.Uuid
+  restaurantId String @db.Uuid
+  role Role
+  isActive Boolean @default(true)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Restrict)
+  authSessions AuthSession[]
+  @@unique([userId, restaurantId])
+  @@unique([id, userId])
+  @@index([restaurantId, role, isActive])
+}
+
+model AuthSession {
+  id String @id @default(uuid()) @db.Uuid
+  userId String @db.Uuid
+  membershipId String @db.Uuid
+  expiresAt DateTime @db.Timestamptz(3)
+  revokedAt DateTime? @db.Timestamptz(3)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
+  membership StaffMembership @relation(fields: [membershipId, userId], references: [id, userId], onDelete: Restrict)
+  refreshTokens RefreshToken[]
+  @@index([userId, expiresAt])
+}
+
+model RefreshToken {
+  id String @id @default(uuid()) @db.Uuid
+  tokenHash String @unique @db.Char(64)
+  authSessionId String @db.Uuid
+  expiresAt DateTime @db.Timestamptz(3)
+  usedAt DateTime? @db.Timestamptz(3)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  authSession AuthSession @relation(fields: [authSessionId], references: [id], onDelete: Restrict)
+  @@index([authSessionId])
+  @@index([expiresAt])
+}
+
+model DiningTable {
+  id String @id @default(uuid()) @db.Uuid
+  restaurantId String @db.Uuid
+  name String
+  publicCode String @unique @db.VarChar(64)
+  capacity Int @default(4)
+  position Int @default(0)
+  status TableStatus @default(AVAILABLE)
+  archivedAt DateTime? @db.Timestamptz(3)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Restrict)
+  sessions DiningSession[]
+  @@unique([restaurantId, name])
+  @@unique([id, restaurantId])
+  @@index([restaurantId, status, archivedAt])
+}
+
+model DiningSession {
+  id String @id @default(uuid()) @db.Uuid
+  restaurantId String @db.Uuid
+  tableId String @db.Uuid
+  status DiningSessionStatus @default(OPEN)
+  openedAt DateTime @default(now()) @db.Timestamptz(3)
+  paymentRequestedAt DateTime? @db.Timestamptz(3)
+  closedAt DateTime? @db.Timestamptz(3)
+  closeReason String?
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Restrict)
+  table DiningTable @relation(fields: [tableId, restaurantId], references: [id, restaurantId], onDelete: Restrict)
+  guestSessions GuestSession[]
+  orders Order[]
+  payment Payment?
+  serviceRequests ServiceRequest[]
+  @@unique([id, restaurantId])
+  @@index([restaurantId, status, openedAt])
+  @@index([tableId, openedAt])
+}
+
+model GuestSession {
+  id String @id @default(uuid()) @db.Uuid
+  diningSessionId String @db.Uuid
+  tokenHash String @unique @db.Char(64)
+  expiresAt DateTime @db.Timestamptz(3)
+  revokedAt DateTime? @db.Timestamptz(3)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  diningSession DiningSession @relation(fields: [diningSessionId], references: [id], onDelete: Restrict)
+  orders Order[]
+  serviceRequests ServiceRequest[]
+  @@unique([id, diningSessionId])
+  @@index([diningSessionId, expiresAt])
+}
+
+model MenuCategory {
+  id String @id @default(uuid()) @db.Uuid
+  restaurantId String @db.Uuid
+  name String
+  description String?
+  position Int @default(0)
+  isActive Boolean @default(true)
+  archivedAt DateTime? @db.Timestamptz(3)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Restrict)
+  items MenuItem[]
+  @@unique([id, restaurantId])
+  @@index([restaurantId, isActive, position])
+}
+
+model MenuItem {
+  id String @id @default(uuid()) @db.Uuid
+  restaurantId String @db.Uuid
+  categoryId String @db.Uuid
+  name String
+  description String?
+  imageUrl String?
+  basePrice Int
+  isAvailable Boolean @default(true)
+  position Int @default(0)
+  archivedAt DateTime? @db.Timestamptz(3)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Restrict)
+  category MenuCategory @relation(fields: [categoryId, restaurantId], references: [id, restaurantId], onDelete: Restrict)
+  modifierGroups MenuItemModifierGroup[]
+  orderItems OrderItem[]
+  @@unique([id, restaurantId])
+  @@index([restaurantId, categoryId, isAvailable])
+}
+
+model ModifierGroup {
+  id String @id @default(uuid()) @db.Uuid
+  restaurantId String @db.Uuid
+  name String
+  minSelections Int @default(0)
+  maxSelections Int @default(1)
+  position Int @default(0)
+  archivedAt DateTime? @db.Timestamptz(3)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Restrict)
+  options ModifierOption[]
+  menuItems MenuItemModifierGroup[]
+  @@unique([id, restaurantId])
+  @@index([restaurantId])
+}
+
+model MenuItemModifierGroup {
+  menuItemId String @db.Uuid
+  modifierGroupId String @db.Uuid
+  restaurantId String @db.Uuid
+  position Int @default(0)
+  menuItem MenuItem @relation(fields: [menuItemId, restaurantId], references: [id, restaurantId], onDelete: Restrict)
+  modifierGroup ModifierGroup @relation(fields: [modifierGroupId, restaurantId], references: [id, restaurantId], onDelete: Restrict)
+  @@id([menuItemId, modifierGroupId])
+  @@index([modifierGroupId])
+}
+
+model ModifierOption {
+  id String @id @default(uuid()) @db.Uuid
+  restaurantId String @db.Uuid
+  modifierGroupId String @db.Uuid
+  name String
+  priceDelta Int @default(0)
+  isAvailable Boolean @default(true)
+  position Int @default(0)
+  archivedAt DateTime? @db.Timestamptz(3)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Restrict)
+  modifierGroup ModifierGroup @relation(fields: [modifierGroupId, restaurantId], references: [id, restaurantId], onDelete: Restrict)
+  orderModifiers OrderItemModifier[]
+  @@unique([id, restaurantId])
+  @@index([modifierGroupId, isAvailable, position])
+}
+
+model Order {
+  id String @id @default(uuid()) @db.Uuid
+  number Int @unique @default(autoincrement())
+  restaurantId String @db.Uuid
+  diningSessionId String @db.Uuid
+  guestSessionId String? @db.Uuid
+  source OrderSource
+  status OrderStatus @default(PENDING_CONFIRMATION)
+  idempotencyKey String @db.VarChar(128)
+  requestHash String @db.Char(64)
+  totalAmount Int
+  note String? @db.VarChar(500)
+  cancellationReason String?
+  acceptedAt DateTime? @db.Timestamptz(3)
+  preparingAt DateTime? @db.Timestamptz(3)
+  readyAt DateTime? @db.Timestamptz(3)
+  servedAt DateTime? @db.Timestamptz(3)
+  cancelledAt DateTime? @db.Timestamptz(3)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Restrict)
+  diningSession DiningSession @relation(fields: [diningSessionId, restaurantId], references: [id, restaurantId], onDelete: Restrict)
+  guestSession GuestSession? @relation(fields: [guestSessionId, diningSessionId], references: [id, diningSessionId], onDelete: Restrict)
+  items OrderItem[]
+  @@unique([id, restaurantId])
+  @@unique([diningSessionId, idempotencyKey])
+  @@index([restaurantId, status, createdAt])
+  @@index([diningSessionId, createdAt])
+}
+
+model OrderItem {
+  id String @id @default(uuid()) @db.Uuid
+  restaurantId String @db.Uuid
+  orderId String @db.Uuid
+  menuItemId String @db.Uuid
+  nameSnapshot String
+  basePriceSnapshot Int
+  unitPrice Int
+  quantity Int
+  totalAmount Int
+  note String? @db.VarChar(500)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  order Order @relation(fields: [orderId, restaurantId], references: [id, restaurantId], onDelete: Restrict)
+  menuItem MenuItem @relation(fields: [menuItemId, restaurantId], references: [id, restaurantId], onDelete: Restrict)
+  modifiers OrderItemModifier[]
+  @@unique([id, restaurantId])
+  @@index([orderId])
+  @@index([menuItemId])
+}
+
+model OrderItemModifier {
+  id String @id @default(uuid()) @db.Uuid
+  restaurantId String @db.Uuid
+  orderItemId String @db.Uuid
+  modifierOptionId String @db.Uuid
+  groupNameSnapshot String
+  optionNameSnapshot String
+  priceDeltaSnapshot Int
+  orderItem OrderItem @relation(fields: [orderItemId, restaurantId], references: [id, restaurantId], onDelete: Restrict)
+  modifierOption ModifierOption @relation(fields: [modifierOptionId, restaurantId], references: [id, restaurantId], onDelete: Restrict)
+  @@unique([orderItemId, modifierOptionId])
+  @@index([modifierOptionId])
+}
+
+model Payment {
+  id String @id @default(uuid()) @db.Uuid
+  restaurantId String @db.Uuid
+  diningSessionId String @unique @db.Uuid
+  method PaymentMethod
+  status PaymentStatus @default(COMPLETED)
+  subtotal Int
+  discount Int @default(0)
+  serviceChargeBps Int @default(0)
+  serviceCharge Int @default(0)
+  taxBps Int @default(0)
+  tax Int @default(0)
+  total Int
+  paidAmount Int
+  reference String?
+  completedAt DateTime @default(now()) @db.Timestamptz(3)
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Restrict)
+  diningSession DiningSession @relation(fields: [diningSessionId, restaurantId], references: [id, restaurantId], onDelete: Restrict)
+  @@unique([diningSessionId, restaurantId])
+  @@index([restaurantId, completedAt])
+}
+
+model ServiceRequest {
+  id String @id @default(uuid()) @db.Uuid
+  restaurantId String @db.Uuid
+  diningSessionId String @db.Uuid
+  guestSessionId String? @db.Uuid
+  type ServiceRequestType
+  status ServiceRequestStatus @default(PENDING)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  resolvedAt DateTime? @db.Timestamptz(3)
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Restrict)
+  diningSession DiningSession @relation(fields: [diningSessionId, restaurantId], references: [id, restaurantId], onDelete: Restrict)
+  guestSession GuestSession? @relation(fields: [guestSessionId, diningSessionId], references: [id, diningSessionId], onDelete: Restrict)
+  @@index([restaurantId, status, createdAt])
+  @@index([diningSessionId])
+}
+
+model ActivityLog {
+  id String @id @default(uuid()) @db.Uuid
+  restaurantId String @db.Uuid
+  actorUserId String? @db.Uuid
+  action String
+  entityType String
+  entityId String?
+  metadata Json?
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Restrict)
+  actorUser User? @relation(fields: [actorUserId], references: [id], onDelete: Restrict)
+  @@index([restaurantId, createdAt])
+  @@index([actorUserId, createdAt])
+}

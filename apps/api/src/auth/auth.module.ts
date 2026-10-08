@@ -1,0 +1,21 @@
+import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtModule } from '@nestjs/jwt';
+import { ThrottlerModule } from '@nestjs/throttler';
+import { AuthController } from './auth.controller';
+import { AuthService } from './auth.service';
+import { MutationGuard, RolesGuard, StaffAuthGuard } from './guards';
+import { AuthThrottlerGuard } from './auth-throttler.guard';
+
+@Module({
+  imports: [JwtModule.register({}), ThrottlerModule.forRoot([{ ttl: 60000, limit: 120 }])],
+  controllers: [AuthController],
+  providers: [AuthService,
+    { provide: APP_GUARD, useClass: MutationGuard },
+    { provide: APP_GUARD, useClass: AuthThrottlerGuard },
+    { provide: APP_GUARD, useClass: StaffAuthGuard },
+    { provide: APP_GUARD, useClass: RolesGuard },
+  ],
+  exports: [AuthService],
+})
+export class AuthModule {}
