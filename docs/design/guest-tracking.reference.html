@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+
+<html class="light" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Bếp Nhà DineFlow - Bàn 05 Theo Dõi Đơn Hàng</title>
+<!-- Google Fonts: Newsreader & Be Vietnam Pro -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration verbatim -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "secondary-container": "#d6eaad",
+            "on-primary-fixed": "#002117",
+            "on-tertiary-fixed-variant": "#404944",
+            "surface-dim": "#dbdad6",
+            "secondary-fixed-dim": "#bace93",
+            "on-primary-container": "#81a999",
+            "surface-container-high": "#e9e8e4",
+            "on-background": "#1b1c1a",
+            "surface-container": "#efeeea",
+            "primary-container": "#173e32",
+            "on-secondary-fixed": "#131f00",
+            "on-error-container": "#93000a",
+            "on-tertiary-fixed": "#151d19",
+            "primary": "#00281d",
+            "on-surface": "#1b1c1a",
+            "outline": "#717975",
+            "inverse-on-surface": "#f2f1ed",
+            "on-secondary-fixed-variant": "#3c4c1f",
+            "on-secondary-container": "#596a39",
+            "secondary-fixed": "#d6eaad",
+            "on-tertiary-container": "#9aa39c",
+            "on-primary-fixed-variant": "#284e41",
+            "on-tertiary": "#ffffff",
+            "primary-fixed-dim": "#a6cfbf",
+            "inverse-surface": "#2f312e",
+            "error-container": "#ffdad6",
+            "surface": "#faf9f5",
+            "tertiary": "#1b241f",
+            "secondary": "#536434",
+            "surface-container-lowest": "#ffffff",
+            "outline-variant": "#c1c8c3",
+            "error": "#ba1a1a",
+            "inverse-primary": "#a6cfbf",
+            "background": "#faf9f5",
+            "on-error": "#ffffff",
+            "surface-variant": "#e3e2df",
+            "primary-fixed": "#c2ecda",
+            "tertiary-fixed-dim": "#c0c9c2",
+            "tertiary-container": "#313934",
+            "surface-container-highest": "#e3e2df",
+            "surface-bright": "#faf9f5",
+            "on-secondary": "#ffffff",
+            "surface-tint": "#406658",
+            "on-primary": "#ffffff",
+            "surface-container-low": "#f4f4f0",
+            "on-surface-variant": "#414845",
+            "tertiary-fixed": "#dce5de"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "gutter": "1rem",
+            "space-xs": "0.25rem",
+            "space-sm": "0.5rem",
+            "margin-tablet": "2rem",
+            "margin-desktop": "3rem",
+            "space-xl": "2.5rem",
+            "space-md": "1rem",
+            "space-lg": "1.5rem",
+            "gutter-desktop": "1.5rem",
+            "margin": "1rem"
+          },
+          "fontFamily": {
+            "headline-sm": ["Be Vietnam Pro"],
+            "headline-display-mobile": ["Newsreader"],
+            "headline-md": ["Be Vietnam Pro"],
+            "headline-lg-mobile": ["Newsreader"],
+            "body-sm": ["Be Vietnam Pro"],
+            "label-md": ["Be Vietnam Pro"],
+            "body-md": ["Be Vietnam Pro"],
+            "body-lg": ["Be Vietnam Pro"],
+            "headline-lg": ["Newsreader"],
+            "label-lg": ["Be Vietnam Pro"],
+            "label-sm": ["Be Vietnam Pro"],
+            "headline-display": ["Newsreader"]
+          },
+          "fontSize": {
+            "headline-sm": ["18px", {"lineHeight": "26px", "letterSpacing": "0em", "fontWeight": "600"}],
+            "headline-display-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+            "headline-md": ["22px", {"lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+            "headline-lg-mobile": ["26px", {"lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "500"}],
+            "body-sm": ["12px", {"lineHeight": "18px", "letterSpacing": "0.01em", "fontWeight": "400"}],
+            "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "600"}],
+            "body-md": ["14px", {"lineHeight": "22px", "letterSpacing": "0.005em", "fontWeight": "400"}],
+            "body-lg": ["16px", {"lineHeight": "26px", "letterSpacing": "0em", "fontWeight": "400"}],
+            "headline-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.015em", "fontWeight": "500"}],
+            "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+            "label-sm": ["10px", {"lineHeight": "14px", "letterSpacing": "0.06em", "fontWeight": "700"}],
+            "headline-display": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    /* Subtle touch feedback */
+    .touch-target-active:active {
+      transform: scale(0.98);
+    }
+    /* Safe Area padding for iOS notch and modern devices */
+    .pb-safe {
+      padding-bottom: env(safe-area-inset-bottom, 1rem);
+    }
+    .pt-safe {
+      padding-top: env(safe-area-inset-top, 0.5rem);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body-md antialiased min-h-screen flex flex-col justify-between selection:bg-secondary-container selection:text-on-secondary-fixed">
+<!-- TOP APP BAR / HEADER (SUPPRESSED GLOBAL DESKTOP SHELL FOR FOCUSED GUEST ORDER JOURNEY) -->
+<header class="sticky top-0 z-30 bg-surface/95 backdrop-blur-md pt-safe transition-all shadow-[0_2px_8px_-2px_rgba(23,62,50,0.05)]">
+<div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between gap-3">
+<!-- Back to Menu Action -->
+<a class="inline-flex items-center gap-1.5 py-1.5 px-2.5 -ml-1.5 rounded-lg text-primary hover:bg-surface-container active:scale-95 transition-all text-label-md font-label-md" href="#" title="Quay lại thực đơn">
+<span class="material-symbols-outlined text-[18px]">arrow_back</span>
+<span>Thực đơn</span>
+</a>
+<!-- Restaurant & Table Identity -->
+<div class="text-center flex-1 min-w-0 px-2">
+<div class="flex items-center justify-center gap-1.5">
+<span class="font-headline-sm text-headline-sm text-primary truncate tracking-tight">Bếp Nhà DineFlow</span>
+</div>
+<div class="flex items-center justify-center gap-1.5 mt-0.5">
+<span class="text-label-sm font-label-sm px-2 py-0.5 rounded-full bg-primary-container text-primary-fixed">Bàn 05</span>
+<span class="text-body-sm font-body-sm text-on-surface-variant text-[11px]">• Ca trưa</span>
+</div>
+</div>
+<!-- Sync Status Badge & Manual Degraded Mode Indicator -->
+<div class="flex items-center shrink-0">
+<div class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-secondary-container text-on-secondary-container border border-secondary/20 shadow-sm transition-all cursor-pointer" id="syncBadge" onclick="toggleNetworkSimulation()" title="Chạm để kiểm tra trạng thái">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>
+<span class="text-label-sm font-label-sm tracking-normal">Đang đồng bộ</span>
+</div>
+</div>
+</div>
+<!-- Degraded Fallback Banner (State: Offline / Degraded) -->
+<div class="hidden bg-surface-container-high px-4 py-2 border-y border-outline-variant/30 text-on-surface-variant flex items-center justify-between text-body-sm font-body-sm" id="degradedBanner">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-outline text-[18px]">wifi_off</span>
+<span class="text-label-sm font-label-sm">Mất kết nối · Cập nhật thủ công</span>
+</div>
+<button class="px-2.5 py-1 rounded bg-surface border border-outline-variant text-primary text-label-sm font-label-sm hover:bg-surface-container active:scale-95 flex items-center gap-1" onclick="retrySync()">
+<span class="material-symbols-outlined text-[14px]">refresh</span>
+        Làm mới
+      </button>
+</div>
+</header>
+<!-- MAIN SCROLLABLE GUEST CANVAS -->
+<main class="flex-1 max-w-md mx-auto w-full px-4 pt-4 pb-32">
+<!-- HERO SECTION (Warm Editorial Minimalism) -->
+<section class="mb-6 pt-1">
+<div class="flex items-baseline justify-between">
+<h1 class="font-headline-display-mobile text-headline-display-mobile text-primary tracking-tight">
+          Bữa ngon đang đến.
+        </h1>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1 leading-relaxed">
+        Theo dõi các đơn bạn đã gọi trong lượt phục vụ này.
+      </p>
+</section>
+<!-- SECTION 1: ACTIVE ORDER (ĐƠN #1024) -->
+<section aria-labelledby="order-1024-title" class="mb-6">
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant/40 shadow-[0_2px_8px_-2px_rgba(23,62,50,0.06)] overflow-hidden">
+<!-- Order Header Bar -->
+<div class="bg-primary-container px-4 py-3 flex items-center justify-between text-surface">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary-fixed text-[20px]">soup_kitchen</span>
+<span class="font-label-lg text-label-lg tracking-wide text-surface" id="order-1024-title">Đơn #1024</span>
+</div>
+<span class="px-2.5 py-0.5 rounded-full bg-secondary-fixed text-primary font-label-sm text-label-sm uppercase tracking-wider font-semibold">
+            Đang chế biến
+          </span>
+</div>
+<!-- Chronological Stepper (Strict timestamps for completed only) -->
+<div class="p-4 bg-surface-container-low/60 border-b border-outline-variant/30">
+<div class="relative flex items-center justify-between">
+<!-- Connecting progress background line -->
+<div class="absolute left-3 right-3 top-3.5 -translate-y-1/2 h-0.5 bg-outline-variant/40 -z-0"></div>
+<!-- Active progress filled line -->
+<div class="absolute left-3 top-3.5 -translate-y-1/2 h-0.5 bg-primary-container w-[50%] -z-0"></div>
+<!-- Step 1: Chờ xác nhận (Done) -->
+<div class="relative z-10 flex flex-col items-center text-center">
+<div class="w-7 h-7 rounded-full bg-primary-container text-surface flex items-center justify-center text-label-sm shadow-sm ring-2 ring-surface">
+<span class="material-symbols-outlined text-[16px]">check</span>
+</div>
+<span class="mt-1.5 font-label-sm text-label-sm text-on-surface font-medium">Chờ xác nhận</span>
+<span class="text-[11px] font-body-sm text-on-surface-variant">11:30</span>
+</div>
+<!-- Step 2: Đã nhận (Done) -->
+<div class="relative z-10 flex flex-col items-center text-center">
+<div class="w-7 h-7 rounded-full bg-primary-container text-surface flex items-center justify-center text-label-sm shadow-sm ring-2 ring-surface">
+<span class="material-symbols-outlined text-[16px]">check</span>
+</div>
+<span class="mt-1.5 font-label-sm text-label-sm text-on-surface font-medium">Đã nhận</span>
+<span class="text-[11px] font-body-sm text-on-surface-variant">11:32</span>
+</div>
+<!-- Step 3: Đang chế biến (Current Active) -->
+<div class="relative z-10 flex flex-col items-center text-center">
+<div class="w-7 h-7 rounded-full bg-secondary-container border-2 border-secondary text-primary font-bold flex items-center justify-center text-label-sm shadow-sm ring-2 ring-surface animate-pulse">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+</div>
+<span class="mt-1.5 font-label-sm text-label-sm text-primary font-bold">Đang chế biến</span>
+<span class="text-[11px] font-label-sm text-secondary font-semibold">Hiện tại</span>
+</div>
+<!-- Step 4: Sẵn sàng (Pending) -->
+<div class="relative z-10 flex flex-col items-center text-center">
+<div class="w-7 h-7 rounded-full bg-surface-container border border-outline-variant/60 text-outline flex items-center justify-center text-label-sm ring-2 ring-surface">
+<span class="w-1.5 h-1.5 rounded-full bg-outline-variant"></span>
+</div>
+<span class="mt-1.5 font-label-sm text-label-sm text-outline font-normal">Sẵn sàng</span>
+<span class="text-[11px] font-body-sm text-outline-variant">—</span>
+</div>
+<!-- Step 5: Đã phục vụ (Pending) -->
+<div class="relative z-10 flex flex-col items-center text-center">
+<div class="w-7 h-7 rounded-full bg-surface-container border border-outline-variant/60 text-outline flex items-center justify-center text-label-sm ring-2 ring-surface">
+<span class="w-1.5 h-1.5 rounded-full bg-outline-variant"></span>
+</div>
+<span class="mt-1.5 font-label-sm text-label-sm text-outline font-normal">Đã phục vụ</span>
+<span class="text-[11px] font-body-sm text-outline-variant">—</span>
+</div>
+</div>
+</div>
+<!-- Dish Items List -->
+<div class="p-4 space-y-4">
+<!-- Item 1: Cơm chiên hải sản -->
+<div class="flex items-start gap-3 pb-3.5 border-b border-outline-variant/20">
+<div class="w-16 h-16 rounded-lg overflow-hidden shrink-0 border border-outline-variant/30 bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="A rustic artisanal ceramic bowl overflowing with fragrant golden wok-fried seafood rice garnished with fresh tiger prawns, tender squid, green peas, and scallions in warm soft indoor restaurant ambient lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYjo1r0nxGnmidcvYNzWv4NVqtOoz4HWN_DhRmL5Yad0f19h-7CMe7KqOAti1tBGSmyq9rk9FM9Kkq0o87AcDrT4vUHUTaDebfKJBR1Jy04AMNSUtFiMteN3lkyH2_iSsTOm_EN10p3SCmvs1UlKnFhtzTD0aKHgPB3zWNHrTdwmNiPnIVmqr6Uvdtr_OlZUWSJ13BBdTQ3EjK43npsU3qrkXJQTpFNoIdwlIECnQJVdJG8jlNSRwbPb25OvYmx_L780VSPIbZfGI"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-start justify-between gap-2">
+<h2 class="font-headline-sm text-headline-sm text-primary leading-tight">
+<span class="font-bold text-secondary mr-1">2×</span> Cơm chiên hải sản
+                </h2>
+<span class="font-label-lg text-label-lg text-primary whitespace-nowrap">170.000đ</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5 leading-snug">
+                Hạt tơi vàng óng, tôm sú &amp; mực tươi
+              </p>
+</div>
+</div>
+<!-- Item 2: Trà sữa truyền thống -->
+<div class="flex items-start gap-3 pb-3.5 border-b border-outline-variant/20">
+<div class="w-16 h-16 rounded-lg overflow-hidden shrink-0 border border-outline-variant/30 bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="A chilled glass of traditional Vietnamese milk tea crowned with glossy tapioca pearls and fresh mint, photographed on a dark reclaimed wooden dining table with gentle soft shadows." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAcdsZbUNbXycPucLRP3YzfH4tOwE5y_BFH84LqAA9pjio-bnoMbQ-TM9wJppZd48gH-VfeKPFf8VL44WU_VfZ5ojwv_4x2RTJkxg3fOpUm5ET7n0GKAQNE8w5V-Gcq4GGxAigFf0yhalstotr2x5JodZX9zsdB2tC5plI7bmMNPsNbd_lao3NdZIaoGs3OQQOGdiGfW_jUuN4gBe8lf4XBCsPh38HrJKnODlLE0cz8vMzhjLI0tpv3O5H1C6BvyD1IB0QZDzm7D6o"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-start justify-between gap-2">
+<h2 class="font-headline-sm text-headline-sm text-primary leading-tight">
+<span class="font-bold text-secondary mr-1">1×</span> Trà sữa truyền thống
+                </h2>
+<span class="font-label-lg text-label-lg text-primary whitespace-nowrap">35.000đ</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5 leading-snug">
+                Size L, Trân châu đen dẻo
+              </p>
+</div>
+</div>
+<!-- Special Instructions / Notes -->
+<div class="rounded-lg bg-surface-container-low p-3 flex items-start gap-2.5 border border-outline-variant/30">
+<span class="material-symbols-outlined text-secondary text-[18px] shrink-0 mt-0.5">edit_note</span>
+<div class="text-body-sm font-body-sm text-on-surface-variant">
+<span class="font-label-sm font-semibold text-primary">Ghi chú bếp:</span>
+<span>Ít đá, không hành lá, làm cay vừa.</span>
+</div>
+</div>
+</div>
+<!-- Order Subtotal Footer -->
+<div class="bg-surface-container-low px-4 py-3 flex items-center justify-between border-t border-outline-variant/30">
+<span class="font-label-md text-label-md text-on-surface-variant">Tổng tiền bữa ăn tạm tính</span>
+<div class="text-right">
+<span class="font-headline-md text-headline-md text-primary font-bold">205.000đ</span>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 2: CANCELLED / REJECTED ORDER (ĐƠN #1020) -->
+<section aria-labelledby="order-1020-title" class="mb-6">
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant/40 overflow-hidden opacity-90">
+<!-- Header -->
+<div class="px-4 py-2.5 bg-surface-container flex items-center justify-between border-b border-outline-variant/30">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-outline text-[18px]">receipt</span>
+<span class="font-label-md text-label-md text-on-surface-variant font-medium" id="order-1020-title">Đơn #1020</span>
+</div>
+<!-- Earthy / Neutral status tag -->
+<span class="px-2 py-0.5 rounded-full bg-surface-container-highest text-on-surface-variant font-label-sm text-label-sm border border-outline-variant">
+            Đã hủy
+          </span>
+</div>
+<!-- Mandatory Rejection Detail -->
+<div class="p-4 space-y-2">
+<div class="flex items-start gap-2.5 p-3 rounded-lg bg-error-container/20 border border-error/20 text-on-surface">
+<span class="material-symbols-outlined text-error text-[18px] shrink-0 mt-0.5">info</span>
+<div class="font-body-sm text-body-sm leading-snug">
+<span class="font-label-sm font-semibold text-error block">Lý do từ chối:</span>
+<span>Hết nguyên liệu: Canh nghêu nấu chua thì là đã tạm ngưng trong ca trưa</span>
+</div>
+</div>
+<div class="flex items-center justify-between text-body-sm font-body-sm text-on-surface-variant/80 pt-1 px-1">
+<span>1× Canh nghêu nấu chua thì là</span>
+<span class="line-through text-outline">65.000đ</span>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 3: TABLE SERVICE & ACTIVE REQUESTS -->
+<section aria-labelledby="service-title" class="mb-6">
+<div class="flex items-center justify-between mb-3">
+<h2 class="font-headline-sm text-headline-sm text-primary" id="service-title">Dịch vụ tại bàn</h2>
+<span class="text-body-sm font-body-sm text-on-surface-variant">Phản hồi nhanh</span>
+</div>
+<!-- Active Service Request Card -->
+<div class="mb-3.5 p-3.5 rounded-xl bg-surface-container-low border border-secondary/30 flex items-start gap-3 shadow-[0_2px_8px_-2px_rgba(23,62,50,0.04)]">
+<div class="w-8 h-8 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[18px]">room_service</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-1">
+<span class="font-label-md text-label-md text-primary font-semibold truncate">Hỗ trợ mang thêm nước &amp; thìa đũa</span>
+<span class="text-[11px] font-body-sm text-on-surface-variant shrink-0">11:38</span>
+</div>
+<!-- Standard operational status pill: Chờ phản hồi / Nhân viên đã tiếp nhận / Đã xử lý -->
+<div class="mt-1 flex items-center gap-1.5">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-secondary-fixed text-primary font-label-sm text-[11px] font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+              Nhân viên đã tiếp nhận
+            </span>
+</div>
+</div>
+</div>
+<!-- Two Large Touch Targets for Guests -->
+<div class="grid grid-cols-2 gap-3">
+<!-- Button 1: Call Staff (Disabled state because one request is pending) -->
+<button class="flex flex-col items-center justify-center gap-1.5 p-3.5 rounded-xl border border-outline-variant bg-surface-container-lowest text-primary hover:bg-surface-container active:scale-[0.98] transition-all min-h-[72px] text-center opacity-70 cursor-not-allowed" disabled="" id="btnCallStaff" onclick="triggerCallStaff()" title="Bạn đang có yêu cầu đang xử lý">
+<span class="material-symbols-outlined text-[24px] text-secondary">support_agent</span>
+<span class="font-label-md text-label-md font-semibold">Gọi nhân viên</span>
+<span class="text-[10px] text-on-surface-variant">Đang có yêu cầu</span>
+</button>
+<!-- Button 2: Request Checkout / Bill -->
+<button class="flex flex-col items-center justify-center gap-1.5 p-3.5 rounded-xl border border-secondary bg-secondary-container/40 text-primary hover:bg-secondary-container active:scale-[0.98] transition-all min-h-[72px] text-center shadow-sm" id="btnBillRequest" onclick="openBillModal()">
+<span class="material-symbols-outlined text-[24px] text-primary">receipt_long</span>
+<span class="font-label-md text-label-md font-semibold text-primary">Yêu cầu thanh toán</span>
+<span class="text-[10px] text-secondary font-medium">Báo thanh toán tại bàn</span>
+</button>
+</div>
+<!-- Informational note regarding checkout -->
+<div class="mt-2.5 px-3 py-2 rounded-lg bg-surface-container text-on-surface-variant text-[11px] font-body-sm leading-relaxed flex items-start gap-1.5">
+<span class="material-symbols-outlined text-[15px] text-outline shrink-0 mt-0.5">info</span>
+<span>Nhân viên sẽ đến hỗ trợ tại bàn. Bàn tạm ngừng nhận món mới; yêu cầu này chưa ghi nhận thanh toán.</span>
+</div>
+</section>
+</main>
+<!-- STICKY BOTTOM ACTIONS (ONE-HAND ERGONOMICALLY ACCESSIBLE) -->
+<aside aria-label="Hành động đặt món" class="fixed bottom-0 left-0 right-0 z-20 bg-surface/95 backdrop-blur-md pb-safe shadow-[0_-4px_16px_rgba(23,62,50,0.06)]">
+<div class="max-w-md mx-auto px-4 py-3 flex items-center gap-3">
+<!-- Order Summary Pill -->
+<div class="flex-1 min-w-0">
+<div class="text-[11px] font-body-sm text-on-surface-variant truncate">Tạm tính bàn 05 (1 đơn)</div>
+<div class="font-headline-sm text-headline-sm text-primary font-bold">205.000đ</div>
+</div>
+<!-- Sticky CTA: Gọi thêm món -->
+<a class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-primary text-on-primary font-label-lg text-label-lg shadow-md hover:bg-primary/90 active:scale-[0.98] transition-all whitespace-nowrap min-h-[48px]" href="#" id="btnOrderMore">
+<span class="material-symbols-outlined text-[18px]">restaurant_menu</span>
+<span>Gọi thêm món</span>
+</a>
+</div>
+</aside>
+<!-- CONFIRMATION DIALOG MODAL: YÊU CẦU THANH TOÁN TẠI BÀN -->
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-primary-container/60 backdrop-blur-sm hidden transition-opacity duration-200" id="checkoutModal">
+<div class="bg-surface-container-lowest max-w-sm w-full rounded-2xl border border-outline-variant p-5 shadow-[0_16px_40px_-8px_rgba(23,62,50,0.16)] text-left relative animate-in fade-in zoom-in-95 duration-150">
+<div class="w-12 h-12 rounded-full bg-secondary-container text-primary flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-[28px]">receipt_long</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-primary tracking-tight">
+        Xác nhận yêu cầu thanh toán?
+      </h3>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2 leading-relaxed">
+        Nhân viên sẽ mang phiếu tạm tính và hỗ trợ tại Bàn 05. Sau khi gửi yêu cầu, bàn sẽ tạm ngừng tiếp nhận món mới.
+      </p>
+<div class="my-3 p-3 rounded-lg bg-surface-container-low border border-outline-variant/40 flex items-center justify-between">
+<span class="text-label-md font-label-md text-on-surface-variant">Tổng thanh toán tạm tính:</span>
+<span class="font-headline-sm font-bold text-primary">205.000đ</span>
+</div>
+<!-- Action buttons -->
+<div class="flex items-center gap-3 mt-5">
+<button class="flex-1 py-3 px-4 rounded-xl border border-outline-variant text-on-surface-variant font-label-lg text-label-lg hover:bg-surface-container active:scale-[0.98] transition-all text-center" onclick="closeBillModal()">
+          Ở lại
+        </button>
+<button class="flex-1 py-3 px-4 rounded-xl bg-primary text-on-primary font-label-lg text-label-lg hover:bg-primary-container active:scale-[0.98] transition-all text-center" id="confirmBillBtn" onclick="submitBillRequest()">
+          Gửi yêu cầu
+        </button>
+</div>
+</div>
+</div>
+<!-- TOAST NOTIFICATION CONTAINER -->
+<div class="fixed top-16 left-1/2 -translate-x-1/2 z-50 hidden transition-all duration-300" id="toastNotification">
+<div class="bg-primary text-surface px-4 py-2.5 rounded-full shadow-lg text-body-sm font-label-md flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary-fixed text-[18px]" id="toastIcon">check_circle</span>
+<span id="toastMessage">Yêu cầu đã được gửi đến nhân viên</span>
+</div>
+</div>
+<!-- JAVASCRIPT: MICRO-INTERACTIONS & CONNECTION RESILIENCE LOGIC -->
+<script>
+    // State controller
+    let isDegraded = false;
+    let billRequested = false;
+
+    // Toggle simulated network mode
+    function toggleNetworkSimulation() {
+      isDegraded = !isDegraded;
+      const banner = document.getElementById('degradedBanner');
+      const badge = document.getElementById('syncBadge');
+
+      if (isDegraded) {
+        banner.classList.remove('hidden');
+        badge.className = "inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container-highest text-on-surface-variant border border-outline-variant shadow-sm transition-all cursor-pointer";
+        badge.innerHTML = `
+          <span class="w-1.5 h-1.5 rounded-full bg-outline"></span>
+          <span class="text-label-sm font-label-sm tracking-normal">Mất kết nối</span>
+        `;
+        showToast("Chế độ ngoại tuyến: hiển thị dữ liệu lưu đệm gần nhất.", "wifi_off");
+      } else {
+        banner.classList.add('hidden');
+        badge.className = "inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-secondary-container text-on-secondary-container border border-secondary/20 shadow-sm transition-all cursor-pointer";
+        badge.innerHTML = `
+          <span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>
+          <span class="text-label-sm font-label-sm tracking-normal">Đang đồng bộ</span>
+        `;
+        showToast("Đã kết nối lại thời gian thực.", "cloud_done");
+      }
+    }
+
+    function retrySync() {
+      showToast("Đang đồng bộ dữ liệu Bàn 05...", "sync");
+      setTimeout(() => {
+        toggleNetworkSimulation();
+      }, 700);
+    }
+
+    // Modal controls for bill request
+    function openBillModal() {
+      if (billRequested) {
+        showToast("Yêu cầu thanh toán đã được ghi nhận trước đó.", "info");
+        return;
+      }
+      document.getElementById('checkoutModal').classList.remove('hidden');
+    }
+
+    function closeBillModal() {
+      document.getElementById('checkoutModal').classList.add('hidden');
+    }
+
+    function submitBillRequest() {
+      const confirmBtn = document.getElementById('confirmBillBtn');
+      confirmBtn.innerText = "Đang gửi...";
+      confirmBtn.disabled = true;
+
+      setTimeout(() => {
+        closeBillModal();
+        billRequested = true;
+        confirmBtn.innerText = "Gửi yêu cầu";
+        confirmBtn.disabled = false;
+
+        // Update Bill request button visual
+        const billBtn = document.getElementById('btnBillRequest');
+        billBtn.classList.add('opacity-70', 'cursor-not-allowed');
+        billBtn.innerHTML = `
+          <span class="material-symbols-outlined text-[24px] text-outline">hourglass_top</span>
+          <span class="font-label-md text-label-md font-semibold text-on-surface-variant">Đã gọi tính tiền</span>
+          <span class="text-[10px] text-outline">Đang chờ nhân viên</span>
+        `;
+
+        // Suspend ordering more items per specification
+        const orderMoreBtn = document.getElementById('btnOrderMore');
+        orderMoreBtn.classList.add('pointer-events-none', 'opacity-50', 'bg-surface-dim', 'text-outline');
+        orderMoreBtn.innerHTML = `
+          <span class="material-symbols-outlined text-[18px]">lock</span>
+          <span>Bàn đã chốt gọi món</span>
+        `;
+
+        showToast("Đã gửi yêu cầu thanh toán. Nhân viên đang đến!", "receipt");
+      }, 600);
+    }
+
+    // Call staff disabled state check
+    function triggerCallStaff() {
+      // Intentionally prevented when active request exists
+      showToast("Yêu cầu của bạn đang được nhân viên xử lý.", "hourglass_top");
+    }
+
+    // Lightweight toast helper
+    function showToast(msg, icon = "check_circle") {
+      const toast = document.getElementById('toastNotification');
+      const msgElem = document.getElementById('toastMessage');
+      const iconElem = document.getElementById('toastIcon');
+
+      msgElem.innerText = msg;
+      iconElem.innerText = icon;
+      toast.classList.remove('hidden');
+
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 2800);
+    }
+  </script>
+</body></html>
