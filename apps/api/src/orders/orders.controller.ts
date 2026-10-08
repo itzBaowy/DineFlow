@@ -64,7 +64,7 @@ export class PublicOrdersController {
   @Get('orders') history(@Param('code') code: string, @Req() request: Request) {
     return this.orders.history(code, guestToken(request));
   }
-  @Throttle({ default: { limit: 20, ttl: 60000 } })
+  @Throttle({ default: { limit: 30, ttl: 60000 } })
   @Post('orders')
   create(
     @Param('code') code: string,

@@ -414,6 +414,71 @@ test('Phase 3 dining sessions and guest ordering with real PostgreSQL', async (t
         assert.equal(await db.order.count({ where: { diningSessionId: sessionId } }), 2);
       },
     );
+    await t.test('concurrent empty close and ordering commit one valid outcome', async () => {
+      const next = await json<{ id: string }>(
+        await request(`/dining-sessions/tables/${table.id}/open`, 'POST', {}, cookies[2]),
+      );
+      const admission = await request(`${prefix}/guest`, 'POST', { diningSessionId: next.id });
+      await json(admission);
+      const newCookie = admission.headers.get('set-cookie')!.split(';')[0]!;
+      const replies = await Promise.all([
+        request(
+          `${prefix}/orders`,
+          'POST',
+          payload({ diningSessionId: next.id, expectedTotal: 100000 }),
+          newCookie,
+        ),
+        request(
+          `/dining-sessions/tables/${table.id}/close-empty`,
+          'POST',
+          { reason: 'Khách đổi bàn' },
+          cookies[0],
+        ),
+      ]);
+      const session = await db.diningSession.findUniqueOrThrow({ where: { id: next.id } });
+      if (session.status === 'CLOSED') {
+        assert.equal(replies[1]!.status, 201);
+        assert.equal(replies[0]!.status, 401);
+        assert.equal(await db.order.count({ where: { diningSessionId: next.id } }), 0);
+      } else {
+        assert.equal(replies[0]!.status, 201);
+        assert.equal(replies[1]!.status, 409);
+        assert.equal(await db.order.count({ where: { diningSessionId: next.id } }), 1);
+      }
+    });
+    await t.test(
+      'public mutations reject cross-origin and malformed/oversized JSON; ordering is rate limited',
+      async () => {
+        for (const [body, status] of [
+          ['{', 400],
+          [JSON.stringify({ note: 'x'.repeat(140000) }), 413],
+        ] as const) {
+          const response = await fetch(`${base}${prefix}/orders`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-DineFlow-Client': 'web',
+              Origin: config.APP_ORIGIN,
+            },
+            body,
+          });
+          assert.equal(response.status, status, await response.clone().text());
+        }
+        const denied = await fetch(`${base}${prefix}/guest`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-DineFlow-Client': 'web',
+            Origin: 'https://other.example',
+          },
+          body: JSON.stringify({ diningSessionId: sessionId }),
+        });
+        assert.equal(denied.status, 403);
+        let last: Response | undefined;
+        for (let i = 0; i < 31; i++) last = await request(`${prefix}/orders`, 'POST', {});
+        assert.equal(last!.status, 429);
+      },
+    );
   } finally {
     const ids = [restaurant.id, other.id],
       userIds = users.map((user) => user.id);
