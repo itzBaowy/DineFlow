@@ -9,7 +9,7 @@
     "dev": "tsc -p tsconfig.json --watch",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint src",
-    "test": "pnpm build && node --test dist/domain.test.js"
+    "test": "pnpm build && node --test dist/domain.test.js dist/setup.test.js"
   },
   "dependencies": { "zod": "4.6.5" }
 }

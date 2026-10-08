@@ -100,6 +100,7 @@ model Restaurant {
   payments Payment[]
   serviceRequests ServiceRequest[]
   activityLogs ActivityLog[]
+  mediaAssets MediaAsset[]
 }
 
 model StaffMembership {
@@ -394,4 +395,15 @@ model ActivityLog {
   actorUser User? @relation(fields: [actorUserId], references: [id], onDelete: Restrict)
   @@index([restaurantId, createdAt])
   @@index([actorUserId, createdAt])
+}
+
+model MediaAsset {
+  id String @id @default(uuid()) @db.Uuid
+  restaurantId String @db.Uuid
+  objectKey String @unique
+  mimeType String
+  size Int
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Restrict)
+  @@index([restaurantId])
 }

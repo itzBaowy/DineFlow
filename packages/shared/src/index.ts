@@ -1,4 +1,5 @@
 import { z } from 'zod';
+export * from './setup';
 
 export const roles = ['OWNER', 'MANAGER', 'CASHIER', 'WAITER', 'KITCHEN'] as const;
 export const roleSchema = z.enum(roles);
