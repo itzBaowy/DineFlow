@@ -28,10 +28,11 @@ export const restaurantInputSchema = z
       }, 'Múi giờ không hợp lệ'),
     serviceChargeBps: z.number().int().min(0).max(10000),
     taxBps: z.number().int().min(0).max(10000),
+    cashierMaxDiscountBps: z.number().int().min(0).max(10000).optional(),
   })
   .strict();
 export const restaurantSettingsSchema = restaurantInputSchema
-  .extend({ id: z.uuid(), currency: z.literal('VND') })
+  .extend({ id: z.uuid(), currency: z.literal('VND'), cashierMaxDiscountBps: z.number().int().min(0).max(10000) })
   .strip();
 export const categoryInputSchema = z
   .object({ name, description, position, isActive: z.boolean() })

@@ -7,6 +7,8 @@ export const realtimeTicketSchema = z.object({
 });
 export const realtimeEventNames = [
   'order.created',
+  'billing.updated',
+  'payment.completed',
   'order.accepted',
   'order.status_changed',
   'table.status_changed',
