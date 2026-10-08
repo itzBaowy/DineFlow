@@ -1,4 +1,13 @@
-import { Controller, Get, Param, ParseUUIDPipe, Post, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Post,
+  Res,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import type {} from 'multer';
 import { ApiBody, ApiConsumes, ApiCookieAuth, ApiTags } from '@nestjs/swagger';
@@ -19,9 +28,21 @@ export class StorageController {
   @MultipartUpload()
   @Throttle({ default: { limit: 20, ttl: 60000 } })
   @ApiConsumes('multipart/form-data')
-  @ApiBody({ schema: { type: 'object', properties: { file: { type: 'string', format: 'binary' } }, required: ['file'] } })
-  @UseInterceptors(FileInterceptor('file', { limits: { fileSize: 5 * 1024 * 1024, files: 1, fields: 0, parts: 1 } }))
-  upload(@CurrentStaff() staff: StaffPrincipal, @UploadedFile() file?: Express.Multer.File) { return this.storage.upload(staff, file); }
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: { file: { type: 'string', format: 'binary' } },
+      required: ['file'],
+    },
+  })
+  @UseInterceptors(
+    FileInterceptor('file', {
+      limits: { fileSize: 5 * 1024 * 1024, files: 1, fields: 0, parts: 1 },
+    }),
+  )
+  upload(@CurrentStaff() staff: StaffPrincipal, @UploadedFile() file?: Express.Multer.File) {
+    return this.storage.upload(staff, file);
+  }
   @Public()
   @Get(':id')
   async image(@Param('id', new ParseUUIDPipe()) id: string, @Res() response: Response) {
