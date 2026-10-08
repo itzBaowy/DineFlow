@@ -12,3 +12,5 @@
 | 8 — Production | E2E toàn quy trình, logs, hardening, image builds, CI/CD/deploy | QR → order → confirm → cook → serve → pay → close |
 
 Sau mỗi phase chạy lint, typecheck, tests và build; ghi rõ kết quả đã chạy và giới hạn. Không dùng UI mẫu để đánh dấu chức năng đã hoàn thành. Chưa triển khai E2E ordering trong Phase 1 vì các endpoint đó chưa tồn tại.
+
+Trạng thái: Phase 1 và Phase 2 đã kiểm chứng local. Xem [Phase 2 verification](phase-2-verification.md). Giai đoạn kế tiếp là Phase 3 — Customer Ordering; không triển khai bếp/realtime/thanh toán trước khi có luồng phiên bàn và đơn hàng hợp lệ.
