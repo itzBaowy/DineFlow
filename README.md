@@ -1,6 +1,6 @@
 # DineFlow
 
-Hệ thống QR Ordering và quản lý nhà hàng theo [Requirement.md](Requirement.md). Đã triển khai **Phase 1–3: Foundation, Restaurant Setup và Customer Ordering**, với giao diện Google Stitch chuyển thành Next.js components kết nối NestJS/PostgreSQL/MinIO thật.
+Hệ thống QR Ordering và quản lý nhà hàng theo [Requirement.md](Requirement.md). Đã triển khai **Phase 1–4: Foundation, Restaurant Setup, Customer Ordering và Staff & Kitchen**, với giao diện Google Stitch chuyển thành Next.js components kết nối NestJS/PostgreSQL/MinIO thật.
 
 ## Đã có
 
@@ -15,9 +15,12 @@ Hệ thống QR Ordering và quản lý nhà hàng theo [Requirement.md](Require
 - `/staff/tables`: mở phiên bàn, đọc các đơn của phiên, đóng phiên rỗng có lý do và xác nhận đã dọn theo RBAC.
 - `/t/[tableCode]`, `/cart`, `/orders`: thực đơn công khai, tìm kiếm/danh mục, size/topping, ghi chú, giỏ hàng giữ qua tải lại, checkout và lịch sử các đơn do khách hiện tại gửi.
 - Guest admission vào phiên do nhân viên mở, opaque token HttpOnly có hạn và scope bàn/phiên; giá tính ở server, snapshot món/tùy chọn, idempotency và transaction chống xung đột.
+- `/staff/orders`: lọc bàn/trạng thái, phân trang, xác nhận/từ chối có lý do và ghi nhận đã phục vụ theo role; dashboard hiển thị số đơn/bàn hiện tại từ database.
+- `/staff/kitchen`: ba hàng đợi đã nhận/đang chế biến/sẵn sàng, món và ghi chú snapshot, thời gian chờ, nút chế biến lớn; chỉ đơn đã xác nhận được chuyển bếp.
+- Ghi đơn thủ công từ phiên bàn OPEN, dùng chung menu/cart/pricing/modifiers, giữ giỏ qua reload và idempotency theo nhân viên. Chuyển trạng thái lưu timestamps/audit trong transaction, từ chối request đã lỗi thời.
 - Swagger, health checks, environment validation, tests với PostgreSQL/MinIO thật, QR decoding và browser E2E.
 
-Đơn mới ở trạng thái **Chờ xác nhận**. Xác nhận/từ chối và bếp thuộc Phase 4, realtime Phase 5, thanh toán/đóng phiên có đơn Phase 6. Hiện chỉ đóng được phiên chưa có đơn; không xóa lịch sử để làm trống bàn. Báo cáo và triển khai production thuộc các phase sau.
+Đơn QR và đơn thủ công mới ở trạng thái **Chờ xác nhận**. Nhân viên xác nhận → bếp chế biến → món sẵn sàng → nhân viên phục vụ. Hiện cập nhật bằng REST và nút Cập nhật; realtime thuộc Phase 5, thanh toán/đóng phiên có đơn thuộc Phase 6. Chỉ đóng được phiên chưa có đơn; không xóa lịch sử để làm trống bàn. Báo cáo và triển khai production thuộc các phase sau.
 
 ## Chạy local
 
@@ -67,9 +70,9 @@ pnpm --filter @dineflow/web exec playwright install chromium
 pnpm test:browser
 ```
 
-Integration tự tạo/migrate database riêng `dineflow_test` trên server cùng connection URL local. Tài khoản PG cần quyền tạo DB (Compose local đã có). Có thể truyền `TEST_DATABASE_URL`; tên DB bắt buộc kết thúc `_test`. Tests tạo fixtures riêng và cleanup đúng IDs/objects, không truncate DB dev. 30 tests về auth, RBAC, CSRF, refresh/replay/concurrency, DB constraints, setup, QR, MinIO, mở/đóng phiên, guest isolation, pricing/modifiers, snapshot và idempotency. Storage phải chạy và có credentials hợp lệ. Chưa có test API thanh toán/bếp vì endpoint chưa triển khai.
+Integration tự tạo/migrate database riêng `dineflow_test` trên server cùng connection URL local. Tài khoản PG cần quyền tạo DB (Compose local đã có). Có thể truyền `TEST_DATABASE_URL`; tên DB bắt buộc kết thúc `_test`. Tests tạo fixtures riêng và cleanup đúng IDs/objects, không truncate DB dev. 40 tests về auth, RBAC, CSRF, refresh/replay/concurrency, DB constraints, setup, QR, MinIO, mở/đóng phiên, guest isolation, pricing/modifiers, snapshot, idempotency và staff/kitchen transitions. Storage phải chạy và có credentials hợp lệ. Chưa có API/test thanh toán.
 
-Browser tests dùng DB dev đã seed và password local để kiểm tra dữ liệu thật. Dừng dev server rồi build trước; Playwright tự khởi động API/web nếu ports còn trống, hoặc dùng server đang chạy. 6 flows desktop/mobile kiểm tra auth/setup/QR và mở bàn, modifiers/cart/checkout, nhiều đơn, lịch sử riêng, giá thay đổi, retry sau mất phản hồi và đóng phiên rỗng. Ordering dùng restaurant/users ngẫu nhiên riêng, cleanup chỉ đúng tenant fixture; setup archive fixtures qua API và khôi phục settings. Screenshots/PDF QA lưu `.local/qa/`; traces/test-results được gitignore.
+Browser tests dùng DB dev đã seed và password local để kiểm tra dữ liệu thật. Dừng dev server rồi build trước; Playwright tự khởi động API/web nếu ports còn trống, hoặc dùng server đang chạy. 8 flows desktop/mobile kiểm tra auth/setup/QR, ordering/retry, đóng phiên rỗng, xác nhận → bếp → phục vụ, đơn thủ công/từ chối và stale request/RBAC. Ordering và operations dùng restaurant/users ngẫu nhiên riêng, cleanup chỉ đúng tenant fixture; setup archive fixtures qua API và khôi phục settings. Screenshots/PDF QA lưu `.local/qa/`; traces/test-results được gitignore.
 
 Chạy web production build local (API vẫn dùng env dev):
 
@@ -89,6 +92,7 @@ pnpm --filter @dineflow/web start
 - [Roadmap](docs/roadmap.md)
 - [Phase 2 verification](docs/phase-2-verification.md)
 - [Phase 3 verification và hướng dẫn dùng](docs/phase-3-verification.md)
+- [Phase 4 verification và hướng dẫn nhân viên/bếp](docs/phase-4-verification.md)
 - [Stitch → Next.js](docs/design/implementation.md)
 - [Stitch design system](docs/design/DESIGN.md)
 - [Stitch project](https://stitch.withgoogle.com/projects/7484965213377838536)
@@ -97,4 +101,4 @@ HTML tham chiếu Stitch trong `docs/design/*.reference.html` chỉ để đối
 
 ## Giới hạn hiện tại
 
-Chỉ xác minh local Windows, PostgreSQL/Redis/MinIO Compose và Chromium desktop/mobile. Chưa kiểm tra deployment, production Docker app images/S3, HTTPS thực tế, Safari/Firefox, máy in vật lý, Socket.IO hay E2E toàn quy trình đến thanh toán. QR cố định không xác minh khách có mặt; đơn phải được nhân viên xác nhận trước bếp (Phase 4). Guest cookie mặc định 4 giờ, không khôi phục lịch sử nếu mất cookie hoặc hết hạn. Strict refresh replay policy có thể buộc nhân viên đăng nhập lại khi nhiều tab refresh cùng lúc. Throttler in-memory chỉ phù hợp một backend instance. Chưa có job dọn ảnh upload bỏ dở. Demo seed, Swagger và MinIO hiện tại chỉ dành cho development.
+Chỉ xác minh local Windows, PostgreSQL/Redis/MinIO Compose và Chromium desktop/mobile. Chưa kiểm tra deployment, production Docker app images/S3, HTTPS thực tế, Safari/Firefox, máy in vật lý, Socket.IO hay E2E toàn quy trình đến thanh toán. QR cố định không xác minh khách có mặt; đơn phải được nhân viên xác nhận trước bếp. Guest cookie mặc định 4 giờ, không khôi phục lịch sử nếu mất cookie hoặc hết hạn. Strict refresh replay policy có thể buộc nhân viên đăng nhập lại khi nhiều tab refresh cùng lúc. Throttler in-memory chỉ phù hợp một backend instance. Chưa có job dọn ảnh upload bỏ dở. Demo seed, Swagger và MinIO hiện tại chỉ dành cho development.

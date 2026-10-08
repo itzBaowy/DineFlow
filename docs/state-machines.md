@@ -33,7 +33,9 @@ stateDiagram-v2
   CANCELLED --> [*]
 ```
 
-Không cho CANCELLED sau PREPARING trong MVP; vấn đề món đã chế biến xử lý bằng quy trình điều chỉnh/refund sau này. Không cho chuyển ngược hoặc bỏ bước. Lưu acceptedAt/preparingAt/readyAt/servedAt/cancelledAt; hủy bắt buộc reason. Mỗi request kiểm tra cả role và scope restaurant/session. Quy tắc transition dùng chung trong packages/shared là policy dự kiến; endpoint nghiệp vụ triển khai ở Phase 3–6.
+Không cho CANCELLED sau PREPARING trong MVP; vấn đề món đã chế biến xử lý bằng quy trình điều chỉnh/refund sau này. Không cho chuyển ngược hoặc bỏ bước. Phase 4 đã triển khai toàn bộ order transitions, lưu acceptedAt/preparingAt/readyAt/servedAt/cancelledAt và audit; hủy bắt buộc reason 3–500 ký tự. Mỗi request kiểm tra role và scope restaurant/session, khóa dữ liệu và đối chiếu `from` với trạng thái thực tế; đơn đã bị người khác cập nhật trả 409. Quy tắc order transition dùng chung trong packages/shared được kiểm tra lại ở backend. Payment/session transitions còn thuộc Phase 5–6.
+
+Đơn thủ công dùng source STAFF, không có guestSessionId và bắt đầu PENDING_CONFIRMATION như đơn QR. OWNER/MANAGER/WAITER được ghi đơn và xác nhận; KITCHEN chỉ được chuyển ACCEPTED → PREPARING → READY, WAITER ghi nhận READY → SERVED. CASHIER đọc danh sách đơn nhưng không chuyển trạng thái. OWNER/MANAGER được hủy ACCEPTED; WAITER chỉ từ chối PENDING_CONFIRMATION. Khi session PAYMENT_REQUESTED, đơn cũ vẫn được chế biến/phục vụ nhưng không nhận thêm đơn; CLOSED không cho chuyển trạng thái.
 
 | Hành động | OWNER | MANAGER | CASHIER | WAITER | KITCHEN |
 |---|---|---|---|---|---|
