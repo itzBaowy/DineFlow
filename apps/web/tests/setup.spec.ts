@@ -166,12 +166,22 @@ test('owner configures category, modifier, uploaded menu item, tables and printa
 test('mobile setup stays within viewport and public QR context reveals no session history', async ({
   page,
 }) => {
+  test.setTimeout(120000);
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/staff/login');
   await page.getByLabel('Email nhân viên').fill('manager@dineflow.local');
   await page.getByLabel('Mật khẩu', { exact: true }).fill(process.env.SEED_DEMO_PASSWORD!);
   await page.getByRole('button', { name: 'Đăng nhập', exact: true }).click();
   await expect(page).toHaveURL(/staff\/dashboard$/);
+  // The serial suite shares one proxy IP. Respect the real read rate limit;
+  // retry only the workspace GET through its visible action, never a mutation.
+  await expect(async () => {
+    if (await page.getByText('ThrottlerException: Too Many Requests', { exact: true }).isVisible()) {
+      await page.getByRole('button', { name: 'Thử lại', exact: true }).click();
+    }
+    await expect(page.getByRole('button', { name: 'Mở menu', exact: true })).toBeVisible({ timeout: 1000 });
+    await expect(page.getByRole('heading', { name: 'Không thể kết nối nhà hàng', exact: true })).not.toBeVisible();
+  }).toPass({ intervals: [1000, 5000, 15000], timeout: 75000 });
   for (const [route, title] of [
     ['menu', 'Thực đơn của nhà hàng'],
     ['categories', 'Danh mục món ăn'],
@@ -179,7 +189,11 @@ test('mobile setup stays within viewport and public QR context reveals no sessio
     ['tables', 'Bàn phục vụ'],
     ['qr-codes', 'Mã QR tại bàn'],
   ] as const) {
-    await page.goto(`/admin/${route}`);
+    // Use the mobile navigation: keep the workspace/auth cache across screens
+    // instead of charging every route against the shared-IP auth read budget.
+    await page.getByRole('button', { name: 'Mở menu', exact: true }).click();
+    await page.getByRole('navigation', { name: 'Menu chính', exact: true })
+      .locator(`a[href="/admin/${route}"]`).click();
     await expect(page.getByRole('heading', { name: title, exact: true })).toBeVisible();
     await expect(page.getByRole('status', { name: 'Đang tải', exact: true })).not.toBeVisible();
     expect(
