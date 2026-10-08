@@ -7,7 +7,19 @@ import { textareaClass, EmptyState } from '@/features/setup/shared';
 import { BackToMenu, priceLine, useCustomer } from './customer-provider';
 
 export function CustomerCart() {
-  const { code, menu, guest, cart, save, error, locked, checkout, sending, reload } = useCustomer();
+  const {
+    menuHref,
+    menu,
+    canOrder,
+    isStaff,
+    cart,
+    save,
+    error,
+    locked,
+    checkout,
+    sending,
+    reload,
+  } = useCustomer();
   const total = cart.lines.reduce((sum, line) => sum + priceLine(line, menu).total, 0);
   const invalid = cart.lines.some((line) => !priceLine(line, menu).valid);
   return (
@@ -23,7 +35,7 @@ export function CustomerCart() {
             <ShoppingBag className="mx-auto mb-4 size-8 text-primary/40" />
             Giỏ hàng đang trống.
             <Button asChild className="mt-5">
-              <Link href={`/t/${code}`}>Khám phá thực đơn</Link>
+              <Link href={menuHref}>Khám phá thực đơn</Link>
             </Button>
           </EmptyState>
         </div>
@@ -152,18 +164,22 @@ export function CustomerCart() {
               Cập nhật thực đơn và giá
             </Button>
           )}
-          <div className="fixed inset-x-0 bottom-0 z-30 border-t bg-background/95 px-4 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))] backdrop-blur">
+          <div
+            className={`fixed inset-x-0 bottom-0 z-30 border-t bg-background/95 px-4 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))] backdrop-blur ${isStaff ? 'lg:left-64' : ''}`}
+          >
             <div className="mx-auto max-w-3xl">
               <Button
                 className="w-full"
-                disabled={sending || !guest || !menu.orderingEnabled || (invalid && !cart.pending)}
+                disabled={
+                  sending || !canOrder || !menu.orderingEnabled || (invalid && !cart.pending)
+                }
                 onClick={checkout}
               >
                 {sending
                   ? 'Đang gửi đơn…'
                   : cart.pending
                     ? 'Thử lại cùng đơn'
-                    : `Xác nhận đặt món · ${formatVnd(total)}`}
+                    : `${isStaff ? 'Ghi nhận đơn' : 'Xác nhận đặt món'} · ${formatVnd(total)}`}
               </Button>
               <p className="mt-2 text-center text-[10px] text-muted-foreground">
                 Đơn mới chờ nhân viên xác nhận

@@ -142,11 +142,13 @@ export function Editor({
   onOpenChange,
   title,
   children,
+  description = 'Cập nhật cấu hình phục vụ của nhà hàng.',
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   title: string;
   children: React.ReactNode;
+  description?: string;
 }) {
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
@@ -157,7 +159,7 @@ export function Editor({
             <div>
               <Dialog.Title className="text-xl font-semibold">{title}</Dialog.Title>
               <Dialog.Description className="mt-1 text-xs text-muted-foreground">
-                Cập nhật cấu hình phục vụ của nhà hàng.
+                {description}
               </Dialog.Description>
             </div>
             <Dialog.Close asChild>

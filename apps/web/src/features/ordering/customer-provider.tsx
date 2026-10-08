@@ -63,6 +63,11 @@ function createCartStore(key: string) {
 }
 type CustomerContext = {
   code: string;
+  menuHref: string;
+  cartHref: string;
+  ordersHref: string;
+  canOrder: boolean;
+  isStaff: boolean;
   menu: PublicMenu;
   guest: z.infer<typeof guestSchema> | null;
   cart: Cart;
@@ -264,26 +269,35 @@ function CustomerSession({
     </>
   );
 }
-function CartProvider({
+export function CartProvider({
   code,
   menu,
   guest,
   reload,
   children,
+  manual,
 }: {
   code: string;
   menu: PublicMenu;
   guest: CustomerContext['guest'];
   reload: () => void;
   children: React.ReactNode;
+  manual?: { sessionId: string; userId: string };
 }) {
   const router = useRouter(),
     client = useQueryClient();
   const [store] = useState(() =>
-    createCartStore(`dineflow:cart:${code}:${menu.diningSessionId}:${guest?.id ?? 'anonymous'}`),
+    createCartStore(
+      manual
+        ? `dineflow:cart:staff:${manual.userId}:${manual.sessionId}`
+        : `dineflow:cart:${code}:${menu.diningSessionId}:${guest?.id ?? 'anonymous'}`,
+    ),
   );
   const cart = useSyncExternalStore(store.subscribe, store.getSnapshot, store.getServerSnapshot);
   const [error, setError] = useState<string | null>(null);
+  const menuHref = manual ? `/staff/tables/${manual.sessionId}/order` : `/t/${code}`;
+  const cartHref = `${menuHref}/cart`,
+    ordersHref = manual ? '/staff/orders' : `/t/${code}/orders`;
   function save(next: Cart) {
     try {
       store.save(next);
@@ -298,15 +312,25 @@ function CartProvider({
   }
   const submit = useMutation({
     mutationFn: ({ body }: { body: CreateOrderInput; retry: boolean }) =>
-      api(`/public/tables/${encodeURIComponent(code)}/orders`, orderSchema, {
-        method: 'POST',
-        body,
-        refresh: false,
-      }),
+      api(
+        manual
+          ? `/dining-sessions/${manual.sessionId}/orders`
+          : `/public/tables/${encodeURIComponent(code)}/orders`,
+        orderSchema,
+        {
+          method: 'POST',
+          body,
+          refresh: false,
+        },
+      ),
     onSuccess: () => {
       store.save(emptyCart);
       void client.invalidateQueries({ queryKey: ['customer-orders', code] });
-      router.push(`/t/${code}/orders`);
+      if (manual) {
+        void client.invalidateQueries({ queryKey: ['operations'] });
+        void client.invalidateQueries({ queryKey: ['setup'] });
+      }
+      router.push(ordersHref);
     },
     onError: (err, attempt) => {
       setError(err.message);
@@ -325,7 +349,7 @@ function CartProvider({
   });
   function checkout() {
     setError(null);
-    if (!guest || !menu.orderingEnabled || !menu.diningSessionId) {
+    if (!(guest || manual) || !menu.orderingEnabled || !menu.diningSessionId) {
       setError('Phiên khách chưa sẵn sàng nhận đơn. Vui lòng kiểm tra lại bàn.');
       reload();
       return;
@@ -360,6 +384,11 @@ function CartProvider({
     <Context.Provider
       value={{
         code,
+        menuHref,
+        cartHref,
+        ordersHref,
+        canOrder: !!(guest || manual),
+        isStaff: !!manual,
         menu,
         guest,
         cart,
@@ -377,10 +406,10 @@ function CartProvider({
   );
 }
 export function BackToMenu() {
-  const { code } = useCustomer();
+  const { menuHref } = useCustomer();
   return (
     <Link
-      href={`/t/${code}`}
+      href={menuHref}
       className="mb-5 inline-flex min-h-11 items-center gap-2 text-xs font-medium text-primary"
     >
       <ArrowLeft className="size-4" />

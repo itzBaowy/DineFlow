@@ -11,7 +11,7 @@ import { textareaClass, EmptyState } from '@/features/setup/shared';
 import { useCustomer, priceLine } from './customer-provider';
 
 export function CustomerMenu() {
-  const { code, menu, guest, cart, locked } = useCustomer();
+  const { cartHref, menu, canOrder, isStaff, cart, locked } = useCustomer();
   const [search, setSearch] = useState(''),
     [category, setCategory] = useState('all');
   const [selected, setSelected] = useState<PublicMenuItem | null>(null);
@@ -29,12 +29,14 @@ export function CustomerMenu() {
       <section className="my-6 flex items-center justify-between gap-4 rounded-2xl border bg-[#f1f0e9] p-5 sm:p-7">
         <div>
           <h1 className="editorial text-3xl leading-tight text-primary sm:text-4xl">
-            Một bữa ngon,
+            {isStaff ? 'Chọn món tại bàn,' : 'Một bữa ngon,'}
             <br />
-            một khoảng vui.
+            {isStaff ? 'ghi đúng từng ý khách.' : 'một khoảng vui.'}
           </h1>
           <p className="mt-3 max-w-sm text-xs leading-6 text-muted-foreground">
-            Chọn món bạn yêu thích. Mỗi đơn sẽ được nhân viên xác nhận trước khi nhà bếp chuẩn bị.
+            {isStaff
+              ? 'Ghi món, tùy chọn và lưu ý của khách. Xác nhận đơn sau khi ghi nhận để chuyển bếp.'
+              : 'Chọn món bạn yêu thích. Mỗi đơn sẽ được nhân viên xác nhận trước khi nhà bếp chuẩn bị.'}
           </p>
         </div>
         <span className="grid size-14 shrink-0 place-items-center rounded-full bg-accent text-primary">
@@ -113,7 +115,7 @@ export function CustomerMenu() {
                   variant="outline"
                   className="size-11 rounded-full bg-background"
                   aria-label={`Chọn ${item.name}`}
-                  disabled={!item.isAvailable || !guest || !menu.orderingEnabled || locked}
+                  disabled={!item.isAvailable || !canOrder || !menu.orderingEnabled || locked}
                   onClick={() => setSelected(item)}
                 >
                   <Plus />
@@ -124,7 +126,9 @@ export function CustomerMenu() {
         ))}
       </div>
       {(quantity > 0 || locked) && (
-        <div className="fixed inset-x-0 bottom-0 z-30 border-t bg-background/95 px-4 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))] backdrop-blur">
+        <div
+          className={`fixed inset-x-0 bottom-0 z-30 border-t bg-background/95 px-4 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))] backdrop-blur ${isStaff ? 'lg:left-64' : ''}`}
+        >
           <div className="mx-auto flex max-w-3xl items-center justify-between gap-4 rounded-2xl bg-primary px-5 py-3 text-white">
             <div className="flex items-center gap-3">
               <ShoppingBag className="size-5" />
@@ -134,7 +138,7 @@ export function CustomerMenu() {
               </div>
             </div>
             <Button asChild className="bg-accent text-primary hover:bg-accent/90">
-              <Link href={`/t/${code}/cart`}>
+              <Link href={cartHref}>
                 {locked ? 'Kiểm tra đơn' : 'Xem giỏ hàng'}
                 <ArrowRight />
               </Link>
