@@ -16,7 +16,7 @@ stateDiagram-v2
   OPEN --> PAYMENT_REQUESTED: khách hoặc nhân viên yêu cầu
   PAYMENT_REQUESTED --> OPEN: nhân viên mở lại trước thanh toán
   PAYMENT_REQUESTED --> CLOSED: thu ngân xác nhận thanh toán
-  OPEN --> CLOSED: thanh toán trực tiếp hoặc đóng phiên rỗng có lý do
+  OPEN --> CLOSED: thanh toán trực tiếp hoặc đóng không thu tiền có lý do
   CLOSED --> [*]
 ```
 
@@ -33,14 +33,17 @@ stateDiagram-v2
   CANCELLED --> [*]
 ```
 
-Không cho CANCELLED sau PREPARING trong MVP; vấn đề món đã chế biến xử lý bằng quy trình điều chỉnh/refund sau này. Không cho chuyển ngược hoặc bỏ bước. Phase 4 đã triển khai toàn bộ order transitions, lưu acceptedAt/preparingAt/readyAt/servedAt/cancelledAt và audit; hủy bắt buộc reason 3–500 ký tự. Mỗi request kiểm tra role và scope restaurant/session, khóa dữ liệu và đối chiếu `from` với trạng thái thực tế; đơn đã bị người khác cập nhật trả 409. Quy tắc order transition dùng chung trong packages/shared được kiểm tra lại ở backend. Phase 5 triển khai OPEN → PAYMENT_REQUESTED qua yêu cầu khách; mở lại OPEN, ghi nhận tiền và đóng phiên có đơn thuộc Phase 6. Diagram session phía trên thể hiện policy MVP đầy đủ, không phải mọi cạnh đã có API.
+Không cho CANCELLED sau PREPARING trong MVP; vấn đề món đã chế biến xử lý bằng quy trình điều chỉnh/refund sau này. Không cho chuyển ngược hoặc bỏ bước. Phase 4 đã triển khai toàn bộ order transitions, lưu acceptedAt/preparingAt/readyAt/servedAt/cancelledAt và audit; hủy bắt buộc reason 3–500 ký tự. Mỗi request kiểm tra role và scope restaurant/session, khóa dữ liệu và đối chiếu `from` với trạng thái thực tế; đơn đã bị người khác cập nhật trả 409. Quy tắc order transition dùng chung trong packages/shared được kiểm tra lại ở backend. Phase 5 triển khai OPEN → PAYMENT_REQUESTED qua yêu cầu khách. Phase 6 triển khai nhân viên yêu cầu/mở lại (cần lý do), thanh toán trực tiếp từ OPEN hoặc PAYMENT_REQUESTED và đóng không thu tiền khi không có đơn hợp lệ. CLOSED không mở lại; nhân viên dọn rồi tạo phiên mới dùng cùng QR.
+
+Thanh toán cần ít nhất một đơn không CANCELLED, tất cả đã SERVED, revision hiện tại và xác nhận đã nhận đúng total. Discount 100% vẫn tạo COMPLETED Payment tổng 0. Phiên rỗng/chỉ có đơn CANCELLED đóng bằng lý do, không tạo Payment. Đóng phiên đồng thời chuyển bàn NEEDS_CLEANING, revoke guests, resolve requests và ghi audit. Unique Payment/session và idempotency key/hash gắn người thao tác bảo vệ double payment. Receipt bất biến; chưa có refund.
 
 ```mermaid
 stateDiagram-v2
   [*] --> PENDING: khách gửi yêu cầu
   PENDING --> ACKNOWLEDGED: nhân viên tiếp nhận
   ACKNOWLEDGED --> RESOLVED: nhân viên hoàn tất hỗ trợ
-  PENDING --> RESOLVED: hệ thống đóng phiên rỗng
+  PENDING --> RESOLVED: hệ thống đóng phiên
+  ACKNOWLEDGED --> RESOLVED: hệ thống đóng phiên
   RESOLVED --> [*]
 ```
 
@@ -55,8 +58,9 @@ CALL_STAFF / REQUEST_PAYMENT chỉ trong phiên OPEN hoặc PAYMENT_REQUESTED v�
 | Nhân viên | ✓ | Có giới hạn, không cấp OWNER | | | |
 | Mở bàn / nhận đơn / phục vụ | ✓ | ✓ | | ✓ | |
 | Bắt đầu / hoàn thành bếp | ✓ | ✓ | | | ✓ |
+| Xem bill / receipt; yêu cầu / mở lại trước thanh toán | ✓ | ✓ | ✓ | ✓ | |
 | Thanh toán / đóng phiên | ✓ | ✓ | ✓ | | |
 | Giảm giá | ✓ | ✓ | Chỉ trong hạn mức được cấu hình | | |
 | Báo cáo | ✓ | ✓ | | | |
 
-Khách chỉ được đọc menu công khai, gửi/đọc đơn và service request trong **phiên đang hoạt động** được cấp token; không truy cập session lịch sử bằng QR cố định. QR không xác minh khách có mặt. Rate limit public API, nhân viên xác nhận đơn trước bếp; PIN/QR động có thể thêm sau.
+Khách đọc menu công khai; gửi/đọc đơn của mình, service request và tổng bill trong **phiên đang hoạt động** được cấp token. Guest bill không trả chi tiết đơn/ghi chú của khách khác; không truy cập receipt/session lịch sử bằng QR cố định. QR không xác minh khách có mặt. Rate limit public API, nhân viên xác nhận đơn trước bếp; PIN/QR động có thể thêm sau.
