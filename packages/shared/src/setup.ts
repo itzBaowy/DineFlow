@@ -113,7 +113,7 @@ export const tableContextSchema = z.object({
     address: z.string().nullable(),
   }),
   table: z.object({ name: z.string() }),
-  orderingEnabled: z.literal(false),
+  orderingEnabled: z.boolean(),
 });
 export const uploadSchema = z.object({ id: z.uuid(), imageUrl: imageUrlSchema.unwrap() });
 export type RestaurantInput = z.infer<typeof restaurantInputSchema>;
