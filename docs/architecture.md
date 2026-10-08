@@ -2,11 +2,11 @@
 
 ## Phạm vi thực hiện
 
-Repository ban đầu chỉ có README và Requirement.md. Triển khai theo từng phase; hiện có **Phase 1–4**, chưa hoàn thành toàn bộ MVP.
+Repository ban đầu chỉ có README và Requirement.md. Triển khai theo từng phase; hiện có **Phase 1–5**, chưa hoàn thành toàn bộ MVP.
 
 Phase 1 chạy được: workspace pnpm; Next.js App Router tiếng Việt; NestJS REST + Swagger; PostgreSQL + Prisma + migration; Redis qua Compose; kiểm tra môi trường; seed; đăng nhập/đăng xuất nhân viên, JWT, refresh rotation, RBAC; dashboard đọc nhà hàng, vai trò và số lượng cấu hình từ database. Không đưa đơn hàng giả vào dashboard.
 
-Phase 2 thêm settings/menu/modifiers, upload ảnh S3/MinIO, bàn và QR. Phase 3 thêm staff-opened dining sessions, guest admission, menu/cart/checkout, snapshot và lịch sử đơn riêng. Phase 4 thêm dashboard vận hành, xác nhận/từ chối, kitchen display, phục vụ và đơn thủ công. Chưa có Socket.IO, thanh toán hay báo cáo. Schema dự kiến cho MVP được migration ngay trong foundation để các quan hệ và constraints có thể kiểm chứng; đây không có nghĩa các chức năng đó đã hoàn thành.
+Phase 2 thêm settings/menu/modifiers, upload ảnh S3/MinIO, bàn và QR. Phase 3 thêm staff-opened dining sessions, guest admission, menu/cart/checkout, snapshot và lịch sử đơn riêng. Phase 4 thêm dashboard vận hành, xác nhận/từ chối, kitchen display, phục vụ và đơn thủ công. Phase 5 thêm Socket.IO, tracking, yêu cầu phục vụ/thanh toán và reconnect/refetch. Chưa có ghi nhận tiền, bill/receipt hay báo cáo. Schema dự kiến cho MVP được migration ngay trong foundation để các quan hệ và constraints có thể kiểm chứng; đây không có nghĩa các chức năng đó đã hoàn thành.
 
 ## Kiến trúc
 
@@ -16,16 +16,16 @@ flowchart LR
   Web -->|/api rewrite cùng origin| API[NestJS :4000 /api/v1]
   API --> Prisma[Prisma + pg adapter]
   Prisma --> PG[(PostgreSQL)]
-  API -. Phase 5: Socket.IO .-> Browser
+  Browser <-->|Socket.IO qua cùng Next rewrite| Web
   Redis[(Redis)] -. Chỉ dùng khi có nhu cầu cache / jobs .-> API
   Storage[S3 / MinIO] -->|Ảnh menu/logo| API
 ```
 
-Monolith modular, một restaurant tại MVP. Dữ liệu nghiệp vụ có restaurantId và membership riêng; scope lấy từ principal backend, không tin restaurantId từ client. Không xây SaaS, worker, Redis adapter hoặc queue khi chưa có nhu cầu. REST là nguồn dữ liệu; sự kiện chỉ được phát sau commit, reconnect luôn refetch (Phase 5).
+Monolith modular, một restaurant tại MVP. Dữ liệu nghiệp vụ có restaurantId và membership riêng; scope lấy từ principal backend, không tin restaurantId từ client. Không xây SaaS, worker, Redis adapter hoặc queue khi chưa có nhu cầu. REST là nguồn dữ liệu; sự kiện chỉ được phát sau commit, kết nối ban đầu/reconnect luôn refetch.
 
 Web sử dụng cùng origin `/api/v1` qua Next rewrite. Cookie access/refresh HttpOnly, SameSite=Lax; Secure khi production. Access JWT 15 phút, refresh opaque 7 ngày và rotation với hạn tuyệt đối của phiên; chỉ lưu SHA-256 refresh token. Guard kiểm tra phiên, user và membership còn active trong DB ở mỗi request. Role không được lấy từ JWT cũ. Trình duyệt gửi `X-DineFlow-Client: web` cùng JSON cho mutation; backend bắt buộc header này và kiểm tra Origin nằm trong allowlist. Không bật trust proxy mặc định.
 
-Refresh dùng row lock theo AuthSession. Token đã dùng bị gửi lại sẽ revoke cả phiên, gồm access JWT đang còn hạn. Logout revoke phiên và clear cookies. Web gộp refresh trong mỗi tab, không retry mutation tự động; nếu nhiều tab refresh đồng thời, policy nghiêm ngặt có thể yêu cầu đăng nhập lại. Không trả token trong JSON hoặc lưu localStorage. Login bị rate limit theo email chuẩn hóa + IP trong một API instance; trước khi scale cần shared throttler storage.
+Refresh dùng row lock theo AuthSession. Token đã dùng bị gửi lại sẽ revoke cả phiên, gồm access JWT đang còn hạn. Logout revoke phiên và clear cookies. Web gộp refresh trong mỗi tab, không retry mutation tự động; nếu nhiều tab refresh đồng thời, policy nghiêm ngặt có thể yêu cầu đăng nhập lại. Access/refresh tokens không trả trong JSON hoặc lưu localStorage. Login bị rate limit theo email chuẩn hóa + IP trong một API instance; trước khi scale cần shared throttler storage.
 
 ## Cấu trúc
 
@@ -45,6 +45,7 @@ apps/
       storage/              # S3 abstraction, image validation
       dining-sessions/      # open, empty close, cleaning
       orders/               # guest/manual orders, pricing, staff/kitchen transitions
+      realtime/             # single-use tickets, scoped socket delivery, revocation checks
       generated/            # Prisma, không commit
     test/                   # integration HTTP với PostgreSQL thật
   web/
@@ -55,6 +56,7 @@ apps/
     src/features/setup/
     src/features/ordering/  # staff tables, customer provider/menu/cart/history
     src/features/operations/ # staff orders, kitchen display, manual order provider
+    src/features/realtime/  # connection status, notifications, table/staff service requests
     src/app/t/[tableCode]/  # nested layout preserves cart across navigation
     src/lib/                # typed API client
 packages/shared/            # DTO Zod, role labels, domain state machines
@@ -72,6 +74,7 @@ Nest bổ sung modules tables, dining-sessions, menu, orders, kitchen, payments,
 - Tạo đơn: khóa DiningSession; xác minh GuestSession chưa hết hạn và đúng scope; kiểm tra OPEN; lookup idempotency key + request hash; kiểm tra menu/modifiers; tính giá server; snapshot; tạo đơn/items/audit trong một transaction. Cùng key và payload trả đơn cũ; key khác payload trả 409.
 - Menu: update không sửa snapshot của đơn cũ. Archive thay vì xóa dữ liệu đã phát sinh nghiệp vụ.
 - Trạng thái đơn (Phase 4): khóa Restaurant → DiningTable → DiningSession → Order, kiểm tra phiên active và permission + trạng thái hiện tại so với `from`. Chuyển trạng thái, lưu timestamp tương ứng và audit trong cùng transaction; stale request trả 409. Chế biến/phục vụ vẫn được phép khi PAYMENT_REQUESTED, nhưng không khi CLOSED.
+- Yêu cầu phục vụ (Phase 5): cùng Restaurant → Table → Session, thêm Request lock khi chuyển trạng thái. Partial unique index chỉ cho một request cùng type chưa RESOLVED trong phiên; retry cùng loại trả request cũ. Yêu cầu REQUEST_PAYMENT và OPEN → PAYMENT_REQUESTED, timestamps/audit ghi cùng transaction. Tiếp nhận/hoàn tất đối chiếu `from`, không bỏ bước/mở lại; cooldown 30 giây chặn gọi liên tục sau resolve. Đóng phiên rỗng tự resolve các request còn active trong transaction đóng.
 - Thanh toán: khóa session; từ chối pending/unserved orders theo policy MVP; tổng hợp non-CANCELLED orders; discount/fee/tax cấu hình bằng basis points và làm tròn integer; kiểm tra paidAmount đúng total; tạo COMPLETED payment; CLOSED session; NEEDS_CLEANING table; invalidate guest sessions. Unique payment/session ngăn ghi nhận lần hai. Chỉ cash hoặc bank transfer được thu ngân xác nhận thủ công.
 - Không nhận thêm đơn khi PAYMENT_REQUESTED hoặc CLOSED; nhân viên có thể mở lại OPEN trước thanh toán nếu khách muốn gọi thêm. Đóng không thanh toán chỉ với phiên không có đơn tính tiền và lý do audit.
 
@@ -81,7 +84,17 @@ Guest token opaque 32 bytes, SHA-256 trong DB, TTL mặc định 4 giờ và coo
 
 Giỏ và request retry lưu sessionStorage theo table/session/guest, không lưu credential. Checkout giữ payload/key cố định nếu mất phản hồi hoặc gặp 5xx; tải lại trang rồi thử lại dùng cùng key. Rejection 4xx của lần đầu cho phép sửa giỏ; rejection của lần retry vẫn giữ key vì đơn trước có thể đã commit. Backend lookup cùng key/hash/guest trước khi kiểm tra menu để replay trả snapshot cũ. `expectedTotal` chỉ xác nhận khách đã xem tổng tiền; backend tự tính toàn bộ giá và trả 409 khi giá đổi.
 
-Đơn thủ công dùng lại pricing/snapshot backend và menu/cart components. GET menu và POST đơn yêu cầu staff auth, role và scope session; chỉ tạo đơn trong OPEN. Source STAFF, guestSessionId null, request hash gắn userId nhân viên; cùng key không thể được nhân viên khác replay. Giỏ lưu theo staff user/session, không tạo guest credential. Đơn thủ công vẫn cần xác nhận; guest history không chứa đơn STAFF. Staff/kitchen queues được phân trang và đếm trong RepeatableRead transaction, chỉ lấy phiên OPEN/PAYMENT_REQUESTED của nhà hàng hiện tại. Cập nhật bằng REST/manual refresh; chưa có realtime.
+Đơn thủ công dùng lại pricing/snapshot backend và menu/cart components. GET menu và POST đơn yêu cầu staff auth, role và scope session; chỉ tạo đơn trong OPEN. Source STAFF, guestSessionId null, request hash gắn userId nhân viên; cùng key không thể được nhân viên khác replay. Giỏ lưu theo staff user/session, không tạo guest credential. Đơn thủ công vẫn cần xác nhận; guest history không chứa đơn STAFF. Staff/kitchen queues được phân trang và đếm trong RepeatableRead transaction, chỉ lấy phiên OPEN/PAYMENT_REQUESTED của nhà hàng hiện tại. Socket hint invalidate queries rồi REST lấy dữ liệu; nút cập nhật vẫn dùng được khi socket lỗi.
+
+## Realtime Phase 5
+
+POST staff `/realtime/ticket` hoặc guest `/public/tables/:code/realtime-ticket` chịu HTTP auth, CSRF và throttling. Vé opaque 32 bytes, SHA-256 key trong memory, TTL 60 giây, tiêu thụ một lần khi handshake; không gửi cookie JWT/guest token qua socket auth, không lưu vé trong browser storage. Vé staff giữ principal/token ở server; vé guest giữ guest/table/session/code đã kiểm chứng. Socket.IO từ chối Origin sai hoặc Sec-Fetch-Site cross-site; polling cùng origin có thể không gửi Origin, nhưng vẫn bắt buộc vé hợp lệ.
+
+Room do server chọn: staff theo restaurant/role; guest theo guest ID và phiên. Không có client-selected join/subscription hay socket mutation. Delivery đối chiếu identity từng socket: order hint chỉ tới guest tạo đơn; kitchen chỉ nhận đơn đã xác nhận/các bước bếp và table hints; service requests chỉ tới staff có quyền và guests cùng phiên. Payload chỉ là IDs/kind/time, không có món/giá/guest ID/staff identity. Guest request DTO chia sẻ trạng thái phục vụ tại bàn, không chia sẻ đơn của người khác.
+
+Auth được kiểm tra lại trước mỗi event và mỗi 15 giây; logout, role/membership thay đổi, hết hạn guest/token hoặc session đóng sẽ disconnect. Closing hint chỉ chứa scope đã biết, gửi trước disconnect guest bị revoke. Client lấy vé mới với backoff 1–30 giây, refetch sau ready và khi tab visible; offline cập nhật badge và đóng socket. Không retry mutation tự động. Staff refresh dùng cơ chế GET hiện có trước khi xin vé mới.
+
+Mỗi publication nằm sau transaction commit và không làm rollback nghiệp vụ khi delivery lỗi. Events best-effort, không có replay/outbox: reconnect/tab visible/manual refresh bù dữ liệu bị lỡ bằng REST. Tickets/connections/rooms chỉ ở một API instance, tối đa 8 connections/principal và 10.000 vé chưa hết hạn; chưa benchmark fan-out/auth revalidation. Redis adapter, vé dùng chung và durable outbox cần đánh giá trước scale. Socket.IO dùng path không trailing slash qua Next để tránh 308 redirect; browser đã kiểm tra cả WebSocket upgrade và polling fallback.
 
 ## Lựa chọn phiên bản
 

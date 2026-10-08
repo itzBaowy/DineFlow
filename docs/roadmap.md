@@ -13,4 +13,4 @@
 
 Sau mỗi phase chạy lint, typecheck, tests và build; ghi rõ kết quả đã chạy và giới hạn. Không dùng UI mẫu để đánh dấu chức năng đã hoàn thành. Chưa triển khai E2E ordering trong Phase 1 vì các endpoint đó chưa tồn tại.
 
-Trạng thái: Phase 1–4 đã triển khai và kiểm chứng local. Xem [Phase 2 verification](phase-2-verification.md), [Phase 3 verification](phase-3-verification.md) và [Phase 4 verification](phase-4-verification.md). Giai đoạn kế tiếp là Phase 5 — Realtime: Socket auth/rooms, tracking, service requests và reconnect/refetch.
+Trạng thái: Phase 1–5 đã triển khai và kiểm chứng local. Xem [Phase 2 verification](phase-2-verification.md), [Phase 3 verification](phase-3-verification.md), [Phase 4 verification](phase-4-verification.md) và [Phase 5 verification](phase-5-verification.md). Giai đoạn kế tiếp là Phase 6 — Billing: tổng hợp bill, discount/fee/tax, cash/chuyển khoản xác nhận thủ công, thanh toán và đóng phiên trong transaction, receipt.
