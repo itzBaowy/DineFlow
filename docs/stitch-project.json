@@ -41,6 +41,12 @@
     }
   ],
   "imageSourceScreen": "87923eac0b4840f7b43f35591fe4e357",
+  "kitchenScreen": {
+    "id": "96f3d4aaf5e74015a308dedc69373712",
+    "route": "/staff/kitchen",
+    "reference": "design/kitchen.reference.html",
+    "prompt": "design/phase-4-prompts.md"
+  },
   "customerMenuScreen": {
     "id": "3b429f22b61846438982c78f382ccb66",
     "route": "/t/[tableCode]",

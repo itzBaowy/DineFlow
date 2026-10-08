@@ -11,4 +11,5 @@ apps/api/src/generated/
 playwright-report/
 test-results/
 .local/
+.stitch/
 *.log
