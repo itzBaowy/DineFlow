@@ -2,19 +2,20 @@ import { CanActivate, ExecutionContext, ForbiddenException, Inject, Injectable, 
 import { Reflector } from '@nestjs/core';
 import type { Role } from '@dineflow/shared';
 import { AuthService } from './auth.service';
-import { ALLOWED_ROLES, IS_PUBLIC } from './policies';
+import { ALLOWED_ROLES, IS_PUBLIC, ALLOW_MULTIPART } from './policies';
 import type { StaffRequest } from './auth.types';
 import { CONFIG, type AppConfig } from '../config/env';
 
 @Injectable()
 export class MutationGuard implements CanActivate {
-  constructor(@Inject(CONFIG) private readonly config: AppConfig) {}
+  constructor(@Inject(CONFIG) private readonly config: AppConfig, private readonly reflector: Reflector) {}
   canActivate(ctx: ExecutionContext): boolean {
     const request = ctx.switchToHttp().getRequest<StaffRequest>();
     if (['GET', 'HEAD', 'OPTIONS'].includes(request.method)) return true;
     const origin = request.get('origin');
     if (request.get('x-dineflow-client') !== 'web' || (origin && origin !== this.config.APP_ORIGIN) || request.get('sec-fetch-site') === 'cross-site') throw new ForbiddenException('Nguồn yêu cầu không được phép');
-    if (!request.is('application/json')) throw new ForbiddenException('Yêu cầu phải là application/json');
+    const multipart = this.reflector.getAllAndOverride<boolean>(ALLOW_MULTIPART, [ctx.getHandler(), ctx.getClass()]);
+    if (!(multipart ? request.is('multipart/form-data') : request.is('application/json'))) throw new ForbiddenException('Định dạng yêu cầu không được phép');
     return true;
   }
 }

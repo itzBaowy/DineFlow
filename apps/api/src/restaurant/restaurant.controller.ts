@@ -1,15 +1,18 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Patch } from '@nestjs/common';
 import { ApiCookieAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import type { RestaurantOverview, StaffPrincipal } from '@dineflow/shared';
 import { PrismaService } from '../database/prisma.service';
 import { CurrentStaff } from '../auth/current-staff';
 import { Roles } from '../auth/policies';
+import { restaurantInputSchema, type RestaurantInput } from '@dineflow/shared';
+import { ZodPipe } from '../common/zod.pipe';
+import { SetupMutationService } from '../common/setup-mutation.service';
 
 @ApiTags('Restaurant')
 @ApiCookieAuth('df_access')
 @Controller('restaurant')
 export class RestaurantController {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService, private readonly mutations: SetupMutationService) {}
   @Get('overview')
   @ApiOperation({ summary: 'Số lượng cấu hình trong restaurant của membership hiện tại' })
   async overview(@CurrentStaff() staff: StaffPrincipal): Promise<RestaurantOverview> {
@@ -26,8 +29,16 @@ export class RestaurantController {
   }
   @Get('settings')
   @Roles('OWNER', 'MANAGER')
-  @ApiOperation({ summary: 'Thiết lập hiện tại, chỉ owner/manager; mutation ở Phase 2' })
+  @ApiOperation({ summary: 'Thiết lập hiện tại, chỉ owner/manager' })
   async settings(@CurrentStaff() staff: StaffPrincipal) {
-    return this.prisma.restaurant.findUniqueOrThrow({ where: { id: staff.restaurantId }, select: { id: true, name: true, address: true, phone: true, currency: true, timezone: true, serviceChargeBps: true, taxBps: true } });
+    return this.prisma.restaurant.findUniqueOrThrow({ where: { id: staff.restaurantId }, select: { id: true, name: true, address: true, phone: true, logoUrl: true, currency: true, timezone: true, serviceChargeBps: true, taxBps: true } });
+  }
+  @Patch('settings')
+  @Roles('OWNER', 'MANAGER')
+  update(@CurrentStaff() staff: StaffPrincipal, @Body(new ZodPipe(restaurantInputSchema)) input: RestaurantInput) {
+    return this.mutations.run(staff, 'restaurant.updated', 'Restaurant', async tx => {
+      await this.mutations.image(tx, staff.restaurantId, input.logoUrl);
+      return tx.restaurant.update({ where: { id: staff.restaurantId }, data: input });
+    });
   }
 }

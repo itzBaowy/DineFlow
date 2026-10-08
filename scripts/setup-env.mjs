@@ -14,6 +14,7 @@ if (existsSync('.env')) {
     SEED_DEMO_PASSWORD: `Df!${randomBytes(15).toString('base64url')}`,
   };
   values.REDIS_URL = `redis://:${values.REDIS_PASSWORD}@localhost:6379`;
+  values.S3_SECRET_ACCESS_KEY = values.MINIO_ROOT_PASSWORD;
   const content = readFileSync('.env.example', 'utf8').replace(/^(\w+)=(.*)$/gm, (line, key) => key in values ? `${key}=${values[key]}` : line);
   writeFileSync('.env', content, { flag: 'wx', mode: 0o600 });
   console.log('Đã tạo .env với secrets ngẫu nhiên. Mật khẩu demo nằm ở SEED_DEMO_PASSWORD trong .env.');

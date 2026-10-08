@@ -32,7 +32,10 @@ services:
       retries: 20
     restart: unless-stopped
   minio:
-    image: minio/minio:RELEASE.2025-09-07T16-13-09Z
+    image: dineflow-minio:RELEASE.2025-10-15T17-29-55Z
+    build:
+      context: .
+      dockerfile: docker/minio.Dockerfile
     profiles: [storage]
     command: server /data --console-address ':9001'
     environment:
@@ -44,7 +47,7 @@ services:
     volumes:
       - minio_data:/data
     healthcheck:
-      test: [CMD, mc, ready, local]
+      test: [CMD, curl, -fsS, http://localhost:9000/minio/health/live]
       interval: 10s
       timeout: 5s
       retries: 10
