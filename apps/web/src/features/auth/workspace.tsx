@@ -20,6 +20,7 @@ import {
   Layers3,
   SlidersHorizontal,
   Armchair,
+  ClipboardList,
 } from 'lucide-react';
 import { Dialog } from 'radix-ui';
 import { roleLabels } from '@dineflow/shared';
@@ -69,6 +70,9 @@ export function Workspace({ children }: { children: React.ReactNode }) {
   const admin = staff.role === 'OWNER' || staff.role === 'MANAGER';
   const links = [
     { href: '/staff/dashboard', title: 'Tổng quan', icon: LayoutDashboard },
+    ...(['OWNER', 'MANAGER', 'WAITER', 'CASHIER'].includes(staff.role)
+      ? [{ href: '/staff/tables', title: 'Phiên bàn', icon: Armchair }]
+      : []),
     ...(admin
       ? [
           { href: '/admin/menu', title: 'Thực đơn', icon: UtensilsCrossed },
@@ -122,7 +126,7 @@ export function Workspace({ children }: { children: React.ReactNode }) {
           SẮP RA MẮT
         </p>
         {[
-          { icon: QrCode, title: 'Bàn & gọi món' },
+          { icon: ClipboardList, title: 'Xác nhận đơn' },
           { icon: ChefHat, title: 'Màn hình bếp' },
           { icon: Receipt, title: 'Thu ngân' },
         ].map(({ icon: Icon, title }) => (
