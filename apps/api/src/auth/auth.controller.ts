@@ -1,18 +1,29 @@
 import { Body, Controller, Get, HttpCode, Inject, Post, Req, Res, UnauthorizedException } from '@nestjs/common';
 import { ApiBody, ApiCookieAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
-import { loginSchema, type LoginInput, type StaffPrincipal } from '@dineflow/shared';
+import { loginSchema, registerSchema, type RegisterInput, type LoginInput, type StaffPrincipal } from '@dineflow/shared';
 import type { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { Public } from './policies';
 import { CONFIG, type AppConfig } from '../config/env';
 import { ZodPipe } from '../common/zod.pipe';
 import { CurrentStaff } from './current-staff';
+import { RegistrationService } from './registration.service';
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly auth: AuthService, @Inject(CONFIG) private readonly config: AppConfig) {}
+  constructor(private readonly auth: AuthService, private readonly registration: RegistrationService, @Inject(CONFIG) private readonly config: AppConfig) {}
+  @Public()
+  @Get('registration-settings')
+  registrationSettings() { return this.registration.settings(); }
+  @Public()
+  @Post('register')
+  @Throttle({ default: { limit: 10, ttl: 3600000 } })
+  async register(@Body(new ZodPipe(registerSchema)) input: RegisterInput) {
+    await this.registration.register(input);
+    return { registered: true };
+  }
   private cookies(response: Response, credentials: Awaited<ReturnType<AuthService['login']>>): void {
     const options = { httpOnly: true, secure: this.config.COOKIE_SECURE, sameSite: 'lax' as const };
     response.cookie('df_access', credentials.accessToken, { ...options, path: '/api/v1', maxAge: this.config.ACCESS_TOKEN_TTL_SECONDS * 1000 });

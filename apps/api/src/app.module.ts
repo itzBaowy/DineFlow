@@ -14,6 +14,7 @@ import { RealtimeModule } from './realtime/realtime.module';
 import { PaymentsModule } from './payments/payments.module';
 import { ReportsModule } from './reports/reports.module';
 import { StaffModule } from './staff/staff.module';
+import { PlatformModule } from './platform/platform.module';
 
-@Module({ imports: [ConfigModule, DatabaseModule, AuthModule, RealtimeModule, SetupModule, MenuModule, TablesModule, StorageModule, DiningSessionsModule, OrdersModule, PaymentsModule, ReportsModule, StaffModule], controllers: [HealthController, RestaurantController] })
+@Module({ imports: [ConfigModule, DatabaseModule, AuthModule, RealtimeModule, SetupModule, MenuModule, TablesModule, StorageModule, DiningSessionsModule, OrdersModule, PaymentsModule, ReportsModule, StaffModule, PlatformModule], controllers: [HealthController, RestaurantController] })
 export class AppModule {}

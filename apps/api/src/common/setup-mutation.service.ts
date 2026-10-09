@@ -1,3 +1,4 @@
+import { lockActiveRestaurant } from './tenant-scope';
 import {
   BadRequestException,
   ConflictException,
@@ -24,7 +25,7 @@ export class SetupMutationService {
     try {
       const result = await this.db.$transaction(async (tx) => {
         // Setup mutations share this lock: reference validation and writes cannot race with archives.
-        await tx.$queryRaw`SELECT id FROM "Restaurant" WHERE id = ${staff.restaurantId}::uuid FOR UPDATE`;
+        await lockActiveRestaurant(tx, staff.restaurantId);
         const result = await work(tx);
         await tx.activityLog.create({
           data: {

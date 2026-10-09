@@ -1,3 +1,4 @@
+import { lockActiveRestaurant } from '../common/tenant-scope';
 import {
   ConflictException,
   ForbiddenException,
@@ -69,7 +70,7 @@ export class PaymentsService {
     if (!context) throw new NotFoundException('Không tìm thấy phiên bàn');
     return this.db.$transaction(
       async (tx) => {
-        await tx.$queryRaw`SELECT id FROM "Restaurant" WHERE id = ${restaurantId}::uuid FOR UPDATE`;
+        await lockActiveRestaurant(tx, restaurantId);
         const restaurant = await tx.restaurant.findUniqueOrThrow({
           where: { id: restaurantId },
         });

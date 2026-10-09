@@ -6,6 +6,7 @@
   "engines": { "node": ">=22.12.0", "pnpm": ">=9 <10" },
   "scripts": {
     "setup:env": "node scripts/setup-env.mjs",
+    "platform:bootstrap": "pnpm db:generate && pnpm build:shared && pnpm --filter @dineflow/api platform:bootstrap",
     "infra:up": "docker compose --profile storage up -d --build --wait postgres redis minio",
     "infra:down": "docker compose --profile api --profile storage down",
     "api:up": "docker compose --profile api up -d --build --wait api",

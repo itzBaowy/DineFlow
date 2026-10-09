@@ -1,3 +1,4 @@
+import { lockActiveRestaurant } from '../common/tenant-scope';
 import {
   ConflictException,
   Inject,
@@ -103,7 +104,7 @@ export class OrdersService {
   private async table(code: string) {
     if (!/^[A-Za-z0-9_-]{32}$/.test(code)) throw new NotFoundException('Mã bàn không hợp lệ');
     const table = await this.db.diningTable.findFirst({
-      where: { publicCode: code, archivedAt: null, status: { not: 'OUT_OF_SERVICE' } },
+      where: { publicCode: code, archivedAt: null, status: { not: 'OUT_OF_SERVICE' }, restaurant: { status: 'ACTIVE' } },
     });
     if (!table) throw new NotFoundException('Mã bàn không hợp lệ hoặc bàn đang tạm ngưng');
     return table;
@@ -119,7 +120,7 @@ export class OrdersService {
     const context = await this.table(code);
     return this.db.$transaction(
       async (tx) => {
-        await tx.$queryRaw`SELECT id FROM "Restaurant" WHERE id = ${context.restaurantId}::uuid FOR UPDATE`;
+        await lockActiveRestaurant(tx, context.restaurantId);
         const table = await lockTable(tx, context.restaurantId, context.id);
         if (table.publicCode !== code || table.status === 'OUT_OF_SERVICE')
           throw new NotFoundException('Mã bàn đã thay đổi hoặc đang tạm ngưng');

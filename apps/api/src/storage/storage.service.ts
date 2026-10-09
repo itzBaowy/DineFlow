@@ -22,6 +22,7 @@ import type {} from 'multer';
 import type { StaffPrincipal } from '@dineflow/shared';
 import { CONFIG, type AppConfig } from '../config/env';
 import { PrismaService } from '../database/prisma.service';
+import { lockActiveRestaurant } from '../common/tenant-scope';
 
 @Injectable()
 export class StorageService implements OnModuleDestroy {
@@ -126,6 +127,7 @@ export class StorageService implements OnModuleDestroy {
     }
     try {
       await this.db.$transaction(async (tx) => {
+        await lockActiveRestaurant(tx, staff.restaurantId);
         await tx.mediaAsset.create({
           data: {
             id,

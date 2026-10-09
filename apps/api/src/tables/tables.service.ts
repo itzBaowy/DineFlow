@@ -96,7 +96,7 @@ export class TablesService {
     if (!/^[A-Za-z0-9_-]{32}$/.test(publicCode))
       throw new NotFoundException('Mã bàn không hợp lệ hoặc đã được thay đổi');
     const table = await this.db.diningTable.findFirst({
-      where: { publicCode, archivedAt: null, status: { not: 'OUT_OF_SERVICE' } },
+      where: { publicCode, archivedAt: null, status: { not: 'OUT_OF_SERVICE' }, restaurant: { status: 'ACTIVE' } },
       include: { restaurant: true, sessions: { where: { status: 'OPEN' }, select: { id: true } } },
     });
     if (!table) throw new NotFoundException('Mã bàn không hợp lệ hoặc bàn đang tạm ngưng');

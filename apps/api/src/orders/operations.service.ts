@@ -1,3 +1,4 @@
+import { lockActiveRestaurant } from '../common/tenant-scope';
 import {
   ConflictException,
   ForbiddenException,
@@ -133,7 +134,7 @@ export class OperationsService {
       .digest('hex');
     const result = await this.db.$transaction(
       async (tx) => {
-        await tx.$queryRaw`SELECT id FROM "Restaurant" WHERE id = ${staff.restaurantId}::uuid FOR UPDATE`;
+        await lockActiveRestaurant(tx, staff.restaurantId);
         const table = await lockTable(tx, staff.restaurantId, context.tableId);
         const session = await lockSession(tx, table.id);
         if (
@@ -210,7 +211,7 @@ export class OperationsService {
     if (!context) throw new NotFoundException('Không tìm thấy đơn');
     const order = await this.db.$transaction(
       async (tx) => {
-        await tx.$queryRaw`SELECT id FROM "Restaurant" WHERE id = ${staff.restaurantId}::uuid FOR UPDATE`;
+        await lockActiveRestaurant(tx, staff.restaurantId);
         const table = await lockTable(tx, staff.restaurantId, context.diningSession.tableId);
         const session = await lockSession(tx, table.id);
         if (!session || session.id !== context.diningSessionId || table.status !== 'OCCUPIED')

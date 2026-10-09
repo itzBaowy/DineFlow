@@ -1,3 +1,4 @@
+import { lockActiveRestaurant } from '../common/tenant-scope';
 import {
   ConflictException,
   ForbiddenException,
@@ -157,7 +158,7 @@ export class ServiceRequestsService {
       throw new ForbiddenException('Thu ngân chỉ xử lý yêu cầu thanh toán');
     const result = await this.db.$transaction(
       async (tx) => {
-        await tx.$queryRaw`SELECT id FROM "Restaurant" WHERE id = ${staff.restaurantId}::uuid FOR UPDATE`;
+        await lockActiveRestaurant(tx, staff.restaurantId);
         const table = await lockTable(tx, staff.restaurantId, context.diningSession.tableId),
           session = await lockSession(tx, table.id);
         if (!session || session.id !== context.diningSessionId || table.status !== 'OCCUPIED')

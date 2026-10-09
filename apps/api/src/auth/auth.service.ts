@@ -7,6 +7,7 @@ import { CONFIG, type AppConfig } from '../config/env';
 import type { AccessClaims } from './auth.types';
 import { DUMMY_PASSWORD_HASH, verifyPassword } from './password';
 import type { Prisma } from '../generated/prisma/client';
+import { lockActiveRestaurant } from '../common/tenant-scope';
 
 const authInclude = { user: true, membership: { include: { restaurant: true } } } as const;
 type SessionWithPrincipal = Prisma.AuthSessionGetPayload<{ include: typeof authInclude }>;
@@ -24,7 +25,7 @@ export class AuthService {
     };
   }
   private isValid(session: SessionWithPrincipal): boolean {
-    return !session.revokedAt && session.expiresAt > new Date() && session.user.isActive && session.membership.isActive;
+    return !session.revokedAt && session.expiresAt > new Date() && session.user.isActive && session.membership.isActive && session.membership.restaurant.status === 'ACTIVE';
   }
   private async credentials(session: SessionWithPrincipal, refreshToken: string) {
     const accessToken = await this.jwt.signAsync({ sub: session.userId, sid: session.id, type: 'staff_access' } satisfies AccessClaims, {
@@ -33,16 +34,18 @@ export class AuthService {
     return { accessToken, refreshToken, expiresAt: session.expiresAt, staff: this.principal(session) };
   }
   async login(input: LoginInput) {
-    const user = await this.prisma.user.findUnique({ where: { email: input.email }, include: { memberships: { where: { isActive: true } } } });
+    const user = await this.prisma.user.findUnique({ where: { email: input.email }, include: { memberships: { where: { isActive: true, restaurant: { status: 'ACTIVE' } } } } });
     const validPassword = await verifyPassword(input.password, user?.passwordHash ?? DUMMY_PASSWORD_HASH);
     if (!user?.isActive || !validPassword || user.memberships.length !== 1) throw new UnauthorizedException('Email hoặc mật khẩu không đúng');
     const membership = user.memberships[0]!;
     const refreshToken = randomBytes(32).toString('base64url');
     const expiresAt = new Date(Date.now() + this.config.REFRESH_TOKEN_TTL_SECONDS * 1000);
     const session = await this.prisma.$transaction(async tx => {
+      await lockActiveRestaurant(tx, membership.restaurantId);
       const created = await tx.authSession.create({
         data: { userId: user.id, membershipId: membership.id, expiresAt, refreshTokens: { create: { tokenHash: hashToken(refreshToken), expiresAt } } }, include: authInclude,
       });
+      if (!this.isValid(created)) throw new UnauthorizedException('Email hoặc mật khẩu không đúng');
       await tx.activityLog.create({ data: { restaurantId: membership.restaurantId, actorUserId: user.id, action: 'auth.login', entityType: 'AuthSession', entityId: created.id } });
       return created;
     });

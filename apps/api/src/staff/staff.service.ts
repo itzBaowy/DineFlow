@@ -1,3 +1,4 @@
+import { lockActiveRestaurant } from '../common/tenant-scope';
 import {
   ConflictException,
   ForbiddenException,
@@ -75,7 +76,7 @@ export class StaffService {
   ): Promise<T> {
     try {
       return await this.db.$transaction(async (tx) => {
-        await tx.$queryRaw`SELECT id FROM "Restaurant" WHERE id = ${staff.restaurantId}::uuid FOR UPDATE`;
+        await lockActiveRestaurant(tx, staff.restaurantId);
         // Recheck inside the mutation lock: a concurrent role change cannot leave old admin powers.
         const actor = await tx.staffMembership.findFirst({
           where: {

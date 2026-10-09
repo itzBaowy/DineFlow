@@ -97,6 +97,7 @@ export class RealtimeService implements OnModuleDestroy {
           diningSessionId: identity.diningSessionId,
           diningSession: {
             restaurantId: identity.restaurantId,
+            restaurant: { status: 'ACTIVE' },
             status: { in: ['OPEN', 'PAYMENT_REQUESTED'] },
             table: {
               id: identity.tableId,
