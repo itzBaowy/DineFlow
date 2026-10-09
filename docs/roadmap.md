@@ -11,10 +11,10 @@
 | 7 — Admin/Analytics | Revenue, daily/monthly, best-sellers, order history, audit, staff | chỉ revenue COMPLETED, timezone, filters/scope |
 | 8 — Production | E2E toàn quy trình, logs, hardening, image builds, CI/CD/deploy | QR → order → confirm → cook → serve → pay → close |
 
-SaaS foundation và SaaS 2 đã có: free owner signup, platform console/lifecycle, Owner tạo nhiều nhà hàng bằng cùng tài khoản, đăng nhập chọn membership và chuyển tenant an toàn. 17 unit/94 integration checks, API Docker và production build qua; browser hồi quy 16/16 trên FE do người dùng mở. Xem [SaaS](saas.md) và [Multi-restaurant verification](tenancy-verification.md).
+SaaS foundation, SaaS 2 và SaaS 3 đã có: free owner signup, platform console/lifecycle, Owner tạo nhiều nhà hàng bằng cùng tài khoản, chọn/chuyển membership an toàn, xác minh email, reset/đổi mật khẩu và MFA admin. 19 unit/105 integration checks, API Docker và production build qua; browser hồi quy 18/18 trên FE do người dùng mở. Xem [SaaS](saas.md), [Multi-restaurant verification](tenancy-verification.md) và [bảo mật tài khoản/Resend](security.md).
 
 Sau mỗi phase chạy lint, typecheck, tests và build; ghi rõ kết quả đã chạy và giới hạn. Không dùng UI mẫu để đánh dấu chức năng đã hoàn thành. Chưa triển khai E2E ordering trong Phase 1 vì các endpoint đó chưa tồn tại.
 
-Trạng thái: Phase 1–7, SaaS foundation và SaaS 2 đã triển khai local. Runner browser dùng API Docker và FE do người dùng mở, chia 3 specs/batch để giữ throttler thật. Xem [Phase 7 verification](phase-7-verification.md) cho lịch sử và [Multi-restaurant verification](tenancy-verification.md) cho kết quả hiện tại. Phase 8 vẫn cần logging/monitoring, backup, hardening, HTTPS, CI/CD và deployment; chưa triển khai production.
+Trạng thái: Phase 1–7, SaaS foundation/SaaS 2/SaaS 3 đã triển khai local. Runner browser dùng API Docker và FE do người dùng mở, chia 3 specs/batch để giữ throttler thật. Xem [Phase 7 verification](phase-7-verification.md) cho lịch sử và [bảo mật tài khoản](security.md) cho kết quả hiện tại. Phase 8 vẫn cần logging/monitoring, backup, hardening, HTTPS, CI/CD và deployment; chưa triển khai production.
 
-SaaS giai đoạn tiếp theo đề xuất: xác minh email, self-service quên mật khẩu và bảo vệ admin; tiếp theo production HTTPS/backup/monitoring/CI/CD. Chưa có thu phí, subscription hoặc nhóm chi nhánh.
+Giai đoạn tiếp theo đề xuất: Phase 8 production HTTPS/backup/monitoring/CI/CD, cấu hình domain/Resend thật, rate limit tập trung và cảnh báo email failures. Chưa có thu phí, subscription hoặc nhóm chi nhánh.

@@ -112,7 +112,9 @@ Phạm vi cập nhật theo yêu cầu ngày **09/10/2026**: DineFlow là **SaaS
 - Tạm ngừng tenant thu hồi phiên staff/guest và chặn quyền truy cập/QR/realtime, giữ nguyên dữ liệu/phiên bàn. Mở lại không phục hồi credentials đã thu hồi.
 - Chưa thu phí, chưa có subscription/trial/checkout nhà hàng. Thanh toán hóa đơn khách tại quán vẫn là nghiệp vụ billing hiện có.
 
-SaaS nhiều nhà hàng: mỗi đăng ký tạo nhà hàng đầu tiên cho Owner mới; Owner có thể tạo thêm nhà hàng trống bằng cùng tài khoản. Nếu có nhiều membership ACTIVE, đăng nhập yêu cầu chọn nhà hàng sau khi xác thực mật khẩu. Workspace cho phép chuyển sang membership của chính user, áp dụng vai trò đích, thu hồi phiên cũ và làm mới dữ liệu/giỏ nhân viên/realtime; không sao chép dữ liệu. Admin tắt đăng ký cũng chặn tạo thêm nhà hàng. Custom domain, invitation/email verification, reset mật khẩu qua email và subscription được bổ sung ở các giai đoạn sau khi cần.
+SaaS nhiều nhà hàng: mỗi đăng ký tạo nhà hàng đầu tiên cho Owner mới; Owner có thể tạo thêm nhà hàng trống bằng cùng tài khoản. Nếu có nhiều membership ACTIVE, đăng nhập yêu cầu chọn nhà hàng sau khi xác thực mật khẩu. Workspace cho phép chuyển sang membership của chính user, áp dụng vai trò đích, thu hồi phiên cũ và làm mới dữ liệu/giỏ nhân viên/realtime; không sao chép dữ liệu. Admin tắt đăng ký cũng chặn tạo thêm nhà hàng. Custom domain, invitation và subscription thuộc giai đoạn sau.
+
+SaaS 3 — bảo mật tài khoản: Owner đăng ký mới phải xác minh email trước khi đăng nhập; tài khoản cũ và nhân viên do quản lý tạo tiếp tục sử dụng được. Có gửi lại email, quên/đặt lại mật khẩu bằng link hết hạn dùng một lần và tự đổi mật khẩu với mật khẩu hiện tại. Đổi/reset mật khẩu thu hồi mọi phiên trên tất cả nhà hàng và platform. Admin nền tảng bắt buộc thiết lập/nhập TOTP trước khi nhận phiên quản trị; challenge không có quyền console. Gửi email production bằng Resend, local bằng Mailpit Docker; có rate limit, nhật ký bảo mật không chứa secrets và CLI phục hồi MFA dành riêng cho operator.
 
 Ngôn ngữ giao diện mặc định: tiếng Việt.
 

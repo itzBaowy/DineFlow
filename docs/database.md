@@ -4,10 +4,16 @@ SaaS migration `202610090007_saas` thêm Restaurant.status/suspensionReason, Use
 
 Phase 7 dùng các bảng hiện có, không thêm migration. Revenue dựa trên Payment COMPLETED/completedAt và tiền snapshot; best-sellers đọc OrderItem snapshots của phiên đã thanh toán, bỏ CANCELLED. History/audit vẫn restaurant-scoped và giữ dữ liệu phiên CLOSED. Staff mutations dùng StaffMembership/User/AuthSession/ActivityLog trong transaction, không xóa người thao tác hoặc lịch sử. API Docker chạy migrate deploy trước startup, dùng nguyên named volume PostgreSQL hiện có.
 
+Migration `202610090008_account_security` thêm User.emailVerifiedAt/requiresEmailVerification/credentialVersion/mfaSecret/mfaLastCounter; AccountToken, EmailOutbox, MfaChallenge và SecurityEvent. Token chỉ lưu SHA-256; nội dung email và secret TOTP mã hóa AES-256-GCM bằng ACCOUNT_SECURITY_KEY. Phiên staff/platform lưu credentialVersion, platform thêm mfaVerified. Migration thu hồi mọi platform session chỉ có mật khẩu, giữ dữ liệu business và quyền của tài khoản cũ. CHECK giới hạn kind/expiry/attempts/version; index phục vụ worker và truy vấn theo user. Xem [bảo mật tài khoản](security.md).
+
 ```mermaid
 erDiagram
   User ||--o{ PlatformSession : administers
   User ||--o{ PlatformAudit : records
+  User ||--o{ AccountToken : verifies_recovers
+  User ||--o{ EmailOutbox : receives
+  User ||--o{ MfaChallenge : challenges
+  User o|--o{ SecurityEvent : records_security
   Restaurant ||--o{ StaffMembership : employs
   User ||--o{ StaffMembership : has
   StaffMembership ||--o{ AuthSession : authenticates

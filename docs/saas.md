@@ -4,7 +4,7 @@ Phạm vi cập nhật ngày 09/10/2026, thay thế giới hạn một nhà hàn
 
 ## Chủ nhà hàng
 
-Mở <http://localhost:3000/register> (trang `/` cũng chuyển đến đây), nhập tên/email/mật khẩu, tên nhà hàng, slug duy nhất và timezone. Đăng ký tạo User, Restaurant ACTIVE, membership OWNER và activity log trong cùng transaction. Nhà hàng bắt đầu trống, không seed menu/bàn/đơn/doanh thu giả. Thành công có liên kết đăng nhập bằng tài khoản vừa tạo.
+Mở <http://localhost:3000/register> (trang `/` cũng chuyển đến đây), nhập tên/email/mật khẩu, tên nhà hàng, slug duy nhất và timezone. Đăng ký tạo User, Restaurant ACTIVE, membership OWNER và activity log trong cùng transaction. Nhà hàng bắt đầu trống, không seed menu/bàn/đơn/doanh thu giả. Thành công yêu cầu kiểm tra email, xác minh bằng link trước khi đăng nhập. Email được queue trong cùng transaction; resend/recovery/đổi mật khẩu và Resend production xem [bảo mật tài khoản](security.md).
 
 Trong workspace, Owner thêm settings/menu/bàn/QR và mở `/admin/staff` để tạo Manager/Waiter/Kitchen/Cashier. Manager cũng tạo/quản lý nhân viên nhưng không tạo/sửa/khóa/reset Owner. Các tài khoản dùng email duy nhất trên nền tảng; tài khoản có sẵn của tenant khác không tự được gắn vào nhà hàng. Quyền nghiệp vụ và bảo vệ Owner active cuối cùng vẫn áp dụng.
 
@@ -26,7 +26,7 @@ Tài khoản admin được cấp bằng CLI, không có đường đăng ký ad
 - Bật/tắt đăng ký và tạo thêm nhà hàng; không ảnh hưởng tenant đang dùng.
 - Nhật ký riêng cho login/logout/bootstrap, suspension/resumption và thay đổi đăng ký; không chứa passwords/tokens/hash.
 
-Admin sử dụng opaque token ngẫu nhiên 32 bytes, chỉ hash SHA-256 trong PlatformSession; cookie HttpOnly/SameSite=Strict, path `/api/v1/platform`, Secure theo env. Phiên tuyệt đối 8 giờ, không refresh/sliding; hết hạn phải đăng nhập lại. Backend kiểm tra session/User active/isPlatformAdmin mỗi request. Owner/Manager cookies không được dùng cho platform APIs; platform cookie không cấp quyền business tenant.
+Admin sử dụng opaque token ngẫu nhiên 32 bytes, chỉ hash SHA-256 trong PlatformSession; cookie HttpOnly/SameSite=Strict, path `/api/v1/platform`, Secure theo env. Password login chỉ tạo challenge năm phút; phải thiết lập/nhập TOTP mới có PlatformSession, chống dùng lại mã và tối đa năm lỗi/challenge. Phiên tuyệt đối 8 giờ, không refresh/sliding; hết hạn phải đăng nhập lại. Backend kiểm tra session/User active/isPlatformAdmin, mfaVerified và credentialVersion mỗi request. Owner/Manager cookies không được dùng cho platform APIs; platform cookie không cấp quyền business tenant.
 
 Console quản lý tenant/access/config và đọc tình trạng API/database. Chưa có fleet monitoring, thao tác restart container từ web, Redis adapter, quản lý secrets hoặc deploy qua console. Docker vận hành qua terminal theo [Docker API](docker-api.md).
 
@@ -61,7 +61,9 @@ Prefix `/api/v1`:
 |---|---|
 | `GET /auth/registration-settings` | Public, chỉ registrationsEnabled |
 | `POST /auth/register` | Public, strict DTO; 10 requests/IP/giờ, kể cả email khác nhau |
-| `POST /platform/auth/login` | Public, 5 requests/email+IP/phút, chỉ User isPlatformAdmin |
+| `POST /platform/auth/login` | Public, 5 requests/email+IP/phút, chỉ User isPlatformAdmin; trả MFA challenge, chưa có quyền console |
+| `GET /platform/auth/mfa/setup` | Challenge thiết lập hợp lệ |
+| `POST /platform/auth/mfa/verify` | Challenge + TOTP đúng/chưa dùng; tạo platform session |
 | `POST /platform/auth/logout` | Revoke opaque session, clear cookie |
 | `GET /platform/auth/me` | Platform session hợp lệ |
 | `GET /platform/overview` | Platform admin |
@@ -72,7 +74,9 @@ Prefix `/api/v1`:
 
 Platform controllers skip staff authentication để dùng guard riêng, vẫn có global CSRF/throttler và PlatformGuard. Public signup không nhận role/isPlatformAdmin/isActive/restaurantId; server quyết định Owner/ACTIVE. Registration và settings change cùng khóa singleton để đóng đăng ký không xen vào transaction tạo tenant.
 
-## Kiểm chứng
+## Kiểm chứng foundation/SaaS 2
+
+Kết quả SaaS 3 mới nhất và cấu hình email/MFA ở [security.md](security.md). Các số liệu bên dưới là lịch sử trước SaaS 3.
 
 - Lint, typecheck, 17 unit tests và 94 integration tests đều qua; shared/API/Next production build qua. Có 11 SaaS foundation checks và 10 multi-restaurant checks mới về signup atomic/races, tenant isolation, manager restrictions, platform auth separation, suspension/guest/QR/refresh, resume, registration settings/audit, waiting writer recheck, admin expiry/logout, signup IP limit, tenant creation/selection/switch/target role/concurrency.
 - Docker rebuild và migration exit 0; API/PostgreSQL/Redis/MinIO healthy. Direct container smoke qua auth/reports/history/staff, platform login/overview/tenants/audit/logout, Socket.IO và sharp/MinIO.
@@ -82,4 +86,4 @@ Platform controllers skip staff authentication để dùng guard riêng, vẫn c
 
 ## Giới hạn giai đoạn đầu
 
-Mỗi đăng ký tạo tenant đầu tiên; cùng tài khoản Owner có thể tạo thêm tenant và chuyển workspace. Mỗi phiên chỉ thuộc một membership; role đích được đọc từ DB. Chưa có quản lý nhóm chi nhánh, custom subdomain, invitation/gắn staff account có sẵn sang tenant khác, xác minh email, self-service password recovery, MFA admin, charging hoặc PostgreSQL RLS. Isolation được thực thi bởi auth principal, scoped queries và composite foreign keys. Production HTTPS/backup/monitoring/CI/CD tiếp tục trong roadmap; đây là bản SaaS chạy local.
+Mỗi đăng ký tạo tenant đầu tiên; cùng tài khoản Owner có thể tạo thêm tenant và chuyển workspace. Mỗi phiên chỉ thuộc một membership; role đích được đọc từ DB. Chưa có quản lý nhóm chi nhánh, custom subdomain, invitation/gắn staff account có sẵn sang tenant khác, charging hoặc PostgreSQL RLS. Isolation được thực thi bởi auth principal, scoped queries và composite foreign keys. Production HTTPS/backup/monitoring/CI/CD tiếp tục trong roadmap; đây là bản SaaS chạy local.
