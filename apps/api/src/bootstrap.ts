@@ -9,11 +9,17 @@ import type { Request, Response, NextFunction } from 'express';
 import { AppModule } from './app.module';
 import { CONFIG, type AppConfig } from './config/env';
 import { HttpExceptionFilter } from './common/http-exception.filter';
+import { RealtimeAdapter } from './realtime/realtime.adapter';
 
 export async function createApp(logger: false | undefined = undefined) {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule, { logger, bodyParser: false });
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    logger,
+    bodyParser: false,
+  });
   const config = app.get<AppConfig>(CONFIG);
   app.disable('x-powered-by');
+  app.set('trust proxy', config.TRUST_PROXY_HOPS);
+  app.useWebSocketAdapter(new RealtimeAdapter(app, config.APP_ORIGIN));
   app.use(helmet());
   app.use((request: Request, response: Response, next: NextFunction) => {
     request.headers['x-request-id'] = randomUUID();
@@ -23,12 +29,31 @@ export async function createApp(logger: false | undefined = undefined) {
   });
   app.useBodyParser('json', { limit: '128kb' });
   app.use(cookieParser());
-  app.enableCors({ origin: config.APP_ORIGIN, credentials: true, allowedHeaders: ['Content-Type', 'X-DineFlow-Client'], methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'] });
+  app.enableCors({
+    origin: config.APP_ORIGIN,
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'X-DineFlow-Client', 'X-DineFlow-Restaurant'],
+    exposedHeaders: ['X-DineFlow-Scope-Mismatch', 'X-Request-Id'],
+    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+  });
   app.setGlobalPrefix('api/v1');
   app.useGlobalFilters(new HttpExceptionFilter());
   if (config.NODE_ENV !== 'production') {
-    const document = SwaggerModule.createDocument(app, new DocumentBuilder().setTitle('DineFlow API').setDescription('Staff auth and administration, setup, ordering, kitchen, realtime, billing, receipts and scoped analytics').setVersion('0.7.0').addCookieAuth('df_access').addCookieAuth('df_guest').build());
-    SwaggerModule.setup('api/docs', app, document, { swaggerOptions: { withCredentials: true } });
+    const document = SwaggerModule.createDocument(
+      app,
+      new DocumentBuilder()
+        .setTitle('DineFlow API')
+        .setDescription(
+          'Staff auth and administration, setup, ordering, kitchen, realtime, billing, receipts and scoped analytics',
+        )
+        .setVersion('0.7.0')
+        .addCookieAuth('df_access')
+        .addCookieAuth('df_guest')
+        .build(),
+    );
+    SwaggerModule.setup('api/docs', app, document, {
+      swaggerOptions: { withCredentials: true },
+    });
   }
   app.enableShutdownHooks();
   return app;

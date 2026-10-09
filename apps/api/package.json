@@ -17,7 +17,7 @@
     "platform:mfa-recovery": "pnpm build && node dist/prisma/platform-mfa-recovery.js",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "pnpm build && node --test dist/test/unit.test.js",
-    "test:integration": "pnpm build && node dist/test/prepare-db.js && node --test --test-concurrency=1 dist/test/auth.integration.test.js dist/test/setup.integration.test.js dist/test/ordering.integration.test.js dist/test/operations.integration.test.js dist/test/realtime.integration.test.js dist/test/billing.integration.test.js dist/test/admin.integration.test.js dist/test/saas.integration.test.js dist/test/tenancy.integration.test.js dist/test/security.integration.test.js",
+    "test:integration": "pnpm build && node dist/test/prepare-db.js && node --test --test-concurrency=1 dist/test/auth.integration.test.js dist/test/setup.integration.test.js dist/test/ordering.integration.test.js dist/test/operations.integration.test.js dist/test/realtime.integration.test.js dist/test/billing.integration.test.js dist/test/admin.integration.test.js dist/test/saas.integration.test.js dist/test/tenancy.integration.test.js dist/test/security.integration.test.js dist/test/deployment.integration.test.js",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate deploy",
     "db:seed": "pnpm build && node dist/prisma/seed.js",

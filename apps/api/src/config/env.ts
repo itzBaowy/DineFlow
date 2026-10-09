@@ -11,6 +11,7 @@ export const envSchema = z
   .object({
     NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
     API_PORT: z.coerce.number().int().min(1).max(65535).default(4000),
+    TRUST_PROXY_HOPS: z.coerce.number().int().min(0).max(2).default(0),
     APP_ORIGIN: z
       .url()
       .refine((value) => ['http:', 'https:'].includes(new URL(value).protocol)),
@@ -41,7 +42,11 @@ export const envSchema = z
     EMAIL_PROVIDER: z.enum(['smtp', 'resend']).default('smtp'),
     RESEND_API_KEY: z.preprocess(
       (value) => (value === '' ? undefined : value),
-      z.string().min(10).optional(),
+      z
+        .string()
+        .min(10)
+        .refine((value) => !/GENERATE|CHANGE_ME|SET_ME/.test(value))
+        .optional(),
     ),
     ACCESS_TOKEN_TTL_SECONDS: z.coerce.number().int().min(30).max(3600).default(900),
     REFRESH_TOKEN_TTL_SECONDS: z.coerce.number().int().min(300).max(2592000).default(604800),
