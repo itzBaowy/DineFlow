@@ -65,4 +65,6 @@ CALL_STAFF / REQUEST_PAYMENT chỉ trong phiên OPEN hoặc PAYMENT_REQUESTED v�
 
 Phase 7 đã triển khai quản trị nhân viên và các admin reads. Không tự đổi role/khóa/reset mật khẩu; luôn còn ít nhất một OWNER active. Đổi quyền/khóa/reset revoke các AuthSessions của membership; bật lại không khôi phục phiên cũ. Đối chiếu expectedUpdatedAt, khóa Restaurant và recheck actor trong transaction chống stale/concurrent permission changes. Password và audit ghi nguyên tử, không ghi secrets. Các role ngoài OWNER/MANAGER không được đọc lịch sử mọi phiên hoặc staff audit qua admin endpoints.
 
+Platform admin là quyền toàn hệ thống riêng, không nằm trong enum Role và không có membership nhà hàng khi bootstrap. Guard/cookie/platform session tách khỏi staff. Admin tạm ngừng tenant: ACTIVE → SUSPENDED, revoke staff/guest, giữ dining states/data; mở lại SUSPENDED → ACTIVE không phục hồi credentials cũ. Public signup luôn tạo OWNER/ACTIVE, không cho client chọn quyền platform.
+
 Khách đọc menu công khai; gửi/đọc đơn của mình, service request và tổng bill trong **phiên đang hoạt động** được cấp token. Guest bill không trả chi tiết đơn/ghi chú của khách khác; không truy cập receipt/session lịch sử bằng QR cố định. QR không xác minh khách có mặt. Rate limit public API, nhân viên xác nhận đơn trước bếp; PIN/QR động có thể thêm sau.

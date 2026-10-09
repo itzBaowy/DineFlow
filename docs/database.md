@@ -1,9 +1,13 @@
 # Database ERD
 
+SaaS migration `202610090007_saas` thêm Restaurant.status/suspensionReason, User.isPlatformAdmin (mặc định false) và PlatformSession/PlatformSettings/PlatformAudit. Tenant cũ ACTIVE, dữ liệu giữ nguyên. Platform session không dùng StaffMembership; settings có singleton constraint, audits FK về admin User. Xem [SaaS](saas.md).
+
 Phase 7 dùng các bảng hiện có, không thêm migration. Revenue dựa trên Payment COMPLETED/completedAt và tiền snapshot; best-sellers đọc OrderItem snapshots của phiên đã thanh toán, bỏ CANCELLED. History/audit vẫn restaurant-scoped và giữ dữ liệu phiên CLOSED. Staff mutations dùng StaffMembership/User/AuthSession/ActivityLog trong transaction, không xóa người thao tác hoặc lịch sử. API Docker chạy migrate deploy trước startup, dùng nguyên named volume PostgreSQL hiện có.
 
 ```mermaid
 erDiagram
+  User ||--o{ PlatformSession : administers
+  User ||--o{ PlatformAudit : records
   Restaurant ||--o{ StaffMembership : employs
   User ||--o{ StaffMembership : has
   StaffMembership ||--o{ AuthSession : authenticates

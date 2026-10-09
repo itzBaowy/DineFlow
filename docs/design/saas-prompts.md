@@ -12,4 +12,3 @@ PAGE STRUCTURE:
 Prioritize accessible inputs, generous reading rhythm, clearly separated explanatory content and form, straightforward signup that creates an empty real tenant rather than seeding fake orders. Never mix platform admin with tenant Owner.
 
 Stitch suggestions: conflict/paused registration views, three-step onboarding wizard, and single-column mobile. The implementation includes real error/paused/success states and responsive mobile; no invented tenant URLs, availability badges, shift/FOH/BOH data or terms checkbox without an actual policy.
-

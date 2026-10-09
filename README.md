@@ -1,9 +1,10 @@
 # DineFlow
 
-Hệ thống QR Ordering và quản lý nhà hàng theo [Requirement.md](Requirement.md). Đã triển khai **Phase 1–7: Foundation, Restaurant Setup, Customer Ordering, Staff & Kitchen, Realtime, Billing và Admin/Analytics**, với giao diện Google Stitch chuyển thành Next.js components kết nối NestJS/PostgreSQL/MinIO thật. API chạy trong Docker; web do bạn chạy bằng terminal.
+Hệ thống QR Ordering và quản lý nhà hàng theo [Requirement.md](Requirement.md). Đã triển khai **Phase 1–7: Foundation, Restaurant Setup, Customer Ordering, Staff & Kitchen, Realtime, Billing và Admin/Analytics**, với giao diện Google Stitch chuyển thành Next.js components kết nối NestJS/PostgreSQL/MinIO thật. Đã mở rộng thành SaaS nhiều tenant miễn phí: chủ quán tự đăng ký, quản lý đội ngũ và có admin nền tảng riêng. API chạy trong Docker; web do bạn chạy bằng terminal.
 
 ## Đã có
 
+- `/register`: chủ quán đăng ký miễn phí, tạo tenant trống + OWNER nguyên tử, không seed dữ liệu giả. `/platform/login` và `/platform`: admin riêng xem API/database, quản lý tenant, tạm ngừng/mở lại, bật/tắt đăng ký và platform audit. Xem [hướng dẫn SaaS](docs/saas.md).
 - pnpm monorepo, Next.js 16.4/React 19.3, NestJS 12.1, TypeScript strict, Prisma 7.10 stable + pg adapter.
 - PostgreSQL schema, SQL migrations, composite foreign keys, money checks và partial unique index cho phiên bàn active.
 - Seed: một nhà hàng, 10 bàn, 5 danh mục, 20 món, size/topping và 5 nhân viên. Không seed đơn/doanh thu giả.
@@ -38,6 +39,7 @@ pnpm setup:env
 pnpm api:up
 pnpm db:generate
 pnpm db:seed
+pnpm platform:bootstrap
 # Bạn tự chạy web trong terminal:
 pnpm dev:web
 ```
@@ -46,13 +48,15 @@ pnpm dev:web
 
 `setup:env` sinh secrets ngẫu nhiên vào `.env` đã được gitignore. Với `.env` cũ, chỉ bổ sung cấu hình guest/S3 còn thiếu và giữ giá trị đã có. Đừng dùng nguyên marker trong `.env.example`. Nếu đổi PostgreSQL password khi volume đã có dữ liệu, phải đổi password trong DB tương ứng; environment của image chỉ tạo credentials lần đầu.
 
-- Web: <http://localhost:3000/staff/login>
+- Đăng ký chủ quán: <http://localhost:3000/register>
+- Web nhà hàng: <http://localhost:3000/staff/login>
+- Admin nền tảng: <http://localhost:3000/platform/login>
 - Swagger: <http://localhost:4000/api/docs> (không bật trong production)
 - Liveness: <http://localhost:4000/api/v1/health/live>
 - Readiness kiểm tra PostgreSQL: <http://localhost:4000/api/v1/health/ready>
 - MinIO console local: <http://localhost:9001> (credentials trong `.env`, chỉ dùng local)
 
-Tài khoản demo: `owner@dineflow.local`, `manager@dineflow.local`, `waiter@dineflow.local`, `kitchen@dineflow.local`, `cashier@dineflow.local`. Tất cả dùng giá trị **SEED_DEMO_PASSWORD trong `.env` local**. Seed chạy lại không reset password, role hay dữ liệu đã chỉnh. Không chạy demo seed trong production.
+Tài khoản demo: `owner@dineflow.local`, `manager@dineflow.local`, `waiter@dineflow.local`, `kitchen@dineflow.local`, `cashier@dineflow.local`. Tất cả dùng giá trị **SEED_DEMO_PASSWORD trong `.env` local**. Seed chạy lại không reset password, role hay dữ liệu đã chỉnh. Không chạy demo seed trong production. Admin nền tảng riêng mặc định `admin@dineflow.local` dùng **PLATFORM_ADMIN_PASSWORD** trong `.env`, được cấp bằng `pnpm platform:bootstrap`; không dùng mật khẩu demo.
 
 Web gọi `/api/v1` qua Next rewrite để dùng cookie cùng origin. `APP_ORIGIN` phải khớp địa chỉ trình duyệt, không có trailing slash; `API_INTERNAL_URL` là địa chỉ backend mà Next truy cập. Khi đổi origin phải restart cả hai. Cookie trong production bắt buộc Secure và HTTPS.
 
@@ -80,9 +84,9 @@ pnpm --filter @dineflow/web exec playwright install chromium
 pnpm test:browser
 ```
 
-Integration tự tạo/migrate database riêng `dineflow_test` trên server cùng connection URL local. Tài khoản PG cần quyền tạo DB (Compose local đã có). Có thể truyền `TEST_DATABASE_URL`; tên DB bắt buộc kết thúc `_test`. Tests tạo fixtures riêng và cleanup đúng IDs/objects, không truncate DB dev. **17 unit tests, 73 integration tests** về auth, RBAC, CSRF, refresh/replay/concurrency, DB constraints, setup, QR, MinIO, guest isolation, pricing/snapshots/idempotency, staff/kitchen, realtime/service requests và billing. Billing kiểm tra số tiền/làm tròn/hạn mức, bill lỗi thời, double payment, pay/order/reopen races, receipt bất biến và tính nguyên tử khi đóng phiên. Admin kiểm tra revenue/payment scope, ngày/tháng/DST, snapshot, audit an toàn và các race đổi quyền/reset mật khẩu. Storage phải chạy và có credentials hợp lệ. `pnpm test:docker` có thêm 3 kiểm tra URL routing trong container.
+Integration tự tạo/migrate database riêng `dineflow_test` trên server cùng connection URL local. Tài khoản PG cần quyền tạo DB (Compose local đã có). Có thể truyền `TEST_DATABASE_URL`; tên DB bắt buộc kết thúc `_test`. Tests tạo fixtures riêng và cleanup đúng IDs/objects, không truncate DB dev. **17 unit tests, 84 integration tests** về auth, RBAC, CSRF, refresh/replay/concurrency, DB constraints, setup, QR, MinIO, guest isolation, pricing/snapshots/idempotency, staff/kitchen, realtime/service requests và billing. Billing kiểm tra số tiền/làm tròn/hạn mức, bill lỗi thời, double payment, pay/order/reopen races, receipt bất biến và tính nguyên tử khi đóng phiên. Admin kiểm tra revenue/payment scope, ngày/tháng/DST, snapshot, audit an toàn và các race đổi quyền/reset mật khẩu. Storage phải chạy và có credentials hợp lệ. `pnpm test:docker` có thêm 3 kiểm tra URL routing trong container.
 
-Browser tests dùng DB dev đã seed và password local để kiểm tra dữ liệu thật. API dùng Docker đang chạy; bạn tự chạy web bằng `pnpm dev:web` hoặc `pnpm --filter @dineflow/web start` sau build. Lệnh test mặc định không khởi động server. **14 flows desktop/mobile** kiểm tra auth/setup/QR, ordering/retry, đóng phiên rỗng, xác nhận → bếp → phục vụ → thanh toán → in biên nhận → dọn/mở lại bàn, đơn thủ công/từ chối, stale request/RBAC, WebSocket/polling/reconnect và dịch vụ tại bàn. Hai flows quản trị kiểm tra doanh thu/historical snapshots/audit và staff roles/password/session revocation. Runner chia tối đa 3 spec mỗi batch, chờ 65 giây giữa batches khi dùng API ngoài để tránh các test dùng chung IP làm cạn rate limit; không tắt throttler. CI có thể chủ động đặt `E2E_START_SERVERS=1` để Playwright quản lý server riêng khi ports trống. Billing còn kiểm tra chuyển khoản thủ công, mất phản hồi sau commit rồi reload/retry cùng mã và đóng phiên chỉ có đơn hủy. Ordering, operations, realtime và billing dùng restaurant/users ngẫu nhiên riêng, cleanup đúng tenant fixture; setup archive fixtures qua API và khôi phục settings. Screenshots/PDF QA lưu `.local/qa/`; traces/test-results được gitignore.
+Browser tests dùng DB dev đã seed và password local để kiểm tra dữ liệu thật. API dùng Docker đang chạy; bạn tự chạy web bằng `pnpm dev:web` hoặc `pnpm --filter @dineflow/web start` sau build. Lệnh test mặc định không khởi động server. **15 flows desktop/mobile** kiểm tra auth/setup/QR, ordering/retry, đóng phiên rỗng, xác nhận → bếp → phục vụ → thanh toán → in biên nhận → dọn/mở lại bàn, đơn thủ công/từ chối, stale request/RBAC, WebSocket/polling/reconnect và dịch vụ tại bàn. Flow SaaS mới bao gồm owner signup trống, platform list/suspend/resume và revocation, có mobile 390/320px. Flow này chưa được chạy vì web để người dùng tự mở; mới kiểm chứng typecheck/build và test discovery. Hai flows quản trị kiểm tra doanh thu/historical snapshots/audit và staff roles/password/session revocation. Runner chia tối đa 3 spec mỗi batch, chờ 65 giây giữa batches khi dùng API ngoài để tránh các test dùng chung IP làm cạn rate limit; không tắt throttler. CI có thể chủ động đặt `E2E_START_SERVERS=1` để Playwright quản lý server riêng khi ports trống. Billing còn kiểm tra chuyển khoản thủ công, mất phản hồi sau commit rồi reload/retry cùng mã và đóng phiên chỉ có đơn hủy. Ordering, operations, realtime và billing dùng restaurant/users ngẫu nhiên riêng, cleanup đúng tenant fixture; setup archive fixtures qua API và khôi phục settings. Screenshots/PDF QA lưu `.local/qa/`; traces/test-results được gitignore.
 
 Chạy web production build local (API vẫn dùng env dev):
 
@@ -96,6 +100,7 @@ pnpm --filter @dineflow/web start
 
 ## Thiết kế và nghiệp vụ
 
+- [SaaS miễn phí và admin nền tảng](docs/saas.md)
 - [Architecture / scope](docs/architecture.md)
 - [Database ERD](docs/database.md)
 - [State machines / role policy](docs/state-machines.md)
@@ -115,4 +120,4 @@ HTML tham chiếu Stitch trong `docs/design/*.reference.html` chỉ để đối
 
 ## Giới hạn hiện tại
 
-Đã xác minh local Windows, API Docker Linux + PostgreSQL/Redis/MinIO Compose và Chromium desktop/mobile. Lần chạy browser Phase 7 gần nhất đạt 13/14 (hai flow admin đều qua); setup owner gặp 429 do tổng lưu lượng dùng chung IP. Runner đã tách batch nhưng chưa chạy lại vì web do người dùng tự chạy. Chưa kiểm tra deployment production/S3 production, HTTPS thực tế, Safari/Firefox hay máy in vật lý. Thanh toán toàn phần một lần; chuyển khoản do nhân viên kiểm tra tiền về thủ công, chưa có gateway, chia bill, trả một phần hoặc refund. Biên nhận là chứng từ ứng dụng, chưa tích hợp hóa đơn điện tử. QR cố định không xác minh khách có mặt; đơn phải được nhân viên xác nhận trước bếp. Guest cookie mặc định 4 giờ, không khôi phục lịch sử nếu mất cookie hoặc hết hạn. Strict refresh replay policy có thể buộc nhân viên đăng nhập lại khi nhiều tab refresh cùng lúc. Throttler, socket tickets và connections hiện in-memory, chỉ phù hợp một API instance; chưa có Redis adapter, durable event outbox hay load test. Chưa có job dọn ảnh upload bỏ dở. Demo seed, Swagger và MinIO hiện tại chỉ dành cho development.
+Đã xác minh local Windows, API Docker Linux + PostgreSQL/Redis/MinIO Compose và Chromium desktop/mobile. SaaS chưa chạy browser QA vì web do người dùng mở; mỗi tài khoản hiện dùng một tenant, chưa có tenant switcher/subdomain/email verification/recovery. Lần chạy browser Phase 7 gần nhất đạt 13/14 (hai flow admin đều qua); setup owner gặp 429 do tổng lưu lượng dùng chung IP. Runner đã tách batch nhưng chưa chạy lại vì web do người dùng tự chạy. Chưa kiểm tra deployment production/S3 production, HTTPS thực tế, Safari/Firefox hay máy in vật lý. Thanh toán toàn phần một lần; chuyển khoản do nhân viên kiểm tra tiền về thủ công, chưa có gateway, chia bill, trả một phần hoặc refund. Biên nhận là chứng từ ứng dụng, chưa tích hợp hóa đơn điện tử. QR cố định không xác minh khách có mặt; đơn phải được nhân viên xác nhận trước bếp. Guest cookie mặc định 4 giờ, không khôi phục lịch sử nếu mất cookie hoặc hết hạn. Strict refresh replay policy có thể buộc nhân viên đăng nhập lại khi nhiều tab refresh cùng lúc. Throttler, socket tickets và connections hiện in-memory, chỉ phù hợp một API instance; chưa có Redis adapter, durable event outbox hay load test. Chưa có job dọn ảnh upload bỏ dở. Demo seed, Swagger và MinIO hiện tại chỉ dành cho development.
