@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+
+<html class="light" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Bảo mật tài khoản - DineFlow Artisanal Operations</title>
+<!-- Google Fonts: Newsreader (Editorial Serif) & Be Vietnam Pro (Clean Modern Sans) -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "tertiary": "#1b241f",
+            "on-primary-fixed-variant": "#284e41",
+            "primary": "#00281d",
+            "secondary": "#536434",
+            "tertiary-fixed-dim": "#c0c9c2",
+            "surface": "#faf9f5",
+            "on-tertiary-fixed": "#151d19",
+            "surface-dim": "#dbdad6",
+            "on-tertiary-container": "#9aa39c",
+            "on-surface-variant": "#414845",
+            "on-surface": "#1b1c1a",
+            "on-background": "#1b1c1a",
+            "surface-container-lowest": "#ffffff",
+            "on-primary": "#ffffff",
+            "inverse-surface": "#2f312e",
+            "inverse-primary": "#a6cfbf",
+            "surface-variant": "#e3e2df",
+            "surface-tint": "#406658",
+            "on-tertiary": "#ffffff",
+            "on-secondary-fixed-variant": "#3c4c1f",
+            "inverse-on-surface": "#f2f1ed",
+            "primary-container": "#173e32",
+            "background": "#faf9f5",
+            "tertiary-fixed": "#dce5de",
+            "primary-fixed-dim": "#a6cfbf",
+            "error-container": "#ffdad6",
+            "secondary-fixed": "#d6eaad",
+            "on-secondary": "#ffffff",
+            "surface-container-low": "#f4f4f0",
+            "surface-bright": "#faf9f5",
+            "surface-container-highest": "#e3e2df",
+            "tertiary-container": "#313934",
+            "outline-variant": "#c1c8c3",
+            "primary-fixed": "#c2ecda",
+            "secondary-container": "#d6eaad",
+            "on-primary-fixed": "#002117",
+            "surface-container": "#efeeea",
+            "on-secondary-fixed": "#131f00",
+            "on-secondary-container": "#596a39",
+            "outline": "#717975",
+            "on-primary-container": "#81a999",
+            "on-error-container": "#93000a",
+            "secondary-fixed-dim": "#bace93",
+            "on-tertiary-fixed-variant": "#404944",
+            "surface-container-high": "#e9e8e4",
+            "on-error": "#ffffff",
+            "error": "#ba1a1a"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-sm": "0.5rem",
+            "gutter": "1rem",
+            "space-xs": "0.25rem",
+            "gutter-desktop": "1.5rem",
+            "space-lg": "1.5rem",
+            "margin-tablet": "2rem",
+            "space-md": "1rem",
+            "space-xl": "2.5rem",
+            "margin-desktop": "3rem",
+            "margin": "1rem"
+          },
+          "fontFamily": {
+            "body-sm": ["Be Vietnam Pro"],
+            "headline-display-mobile": ["Newsreader"],
+            "body-lg": ["Be Vietnam Pro"],
+            "headline-display": ["Newsreader"],
+            "label-sm": ["Be Vietnam Pro"],
+            "label-lg": ["Be Vietnam Pro"],
+            "headline-md": ["Be Vietnam Pro"],
+            "label-md": ["Be Vietnam Pro"],
+            "headline-sm": ["Be Vietnam Pro"],
+            "headline-lg-mobile": ["Newsreader"],
+            "headline-lg": ["Newsreader"],
+            "body-md": ["Be Vietnam Pro"]
+          },
+          "fontSize": {
+            "body-sm": ["12px", { "lineHeight": "18px", "letterSpacing": "0.01em", "fontWeight": "400" }],
+            "headline-display-mobile": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "400" }],
+            "body-lg": ["16px", { "lineHeight": "26px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "headline-display": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400" }],
+            "label-sm": ["10px", { "lineHeight": "14px", "letterSpacing": "0.06em", "fontWeight": "700" }],
+            "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.02em", "fontWeight": "600" }],
+            "headline-md": ["22px", { "lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "600" }],
+            "headline-sm": ["18px", { "lineHeight": "26px", "letterSpacing": "0em", "fontWeight": "600" }],
+            "headline-lg-mobile": ["26px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+            "headline-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.015em", "fontWeight": "500" }],
+            "body-md": ["14px", { "lineHeight": "22px", "letterSpacing": "0.005em", "fontWeight": "400" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 4px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #c1c8c3;
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface font-body-md text-body-md antialiased min-h-screen flex selection:bg-secondary-container selection:text-primary">
+<!-- ==================== SIDEBAR ==================== -->
+<aside class="w-64 min-h-screen flex flex-col fixed left-0 top-0 bottom-0 z-40 bg-primary border-r border-outline-variant/20 shadow-none text-on-primary">
+<!-- Brand Emblem & Branch Context -->
+<div class="p-5 border-b border-outline-variant/15">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-primary-container border border-outline-variant/30 flex items-center justify-center text-primary-fixed shadow-sm">
+<span class="material-symbols-outlined text-[22px]">restaurant</span>
+</div>
+<div>
+<h1 class="font-headline-display text-headline-sm font-medium tracking-tight text-surface leading-none">DineFlow</h1>
+<p class="font-label-sm text-label-sm text-on-primary-container tracking-wider mt-1">HỆ ĐIỀU HÀNH ẨM THỰC</p>
+</div>
+</div>
+<!-- Current Operating Branch Badge -->
+<div class="mt-4 px-3 py-2 rounded-lg bg-surface-container-highest/10 border border-outline-variant/15 flex items-center justify-between">
+<div class="flex items-center gap-2 overflow-hidden">
+<span class="w-2 h-2 rounded-full bg-secondary-fixed shrink-0"></span>
+<span class="font-label-sm text-label-sm text-surface-container truncate">Bếp Nhà DineFlow • CN 01</span>
+</div>
+<span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-surface/10 text-on-primary-container">FOH/BOH</span>
+</div>
+</div>
+<!-- Navigation List -->
+<nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto custom-scroll">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-primary-container hover:text-surface hover:bg-primary-container/40 font-label-md text-label-md transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">dashboard</span>
+<span>Tổng quan</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-primary-container hover:text-surface hover:bg-primary-container/40 font-label-md text-label-md transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">storefront</span>
+<span>Nhà hàng của tôi</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-primary-container hover:text-surface hover:bg-primary-container/40 font-label-md text-label-md transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">restaurant_menu</span>
+<span>Thực đơn</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-primary-container hover:text-surface hover:bg-primary-container/40 font-label-md text-label-md transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">table_bar</span>
+<span>Bàn phục vụ &amp; QR</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-primary-container hover:text-surface hover:bg-primary-container/40 font-label-md text-label-md transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">countertops</span>
+<span>Màn hình bếp (KDS)</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-primary-container hover:text-surface hover:bg-primary-container/40 font-label-md text-label-md transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">point_of_sale</span>
+<span>Thu ngân &amp; POS</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-primary-container hover:text-surface hover:bg-primary-container/40 font-label-md text-label-md transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">monitoring</span>
+<span>Báo cáo doanh thu</span>
+</a>
+<div class="pt-3 pb-1">
+<div class="px-3 font-label-sm text-label-sm text-on-primary-container/70 tracking-widest uppercase">Thiết lập hệ thống</div>
+</div>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-primary-container hover:text-surface hover:bg-primary-container/40 font-label-md text-label-md transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">store</span>
+<span>Thông tin nhà hàng</span>
+</a>
+<!-- Active Navigation Tab -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary-container text-primary-fixed font-label-lg text-label-lg font-semibold shadow-inner" href="#">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">security</span>
+<span>Bảo mật tài khoản</span>
+</a>
+</nav>
+<!-- Bottom Operator Badge -->
+<div class="p-4 border-t border-outline-variant/15 bg-primary/70">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-secondary-fixed text-primary font-label-lg font-bold flex items-center justify-center shrink-0">
+          VA
+        </div>
+<div class="overflow-hidden">
+<p class="font-label-md text-label-md text-surface font-semibold truncate leading-tight">Nguyễn Văn An</p>
+<div class="flex items-center gap-1.5 mt-0.5">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0"></span>
+<span class="font-label-sm text-label-sm text-primary-fixed truncate">CHỦ NHÀ HÀNG (OWNER)</span>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<!-- ==================== MAIN CONTENT WRAPPER ==================== -->
+<div class="pl-64 flex-1 flex flex-col min-h-screen">
+<!-- TOP APP BAR -->
+<header class="sticky top-0 z-30 bg-surface/90 backdrop-blur-md px-8 py-3.5 border-b border-outline-variant/30 flex items-center justify-between">
+<!-- Breadcrumbs -->
+<div class="flex items-center gap-2 font-label-md text-label-md text-on-surface-variant">
+<span class="hover:text-on-surface cursor-pointer">Không gian làm việc</span>
+<span class="material-symbols-outlined text-[16px] text-outline">chevron_right</span>
+<span class="hover:text-on-surface cursor-pointer">Cài đặt tài khoản</span>
+<span class="material-symbols-outlined text-[16px] text-outline">chevron_right</span>
+<span class="font-label-lg text-label-lg text-primary font-semibold">Bảo mật tài khoản</span>
+</div>
+<!-- Live Shift & Ops Status Cluster -->
+<div class="flex items-center gap-5">
+<div class="hidden md:flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-low border border-outline-variant/30 font-label-sm text-label-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[15px] text-secondary">schedule</span>
+<span>Ca Tối: 17:00 - 23:00 (Đang mở)</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 font-label-sm text-label-sm">
+<span class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
+<span>Đồng bộ máy POS: Hoạt động</span>
+</div>
+<button class="w-8 h-8 rounded-full hover:bg-surface-container flex items-center justify-center text-on-surface-variant transition-colors" title="Trợ giúp">
+<span class="material-symbols-outlined text-[18px]">help_outline</span>
+</button>
+</div>
+</div>
+</header>
+<!-- MAIN EDITORIAL CANVAS -->
+<main class="flex-1 px-8 py-8 max-w-6xl w-full mx-auto space-y-8">
+<!-- EDITORIAL INTRO HEADER -->
+<section class="border-b border-outline-variant/30 pb-6">
+<div class="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+<div>
+<span class="font-label-sm text-label-sm tracking-widest uppercase text-secondary font-semibold">An ninh Hệ thống DineFlow</span>
+<h2 class="font-headline-display text-headline-lg font-medium text-primary mt-1 tracking-tight">
+              An tâm trong mỗi phiên làm việc.
+            </h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2.5 max-w-2xl leading-relaxed">
+              Tài khoản đăng nhập này là tài khoản định danh duy nhất (<span class="font-medium text-on-surface">Single Identity</span>) được chia sẻ an toàn và đồng bộ trên tất cả các cơ sở, chi nhánh nhà hàng mà bạn sở hữu trong hệ thống DineFlow (Bếp Nhà DineFlow, Cơm Niêu Phố Cổ...).
+            </p>
+</div>
+<!-- Subtle Sync Badge -->
+<div class="flex items-center gap-3 px-4 py-3 rounded-xl bg-surface-container-low border border-outline-variant/40 shrink-0">
+<div class="w-8 h-8 rounded-lg bg-primary-container text-primary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">hub</span>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Phạm vi bảo mật</p>
+<p class="font-label-md text-label-md text-primary font-semibold">Toàn bộ 02 chi nhánh</p>
+</div>
+</div>
+</div>
+</section>
+<!-- TOP GRID: EMAIL STATUS CARD + AUTHENTICATOR (MFA) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- THẺ 1: TRẠNG THÁI EMAIL (5 cols) -->
+<section class="lg:col-span-5 bg-surface-container-lowest rounded-xl border border-outline-variant/40 p-6 flex flex-col justify-between shadow-sm">
+<div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<div class="w-9 h-9 rounded-lg bg-surface-container text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">mail</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-primary">Email quản trị chính</h3>
+</div>
+<!-- Unverified Warning Badge -->
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 font-label-sm text-label-sm font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span>
+                Chưa xác minh
+              </span>
+</div>
+<!-- Email Address Pill -->
+<div class="mt-5 p-3 rounded-lg bg-surface-container-low border border-outline-variant/30 flex items-center justify-between">
+<div class="truncate">
+<p class="font-label-sm text-label-sm text-on-surface-variant">Địa chỉ hòm thư nhận tin hệ thống</p>
+<p class="font-body-md text-body-md font-semibold text-primary mt-0.5 select-all">chuquan@bepnha.vn</p>
+</div>
+<span class="material-symbols-outlined text-[18px] text-outline">mark_email_unread</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-4 leading-relaxed">
+              Việc hoàn tất xác thực hòm thư điện tử giúp bạn nhận ngay lập tức các cảnh báo đăng nhập trái phép, thông báo kết ca trực khẩn cấp và bảo vệ dữ liệu doanh thu tuyệt mật giữa các chi nhánh.
+            </p>
+</div>
+<!-- Interaction Zone: Send Verification Email -->
+<div class="mt-6 pt-5 border-t border-outline-variant/30">
+<div class="hidden mb-3 p-3 rounded-lg bg-secondary-container/40 border border-secondary text-primary font-body-sm text-body-sm flex items-start gap-2" id="email-alert-box">
+<span class="material-symbols-outlined text-[18px] text-secondary shrink-0 mt-0.5">check_circle</span>
+<span>Đã gửi thư xác minh kèm đường link kích hoạt tới <strong>chuquan@bepnha.vn</strong>. Vui lòng kiểm tra hộp thư đến.</span>
+</div>
+<button class="w-full py-3 px-4 rounded-lg bg-surface-container hover:bg-surface-container-high border border-outline-variant/60 text-primary font-label-lg text-label-lg font-semibold flex items-center justify-center gap-2 transition-all active:scale-[0.98]" id="btn-send-verify" onclick="sendVerificationEmail()">
+<span class="material-symbols-outlined text-[18px]">outgoing_mail</span>
+<span id="verify-btn-text">Gửi email xác minh ngay</span>
+</button>
+</div>
+</section>
+<!-- THẺ 2: BẢNG THIẾT LẬP XÁC THỰC ĐA YẾU TỐ QUẢN TRỊ (MFA) (7 cols) -->
+<section class="lg:col-span-7 bg-surface-container-lowest rounded-xl border border-outline-variant/40 p-6 flex flex-col justify-between shadow-sm">
+<div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<div class="w-9 h-9 rounded-lg bg-primary-container text-primary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">phonelink_lock</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-primary">Bảo vệ 2 lớp (Admin TOTP MFA)</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Khuyến nghị áp dụng cho tài khoản Chủ nhà hàng</p>
+</div>
+</div>
+<span class="font-label-sm text-label-sm px-2.5 py-1 rounded bg-surface-container text-on-surface-variant font-medium">Bản nâng cao</span>
+</div>
+<div class="mt-5 grid grid-cols-1 sm:grid-cols-12 gap-5 items-center">
+<!-- Visual QR Graphic Placeholder (Artisanal QR Pattern) -->
+<div class="sm:col-span-5 flex flex-col items-center">
+<div class="p-3 bg-surface rounded-xl border border-outline-variant/50 shadow-inner flex flex-col items-center">
+<div class="w-32 h-32 rounded-lg bg-primary flex flex-col items-center justify-center relative overflow-hidden group">
+<!-- Stylized SVG QR grid motif -->
+<div class="absolute inset-0 p-2.5 grid grid-cols-6 gap-1 opacity-90">
+<div class="bg-primary-fixed rounded-sm col-span-2 row-span-2"></div>
+<div class="bg-primary-fixed rounded-sm"></div>
+<div class="bg-surface/20 rounded-sm"></div>
+<div class="bg-primary-fixed rounded-sm col-span-2 row-span-2"></div>
+<div class="bg-surface/30 rounded-sm"></div>
+<div class="bg-primary-fixed rounded-sm"></div>
+<div class="bg-secondary-fixed rounded-sm col-span-2 row-span-2"></div>
+<div class="bg-surface/40 rounded-sm"></div>
+<div class="bg-primary-fixed rounded-sm"></div>
+<div class="bg-primary-fixed rounded-sm"></div>
+<div class="bg-surface/20 rounded-sm"></div>
+<div class="bg-surface/50 rounded-sm"></div>
+<div class="bg-primary-fixed rounded-sm"></div>
+<div class="bg-primary-fixed rounded-sm col-span-2 row-span-2"></div>
+<div class="bg-surface/30 rounded-sm"></div>
+<div class="bg-secondary-fixed rounded-sm"></div>
+<div class="bg-primary-fixed rounded-sm"></div>
+</div>
+<!-- Center Brand Lock Emblem -->
+<div class="relative z-10 w-9 h-9 rounded-md bg-surface text-primary flex items-center justify-center shadow-md">
+<span class="material-symbols-outlined text-[18px]">lock</span>
+</div>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-2 text-center">Quét mã bằng ứng dụng</span>
+</div>
+</div>
+<!-- Setup Guidance Text -->
+<div class="sm:col-span-7 space-y-2.5">
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                  Sử dụng ứng dụng <strong>Google Authenticator</strong> hoặc <strong>Apple Keychain</strong> trên điện thoại để quét ô mã đối ứng bên cạnh nhằm tạo khóa bảo mật TOTP 6 chữ số tự động thay đổi mỗi 30 giây.
+                </p>
+<div class="p-2.5 rounded bg-surface-container-low border border-outline-variant/30 flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-secondary">verified_user</span>
+<span class="font-label-sm text-label-sm text-on-surface">Bảo vệ mọi thao tác: Hoàn tiền đơn lớn, xóa món và xem báo cáo tài chính.</span>
+</div>
+</div>
+</div>
+<!-- OTP Input Segment -->
+<div class="mt-5">
+<label class="block font-label-md text-label-md text-primary font-medium mb-1.5">Nhập mã xác nhận 6 chữ số từ ứng dụng:</label>
+<div class="flex gap-2 max-w-sm">
+<input class="otp-input w-11 h-12 text-center text-lg font-bold font-body-lg bg-surface border border-outline-variant rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" maxlength="1" type="text" value="4"/>
+<input class="otp-input w-11 h-12 text-center text-lg font-bold font-body-lg bg-surface border border-outline-variant rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" maxlength="1" type="text" value="8"/>
+<input class="otp-input w-11 h-12 text-center text-lg font-bold font-body-lg bg-surface border border-outline-variant rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" maxlength="1" type="text" value="2"/>
+<input class="otp-input w-11 h-12 text-center text-lg font-bold font-body-lg bg-surface border border-outline-variant rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" maxlength="1" placeholder="•" type="text"/>
+<input class="otp-input w-11 h-12 text-center text-lg font-bold font-body-lg bg-surface border border-outline-variant rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" maxlength="1" placeholder="•" type="text"/>
+<input class="otp-input w-11 h-12 text-center text-lg font-bold font-body-lg bg-surface border border-outline-variant rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" maxlength="1" placeholder="•" type="text"/>
+</div>
+</div>
+</div>
+<!-- Activate MFA Button -->
+<div class="mt-6 pt-5 border-t border-outline-variant/30 flex justify-end">
+<button class="px-5 py-3 rounded-lg bg-primary hover:bg-primary-container text-on-primary font-label-lg text-label-lg font-semibold flex items-center gap-2 transition-all active:scale-[0.98] shadow-sm" onclick="handleActivateMFA()">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+<span>Kích hoạt bảo vệ 2 lớp (MFA)</span>
+</button>
+</div>
+</section>
+</div>
+<!-- BOTTOM SECTION: PASSWORD UPDATE & RESTRAINED HELP -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- THẺ 3: ĐỔI MẬT KHẨU (8 cols) -->
+<section class="lg:col-span-8 bg-surface-container-lowest rounded-xl border border-outline-variant/40 p-6 sm:p-8 shadow-sm">
+<div class="flex items-center justify-between border-b border-outline-variant/30 pb-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[22px]">password</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-primary">Thiết lập mật khẩu quản trị</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Cập nhật định kỳ để đảm bảo phân quyền quản lý cơ sở luôn an toàn.</p>
+</div>
+</div>
+<button class="text-secondary hover:text-primary font-label-md text-label-md underline underline-offset-4 transition-colors" onclick="openForgotModal()">
+              Quên mật khẩu?
+            </button>
+</div>
+<!-- Form Fields -->
+<form class="mt-6 space-y-5" id="password-form" onsubmit="handlePasswordChange(event)">
+<!-- Current Password -->
+<div>
+<div class="flex items-center justify-between mb-1.5">
+<label class="font-label-md text-label-md text-on-surface font-medium" for="current-pwd">Mật khẩu hiện tại</label>
+</div>
+<div class="relative">
+<input class="w-full h-12 px-4 pr-11 bg-surface-container-lowest border border-outline-variant rounded-lg text-body-md font-body-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" id="current-pwd" placeholder="Nhập mật khẩu bạn đang dùng..." required="" type="password"/>
+<button class="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-on-surface p-1" onclick="toggleVisibility('current-pwd', this)" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+</div>
+</div>
+<!-- New Password -->
+<div>
+<label class="block font-label-md text-label-md text-on-surface font-medium mb-1.5" for="new-pwd">Mật khẩu mới</label>
+<div class="relative">
+<input class="w-full h-12 px-4 pr-11 bg-surface-container-lowest border border-outline-variant rounded-lg text-body-md font-body-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" id="new-pwd" oninput="checkPasswordStrength(this.value)" placeholder="Tạo mật khẩu mới tối thiểu 12 ký tự..." required="" type="password"/>
+<button class="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-on-surface p-1" onclick="toggleVisibility('new-pwd', this)" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+</div>
+<!-- Password Strength Bar & Requirements Meter -->
+<div class="mt-2.5 space-y-1.5">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Độ mạnh mật khẩu</span>
+<span class="font-label-sm text-label-sm text-outline font-semibold" id="strength-label">Chưa nhập</span>
+</div>
+<div class="h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden flex gap-1">
+<div class="h-full w-1/3 bg-outline-variant/40 rounded-full transition-colors duration-300" id="bar-1"></div>
+<div class="h-full w-1/3 bg-outline-variant/40 rounded-full transition-colors duration-300" id="bar-2"></div>
+<div class="h-full w-1/3 bg-outline-variant/40 rounded-full transition-colors duration-300" id="bar-3"></div>
+</div>
+<p class="font-label-sm text-label-sm text-outline">Quy chuẩn bảo mật: Tối thiểu 12 ký tự, bao gồm chữ hoa, chữ số và ký tự đặc biệt (!@#$).</p>
+</div>
+</div>
+<!-- Confirm New Password -->
+<div>
+<label class="block font-label-md text-label-md text-on-surface font-medium mb-1.5" for="confirm-pwd">Nhập lại mật khẩu mới</label>
+<div class="relative">
+<input class="w-full h-12 px-4 pr-11 bg-surface-container-lowest border border-outline-variant rounded-lg text-body-md font-body-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" id="confirm-pwd" placeholder="Xác nhận mật khẩu mới..." required="" type="password"/>
+<button class="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-on-surface p-1" onclick="toggleVisibility('confirm-pwd', this)" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+</div>
+</div>
+<!-- Operational Warning Callout -->
+<div class="p-4 rounded-xl bg-surface-container-low border border-outline-variant/50 flex items-start gap-3">
+<span class="material-symbols-outlined text-[20px] text-primary shrink-0 mt-0.5">info</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+<strong class="text-primary font-semibold">Lưu ý vận hành an toàn:</strong> Sau khi đổi mật khẩu thành công, toàn bộ các phiên đăng nhập tại máy POS quầy thu ngân, tablet FOH và màn hình BOH trên các thiết bị khác sẽ tự động đăng xuất để bảo đảm an toàn.
+              </p>
+</div>
+<!-- Submit Action -->
+<div class="pt-2 flex items-center justify-between">
+<button class="px-4 py-2.5 rounded-lg text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors" onclick="document.getElementById('password-form').reset(); checkPasswordStrength('');" type="button">
+                Hủy thay đổi
+              </button>
+<button class="px-6 py-3 rounded-lg bg-primary hover:bg-primary-container text-on-primary font-label-lg text-label-lg font-semibold flex items-center gap-2 transition-all active:scale-[0.98] shadow-sm" id="btn-submit-pwd" type="submit">
+<span class="material-symbols-outlined text-[18px]">key</span>
+<span>Đổi mật khẩu</span>
+</button>
+</div>
+</form>
+</section>
+<!-- THẺ 4: KHU VỰC TRỢ GIÚP & NGUYÊN TẮC SINGLE IDENTITY (4 cols) -->
+<section class="lg:col-span-4 space-y-6">
+<!-- Identity Card -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant/40 p-6 shadow-sm">
+<h4 class="font-headline-sm text-headline-sm text-primary flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px] text-secondary">fingerprint</span>
+              DineFlow Single Identity
+            </h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-2.5 leading-relaxed">
+              Một tài khoản - Tất cả điểm bán. Khi đổi mật khẩu tại trang này, mật khẩu mới sẽ đồng thời áp dụng cho:
+            </p>
+<ul class="mt-4 space-y-2.5">
+<li class="flex items-center gap-2.5 font-label-md text-label-md text-on-surface">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span>Bếp Nhà DineFlow - Chi nhánh 01</span>
+</li>
+<li class="flex items-center gap-2.5 font-label-md text-label-md text-on-surface">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span>Cơm Niêu Phố Cổ - Chi nhánh 02</span>
+</li>
+<li class="flex items-center gap-2.5 font-label-md text-label-md text-on-surface">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span>Ứng dụng DineFlow Floor Manager (iOS/Android)</span>
+</li>
+</ul>
+</div>
+<!-- Emergency Ops Assistance -->
+<div class="bg-surface-container rounded-xl border border-outline-variant/40 p-6">
+<div class="flex items-start gap-3">
+<div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[18px]">support_agent</span>
+</div>
+<div>
+<h5 class="font-label-lg text-label-lg text-primary font-semibold">Cần trợ giúp trong ca trực?</h5>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 leading-relaxed">
+                  Nếu bạn nghi ngờ tài khoản bị chiếm quyền kiểm soát hoặc mất quyền truy cập máy thu ngân quầy FOH, liên hệ ngay Hotline Kỹ thuật chuyên biệt:
+                </p>
+<div class="mt-3 inline-flex items-center gap-1.5 font-label-md text-label-md text-primary font-bold">
+<span class="material-symbols-outlined text-[16px]">call</span>
+<span>1900 6824 (Nhánh 1 - Ưu tiên ca vận hành)</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- ==================== FOOTER (From Shared Components) ==================== -->
+<footer class="mt-auto border-t border-outline-variant/30 bg-surface-container-low">
+<div class="flex flex-col md:flex-row justify-between items-center px-8 py-4 w-full gap-4">
+<div class="flex items-center gap-3">
+<span class="font-headline-display text-label-md font-medium text-primary tracking-tight">DineFlow</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">© 2025 DineFlow POS Operations • Artisanal Table Engine v2.4</span>
+</div>
+<div class="flex flex-wrap items-center gap-6 font-label-sm text-label-sm">
+<a class="text-on-surface-variant hover:text-primary underline transition-colors" href="#">Station Diagnostics</a>
+<a class="text-on-surface-variant hover:text-primary underline transition-colors" href="#">Print Dispatch Server</a>
+<a class="text-on-surface-variant hover:text-primary underline transition-colors" href="#">Kitchen Sync Status</a>
+<a class="text-primary font-semibold underline transition-colors" href="#">Shift Audit Log</a>
+</div>
+</div>
+</footer>
+</div>
+<!-- ==================== MODAL: QUÊN MẬT KHẨU / PHỤC HỒI TÀI KHOẢN ==================== -->
+<div class="fixed inset-0 z-50 bg-primary/40 backdrop-blur-sm hidden items-center justify-center p-4" id="forgot-modal">
+<div class="bg-surface-container-lowest max-w-md w-full rounded-2xl border border-outline-variant/40 p-6 sm:p-7 shadow-2xl relative transform transition-all">
+<div class="flex items-center justify-between pb-3 border-b border-outline-variant/20">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[22px]">contact_support</span>
+<h4 class="font-headline-sm text-headline-sm text-primary">Phục hồi mật khẩu quản trị</h4>
+</div>
+<button class="w-8 h-8 rounded-full hover:bg-surface-container text-on-surface-variant flex items-center justify-center transition-colors" onclick="closeForgotModal()">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-4 leading-relaxed">
+        Hệ thống sẽ gửi liên kết xác thực dùng một lần (Magic Link) để đặt lại mật khẩu về hòm thư quản trị đã đăng ký: <strong class="text-primary">chuquan@bepnha.vn</strong>.
+      </p>
+<!-- Feedback States Container -->
+<div class="mt-4" id="modal-feedback-area">
+<!-- Initial Form -->
+<div id="modal-form-view">
+<label class="block font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Xác nhận địa chỉ email</label>
+<input class="w-full h-11 px-3 bg-surface-container-low border border-outline-variant/60 rounded-lg text-body-md font-body-md text-primary font-medium outline-none" id="modal-email-confirm" readonly="" type="email" value="chuquan@bepnha.vn"/>
+<div class="mt-5 flex gap-3 justify-end">
+<button class="px-4 py-2.5 rounded-lg text-on-surface-variant hover:text-on-surface font-label-md text-label-md" onclick="closeForgotModal()">
+              Hủy
+            </button>
+<button class="px-5 py-2.5 rounded-lg bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md font-semibold flex items-center gap-2 transition-all active:scale-[0.98]" id="btn-modal-send" onclick="executePasswordResetLink()">
+<span class="material-symbols-outlined text-[16px]">send</span>
+<span id="btn-modal-send-text">Gửi liên kết đặt lại</span>
+</button>
+</div>
+</div>
+<!-- Success Notification Alert (Initially Hidden) -->
+<div class="hidden p-4 rounded-xl bg-secondary-container/30 border border-secondary text-primary" id="modal-success-view">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary text-[24px]">task_alt</span>
+<div>
+<h5 class="font-label-lg text-label-lg font-bold">Đã gửi liên kết thành công!</h5>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+                Vui lòng kiểm tra hòm thư <strong>chuquan@bepnha.vn</strong>. Liên kết có hiệu lực an toàn trong vòng 15 phút.
+              </p>
+<button class="mt-4 px-4 py-1.5 rounded-lg bg-primary text-on-primary font-label-sm text-label-sm font-semibold" onclick="closeForgotModal()">
+                Đóng cửa sổ
+              </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- ==================== INTERACTION SCRIPTS ==================== -->
+<script>
+    // Toggle Password Visibility
+    function toggleVisibility(inputId, btn) {
+      const input = document.getElementById(inputId);
+      const icon = btn.querySelector('.material-symbols-outlined');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.textContent = 'visibility_off';
+      } else {
+        input.type = 'password';
+        icon.textContent = 'visibility';
+      }
+    }
+
+    // Password Strength Meter
+    function checkPasswordStrength(val) {
+      const b1 = document.getElementById('bar-1');
+      const b2 = document.getElementById('bar-2');
+      const b3 = document.getElementById('bar-3');
+      const label = document.getElementById('strength-label');
+
+      // Reset styles
+      [b1, b2, b3].forEach(b => {
+        b.className = 'h-full w-1/3 bg-outline-variant/40 rounded-full transition-colors duration-300';
+      });
+
+      if (!val || val.length === 0) {
+        label.textContent = 'Chưa nhập';
+        label.className = 'font-label-sm text-label-sm text-outline font-semibold';
+        return;
+      }
+
+      let score = 0;
+      if (val.length >= 8) score++;
+      if (val.length >= 12 && /[A-Z]/.test(val) && /[0-9]/.test(val)) score++;
+      if (val.length >= 12 && /[^A-Za-z0-9]/.test(val)) score++;
+
+      if (score === 1) {
+        b1.className = 'h-full w-1/3 bg-red-500 rounded-full transition-colors duration-300';
+        label.textContent = 'Yếu';
+        label.className = 'font-label-sm text-label-sm text-red-600 font-semibold';
+      } else if (score === 2) {
+        b1.className = 'h-full w-1/3 bg-amber-500 rounded-full transition-colors duration-300';
+        b2.className = 'h-full w-1/3 bg-amber-500 rounded-full transition-colors duration-300';
+        label.textContent = 'Trung bình';
+        label.className = 'font-label-sm text-label-sm text-amber-600 font-semibold';
+      } else if (score >= 3) {
+        b1.className = 'h-full w-1/3 bg-emerald-600 rounded-full transition-colors duration-300';
+        b2.className = 'h-full w-1/3 bg-emerald-600 rounded-full transition-colors duration-300';
+        b3.className = 'h-full w-1/3 bg-emerald-600 rounded-full transition-colors duration-300';
+        label.textContent = 'Rất mạnh (Tối ưu)';
+        label.className = 'font-label-sm text-label-sm text-emerald-700 font-semibold';
+      }
+    }
+
+    // Verification Email Simulation
+    function sendVerificationEmail() {
+      const btn = document.getElementById('btn-send-verify');
+      const btnText = document.getElementById('verify-btn-text');
+      const alertBox = document.getElementById('email-alert-box');
+
+      btnText.textContent = 'Đang gửi mã...';
+      btn.disabled = true;
+      btn.classList.add('opacity-70', 'cursor-not-allowed');
+
+      setTimeout(() => {
+        btnText.textContent = 'Gửi lại email xác minh';
+        btn.disabled = false;
+        btn.classList.remove('opacity-70', 'cursor-not-allowed');
+        alertBox.classList.remove('hidden');
+      }, 900);
+    }
+
+    // Modal Control
+    function openForgotModal() {
+      const modal = document.getElementById('forgot-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      document.getElementById('modal-form-view').classList.remove('hidden');
+      document.getElementById('modal-success-view').classList.add('hidden');
+    }
+
+    function closeForgotModal() {
+      const modal = document.getElementById('forgot-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    // Reset Link Trigger in Modal
+    function executePasswordResetLink() {
+      const btn = document.getElementById('btn-modal-send');
+      const btnText = document.getElementById('btn-modal-send-text');
+      btnText.textContent = 'Đang xử lý gửi...';
+      btn.disabled = true;
+
+      setTimeout(() => {
+        document.getElementById('modal-form-view').classList.add('hidden');
+        document.getElementById('modal-success-view').classList.remove('hidden');
+        btnText.textContent = 'Gửi liên kết đặt lại';
+        btn.disabled = false;
+      }, 1000);
+    }
+
+    // Password Form Submission
+    function handlePasswordChange(e) {
+      e.preventDefault();
+      const newPwd = document.getElementById('new-pwd').value;
+      const confirmPwd = document.getElementById('confirm-pwd').value;
+
+      if (newPwd !== confirmPwd) {
+        alert('Mật khẩu mới và mật khẩu nhập lại chưa khớp nhau. Vui lòng kiểm tra lại!');
+        return;
+      }
+
+      const btn = document.getElementById('btn-submit-pwd');
+      const originalHtml = btn.innerHTML;
+      btn.innerHTML = `<span class="material-symbols-outlined text-[18px] animate-spin">refresh</span><span>Đang cập nhật...</span>`;
+      btn.disabled = true;
+
+      setTimeout(() => {
+        alert('Đổi mật khẩu thành công! Các phiên đăng nhập trên hệ thống POS và tablet đã được đồng bộ lại an toàn.');
+        btn.innerHTML = originalHtml;
+        btn.disabled = false;
+        document.getElementById('password-form').reset();
+        checkPasswordStrength('');
+      }, 1200);
+    }
+
+    // MFA Activation Simulation
+    function handleActivateMFA() {
+      const otpInputs = document.querySelectorAll('.otp-input');
+      let filled = true;
+      otpInputs.forEach(input => {
+        if (!input.value) filled = false;
+      });
+
+      if (!filled) {
+        alert('Vui lòng nhập đủ 6 chữ số từ ứng dụng xác thực trên điện thoại của bạn.');
+        return;
+      }
+
+      alert('Đã kích hoạt bảo vệ 2 lớp (Admin MFA) thành công cho tài khoản Nguyễn Văn An!');
+    }
+
+    // Auto-advance OTP inputs
+    document.querySelectorAll('.otp-input').forEach((input, index, inputs) => {
+      input.addEventListener('keyup', (e) => {
+        if (e.key >= '0' && e.key <= '9') {
+          if (index < inputs.length - 1) inputs[index + 1].focus();
+        } else if (e.key === 'Backspace') {
+          if (index > 0 && !input.value) inputs[index - 1].focus();
+        }
+      });
+    });
+  </script>
+</body></html>

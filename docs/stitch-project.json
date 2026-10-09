@@ -86,6 +86,13 @@
     "reference": "design/signup.reference.html",
     "prompt": "design/saas-prompts.md"
   },
+  "securityScreen": {
+    "id": "38329f8018444840a196f482daa86948",
+    "route": "/staff/security",
+    "relatedRoutes": ["/platform/security", "/verify-email", "/forgot-password", "/reset-password", "/platform/login"],
+    "reference": "design/security.reference.html",
+    "prompt": "design/security-prompts.md"
+  },
   "restaurantsScreen": {
     "id": "0c6eaddfbb594d2fa7dfe08af9034963",
     "route": "/staff/restaurants",
