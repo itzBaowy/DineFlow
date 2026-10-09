@@ -103,16 +103,16 @@ Dùng session/token riêng để quản lý quyền truy cập của khách.
 
 ## 4. Phạm vi sản phẩm
 
-MVP phục vụ **một nhà hàng có nhiều bàn**.
+Phạm vi cập nhật theo yêu cầu ngày **09/10/2026**: DineFlow là **SaaS nhiều nhà hàng (tenant), miễn phí trong giai đoạn hiện tại**. Phạm vi này thay thế giới hạn một nhà hàng của MVP ban đầu.
 
-Thiết kế database đủ rõ ràng để có thể mở rộng sang:
+- Bất kỳ chủ nhà hàng nào cũng có thể đăng ký và tạo không gian nhà hàng; đăng ký tạo User + Restaurant + membership OWNER nguyên tử, không seed đơn/doanh thu giả.
+- Mỗi nhà hàng là một tenant. Menu, bàn/QR, phiên phục vụ, đơn, thanh toán, báo cáo, ảnh và nhân viên được scope theo tenant; không tin restaurantId từ client.
+- Chủ nhà hàng tự tạo tài khoản nhân viên và quản lý. MANAGER không tạo/sửa/khóa/reset OWNER; quyền nghiệp vụ hiện có được giữ nguyên.
+- Có admin nền tảng cấp riêng bởi operator, tách khỏi OWNER/MANAGER và không thể đăng ký công khai. Admin xem tình trạng API/database, tổng quan tenant/tài khoản, quản lý tạm ngừng/mở lại tenant, bật/tắt đăng ký mới và nhật ký quản trị.
+- Tạm ngừng tenant thu hồi phiên staff/guest và chặn quyền truy cập/QR/realtime, giữ nguyên dữ liệu/phiên bàn. Mở lại không phục hồi credentials đã thu hồi.
+- Chưa thu phí, chưa có subscription/trial/checkout nhà hàng. Thanh toán hóa đơn khách tại quán vẫn là nghiệp vụ billing hiện có.
 
-- Nhiều chi nhánh
-- Nhiều nhà hàng
-- SaaS subscription
-- Quản lý tập trung
-
-Nhưng không triển khai hệ thống SaaS nhiều tenant hoàn chỉnh ngay từ đầu.
+Giai đoạn SaaS đầu tiên: mỗi đăng ký tạo một nhà hàng cho tài khoản Owner mới, đăng nhập nhân viên vẫn chọn duy nhất membership active. Chuyển tenant/chuỗi chi nhánh cho cùng một tài khoản, custom domain, invitation/email verification, reset mật khẩu qua email và subscription được bổ sung ở các giai đoạn sau khi cần.
 
 Ngôn ngữ giao diện mặc định: tiếng Việt.
 

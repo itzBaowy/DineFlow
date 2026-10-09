@@ -16,6 +16,11 @@ enum Role {
   KITCHEN
 }
 
+enum TenantStatus {
+  ACTIVE
+  SUSPENDED
+}
+
 enum TableStatus {
   AVAILABLE
   OCCUPIED
@@ -69,17 +74,22 @@ model User {
   name String @db.VarChar(120)
   passwordHash String
   isActive Boolean @default(true)
+  isPlatformAdmin Boolean @default(false)
   createdAt DateTime @default(now()) @db.Timestamptz(3)
   updatedAt DateTime @updatedAt @db.Timestamptz(3)
   memberships StaffMembership[]
   authSessions AuthSession[]
   activityLogs ActivityLog[]
+  platformSessions PlatformSession[]
+  platformLogs PlatformAudit[]
 }
 
 model Restaurant {
   id String @id @default(uuid()) @db.Uuid
   slug String @unique
   name String
+  status TenantStatus @default(ACTIVE)
+  suspensionReason String? @db.VarChar(500)
   logoUrl String?
   address String?
   phone String?
@@ -102,6 +112,35 @@ model Restaurant {
   serviceRequests ServiceRequest[]
   activityLogs ActivityLog[]
   mediaAssets MediaAsset[]
+  @@index([status, createdAt])
+}
+
+model PlatformSession {
+  id String @id @default(uuid()) @db.Uuid
+  userId String @db.Uuid
+  tokenHash String @unique @db.Char(64)
+  expiresAt DateTime @db.Timestamptz(3)
+  revokedAt DateTime? @db.Timestamptz(3)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
+  @@index([userId, expiresAt])
+}
+
+model PlatformSettings {
+  id String @id @default("global")
+  registrationsEnabled Boolean @default(true)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+}
+
+model PlatformAudit {
+  id String @id @default(uuid()) @db.Uuid
+  actorUserId String @db.Uuid
+  action String
+  targetId String?
+  reason String? @db.VarChar(500)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  actorUser User @relation(fields: [actorUserId], references: [id], onDelete: Restrict)
+  @@index([createdAt])
 }
 
 model StaffMembership {
