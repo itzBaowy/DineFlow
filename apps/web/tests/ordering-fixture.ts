@@ -16,8 +16,8 @@ export async function orderingFixture() {
   if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL is required for browser fixtures');
   const db = new PrismaService({ DATABASE_URL: process.env.DATABASE_URL });
   const suffix = randomUUID(),
-    restaurantId = randomUUID(),
-    userIds = Array.from({ length: 5 }, () => randomUUID());
+    restaurantId = randomUUID();
+  const userIds: string[] = Array.from({ length: 5 }, () => randomUUID());
   const slug = `e2e-ordering-${suffix}`,
     password = randomBytes(24).toString('base64url');
   async function cleanup() {
@@ -146,6 +146,12 @@ export async function orderingFixture() {
       table: tables[0]!,
       emptyTable: tables[1]!,
       item,
+      async trackStaffUser(userId: string) {
+        const memberships = await db.staffMembership.findMany({ where: { userId } });
+        if (memberships.length !== 1 || memberships[0]!.restaurantId !== restaurantId)
+          throw new Error('Unsafe staff fixture ownership');
+        if (!userIds.includes(userId)) userIds.push(userId);
+      },
       cleanup,
     };
   } catch (error) {

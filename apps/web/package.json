@@ -8,7 +8,7 @@
     "start": "next start --hostname 0.0.0.0",
     "lint": "eslint src tests next.config.ts playwright.config.ts",
     "typecheck": "next typegen && tsc --noEmit",
-    "test:browser": "playwright test"
+    "test:browser": "node ../../scripts/test-browser.mjs"
   },
   "dependencies": {
     "@dineflow/shared": "workspace:*",
