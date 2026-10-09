@@ -95,12 +95,18 @@ export class AuthController {
       properties: {
         email: { type: 'string', format: 'email' },
         password: { type: 'string', maxLength: 128 },
+        restaurantId: {
+          type: 'string',
+          format: 'uuid',
+          description: 'Chọn membership của chính user khi có nhiều nhà hàng',
+        },
       },
     },
   })
   @ApiResponse({
     status: 200,
-    description: 'Thông tin nhân viên, không trả access/refresh token',
+    description:
+      'Staff principal hoặc selectionRequired + restaurants khi cần chọn; không trả access/refresh token',
   })
   async login(
     @Body(new ZodPipe(staffLoginSchema)) input: StaffLoginInput,
@@ -115,12 +121,37 @@ export class AuthController {
     return credentials.staff;
   }
   @Get('restaurants')
+  @ApiCookieAuth('df_access')
+  @ApiOperation({
+    summary: 'Danh sách memberships active của chính user, gồm trạng thái tenant',
+  })
   restaurants(@CurrentStaff() staff: StaffPrincipal) {
     return this.auth.restaurants(staff.userId);
   }
   @Roles('OWNER')
   @Post('restaurants')
   @Throttle({ default: { limit: 10, ttl: 3600000 } })
+  @ApiCookieAuth('df_access')
+  @ApiOperation({
+    summary: 'OWNER tạo thêm tenant trống bằng cùng tài khoản; giữ scope hiện tại',
+  })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      additionalProperties: false,
+      required: ['restaurantName', 'slug'],
+      properties: {
+        restaurantName: { type: 'string', minLength: 2, maxLength: 120 },
+        slug: {
+          type: 'string',
+          minLength: 3,
+          maxLength: 63,
+          pattern: '^[a-z0-9]+(?:-[a-z0-9]+)*$',
+        },
+        timezone: { type: 'string', default: 'Asia/Ho_Chi_Minh' },
+      },
+    },
+  })
   createRestaurant(
     @CurrentStaff() staff: StaffPrincipal,
     @Body(new ZodPipe(createRestaurantSchema)) input: CreateRestaurantInput,
@@ -129,6 +160,18 @@ export class AuthController {
   }
   @Post('switch-restaurant')
   @HttpCode(200)
+  @ApiCookieAuth('df_access')
+  @ApiOperation({
+    summary: 'Chuyển sang membership hợp lệ, revoke phiên nguồn và đặt cookies phiên đích',
+  })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      additionalProperties: false,
+      required: ['restaurantId'],
+      properties: { restaurantId: { type: 'string', format: 'uuid' } },
+    },
+  })
   async switchRestaurant(
     @CurrentStaff() staff: StaffPrincipal,
     @Body(new ZodPipe(switchRestaurantSchema)) input: { restaurantId: string },

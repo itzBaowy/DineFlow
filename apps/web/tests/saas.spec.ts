@@ -47,7 +47,9 @@ test('free owner signup creates empty tenant; platform console lists, suspends a
     await page.getByLabel('Tên nhà hàng', { exact: true }).fill(name);
     await page.getByLabel('Mã nhà hàng', { exact: true }).fill(slug);
     await page.getByRole('button', { name: 'Tạo nhà hàng miễn phí', exact: true }).click();
-    await expect(page.getByRole('alert').filter({ hasText: 'Mật khẩu tối thiểu 12 ký tự' })).toBeVisible();
+    await expect(
+      page.getByRole('alert').filter({ hasText: 'Mật khẩu tối thiểu 12 ký tự' }),
+    ).toBeVisible();
     await page.getByLabel('Mật khẩu', { exact: true }).fill(password);
     await page.getByRole('button', { name: 'Tạo nhà hàng miễn phí', exact: true }).click();
     await expect(

@@ -2,7 +2,7 @@
 
 ## Phạm vi thực hiện
 
-Repository ban đầu chỉ có README và Requirement.md. Hiện có **Phase 1–7** và SaaS foundation theo phạm vi cập nhật 09/10/2026: đăng ký Owner tạo tenant trống, admin nền tảng riêng, tenant lifecycle và platform audit. Xem [SaaS](saas.md). Production và full browser QA vẫn còn trong roadmap.
+Repository ban đầu chỉ có README và Requirement.md. Hiện có **Phase 1–7**, SaaS foundation và SaaS 2: đăng ký Owner tạo tenant trống, admin nền tảng riêng, tenant lifecycle/platform audit, cùng tài khoản tạo và chuyển nhiều nhà hàng. Xem [SaaS](saas.md) và [Multi-restaurant verification](tenancy-verification.md). Production vẫn còn trong roadmap; browser hồi quy hiện tại 16/16 qua trên FE do người dùng mở.
 
 Phase 1 chạy được: workspace pnpm; Next.js App Router tiếng Việt; NestJS REST + Swagger; PostgreSQL + Prisma + migration; Redis qua Compose; kiểm tra môi trường; seed; đăng nhập/đăng xuất nhân viên, JWT, refresh rotation, RBAC; dashboard đọc nhà hàng, vai trò và số lượng cấu hình từ database. Không đưa đơn hàng giả vào dashboard.
 
@@ -21,7 +21,7 @@ flowchart LR
   Storage[S3 / MinIO] -->|Ảnh menu/logo| API
 ```
 
-Monolith modular, nhiều Restaurant là các tenants riêng. Mỗi đăng ký tạo một tenant; mỗi tài khoản hiện đăng nhập một active membership, chưa có tenant switcher. Dữ liệu nghiệp vụ có restaurantId và membership riêng; scope lấy từ principal backend, không tin restaurantId từ client. Chưa có subscription/charging, worker, Redis adapter hoặc queue. REST là nguồn dữ liệu; sự kiện chỉ được phát sau commit, kết nối ban đầu/reconnect luôn refetch.
+Monolith modular, nhiều Restaurant là các tenants riêng. Mỗi đăng ký tạo tenant đầu tiên; Owner tạo thêm tenant bằng cùng User. Một AuthSession chỉ thuộc một membership. Đăng nhập nhiều membership yêu cầu chọn nhà hàng; switch tạo phiên đích, thu hồi phiên nguồn và giữ hạn tuyệt đối. Dữ liệu nghiệp vụ có restaurantId và membership riêng; scope lấy từ principal backend, không tin restaurantId từ client. Header X-DineFlow-Restaurant chỉ đối chiếu expected scope để chặn tab cũ, không chọn tenant. Chưa có subscription/charging, worker, Redis adapter hoặc queue. REST là nguồn dữ liệu; sự kiện chỉ được phát sau commit, kết nối ban đầu/reconnect luôn refetch.
 
 Web sử dụng cùng origin `/api/v1` qua Next rewrite. Cookie access/refresh HttpOnly, SameSite=Lax; Secure khi production. Access JWT 15 phút, refresh opaque 7 ngày và rotation với hạn tuyệt đối của phiên; chỉ lưu SHA-256 refresh token. Guard kiểm tra phiên, user và membership còn active trong DB ở mỗi request. Role không được lấy từ JWT cũ. Trình duyệt gửi `X-DineFlow-Client: web` cùng JSON cho mutation; backend bắt buộc header này và kiểm tra Origin nằm trong allowlist. Không bật trust proxy mặc định.
 
@@ -78,7 +78,7 @@ Nest bổ sung modules tables, dining-sessions, menu, orders, kitchen, payments,
 ## Ranh giới transaction
 
 - Mở bàn: khóa row DiningTable; kiểm tra AVAILABLE; tạo OPEN session; OCCUPIED. Partial unique index chặn hai phiên active trên một bàn.
-- Phase 3 dùng thứ tự khóa Restaurant → DiningTable → DiningSession, chung với setup mutations. Việc sửa giá/archive không xen vào transaction chụp snapshot; đóng phiên rỗng và tạo đơn chỉ có một kết quả hợp lệ. Restaurant lock là lựa chọn đơn giản cho MVP một nhà hàng; cần đánh giá tải trước khi mở rộng.
+- Phase 3 dùng thứ tự khóa Restaurant → DiningTable → DiningSession, chung với setup mutations. Việc sửa giá/archive không xen vào transaction chụp snapshot; đóng phiên rỗng và tạo đơn chỉ có một kết quả hợp lệ. Restaurant lock tuần tự hóa writers trong từng tenant; cần đánh giá tải trước khi tăng quy mô.
 - Tạo đơn: khóa DiningSession; xác minh GuestSession chưa hết hạn và đúng scope; kiểm tra OPEN; lookup idempotency key + request hash; kiểm tra menu/modifiers; tính giá server; snapshot; tạo đơn/items/audit trong một transaction. Cùng key và payload trả đơn cũ; key khác payload trả 409.
 - Menu: update không sửa snapshot của đơn cũ. Archive thay vì xóa dữ liệu đã phát sinh nghiệp vụ.
 - Trạng thái đơn (Phase 4): khóa Restaurant → DiningTable → DiningSession → Order, kiểm tra phiên active và permission + trạng thái hiện tại so với `from`. Chuyển trạng thái, lưu timestamp tương ứng và audit trong cùng transaction; stale request trả 409. Chế biến/phục vụ vẫn được phép khi PAYMENT_REQUESTED, nhưng không khi CLOSED.

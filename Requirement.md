@@ -112,7 +112,7 @@ Phạm vi cập nhật theo yêu cầu ngày **09/10/2026**: DineFlow là **SaaS
 - Tạm ngừng tenant thu hồi phiên staff/guest và chặn quyền truy cập/QR/realtime, giữ nguyên dữ liệu/phiên bàn. Mở lại không phục hồi credentials đã thu hồi.
 - Chưa thu phí, chưa có subscription/trial/checkout nhà hàng. Thanh toán hóa đơn khách tại quán vẫn là nghiệp vụ billing hiện có.
 
-Giai đoạn SaaS đầu tiên: mỗi đăng ký tạo một nhà hàng cho tài khoản Owner mới, đăng nhập nhân viên vẫn chọn duy nhất membership active. Chuyển tenant/chuỗi chi nhánh cho cùng một tài khoản, custom domain, invitation/email verification, reset mật khẩu qua email và subscription được bổ sung ở các giai đoạn sau khi cần.
+SaaS nhiều nhà hàng: mỗi đăng ký tạo nhà hàng đầu tiên cho Owner mới; Owner có thể tạo thêm nhà hàng trống bằng cùng tài khoản. Nếu có nhiều membership ACTIVE, đăng nhập yêu cầu chọn nhà hàng sau khi xác thực mật khẩu. Workspace cho phép chuyển sang membership của chính user, áp dụng vai trò đích, thu hồi phiên cũ và làm mới dữ liệu/giỏ nhân viên/realtime; không sao chép dữ liệu. Admin tắt đăng ký cũng chặn tạo thêm nhà hàng. Custom domain, invitation/email verification, reset mật khẩu qua email và subscription được bổ sung ở các giai đoạn sau khi cần.
 
 Ngôn ngữ giao diện mặc định: tiếng Việt.
 

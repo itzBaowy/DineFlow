@@ -68,3 +68,9 @@ Phase 7 đã triển khai quản trị nhân viên và các admin reads. Không 
 Platform admin là quyền toàn hệ thống riêng, không nằm trong enum Role và không có membership nhà hàng khi bootstrap. Guard/cookie/platform session tách khỏi staff. Admin tạm ngừng tenant: ACTIVE → SUSPENDED, revoke staff/guest, giữ dining states/data; mở lại SUSPENDED → ACTIVE không phục hồi credentials cũ. Public signup luôn tạo OWNER/ACTIVE, không cho client chọn quyền platform.
 
 Khách đọc menu công khai; gửi/đọc đơn của mình, service request và tổng bill trong **phiên đang hoạt động** được cấp token. Guest bill không trả chi tiết đơn/ghi chú của khách khác; không truy cập receipt/session lịch sử bằng QR cố định. QR không xác minh khách có mặt. Rate limit public API, nhân viên xác nhận đơn trước bếp; PIN/QR động có thể thêm sau.
+
+## Multi-restaurant session transitions
+
+Sau kiểm tra mật khẩu: một membership ACTIVE → đăng nhập trực tiếp; nhiều memberships ACTIVE → chọn nhà hàng của chính User, chưa tạo phiên/cookies mới ở bước chọn. Chuyển workspace khóa hai Restaurant theo UUID tăng dần rồi AuthSession nguồn; recheck session và membership đích; revoke nguồn và tạo đích với cùng hạn tuyệt đối, ghi auth.tenant_left/auth.tenant_entered trong transaction. Hai lần chuyển đồng thời chỉ một lần thành công. Vai trò ở nhà hàng nguồn không cấp quyền ở nhà hàng đích.
+
+Web ngừng render trang vận hành/realtime trước switch, đợi refresh đang chạy, hủy queries, xóa giỏ staff của user và tải lại dashboard. Storage event yêu cầu các tab staff khác làm tương tự. Header X-DineFlow-Restaurant chỉ là expected scope: backend đối chiếu với membership trong cookie và trả 409 trước controller nếu tab đang giữ tenant cũ; không dùng header để chọn tenant. Request đã được authorize trước switch có thể hoàn tất trong tenant nguồn.

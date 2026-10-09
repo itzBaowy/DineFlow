@@ -10,6 +10,10 @@ Trong workspace, Owner thêm settings/menu/bàn/QR và mở `/admin/staff` để
 
 Tenant ID lấy từ membership trong phiên staff, không nhận tenant tùy ý từ body/query. Menu, bàn, đơn, payments, reports, media ownership và audit tiếp tục tenant-scoped, có composite foreign keys. QR có public code riêng, guest scope đúng table/current dining session. Global admin không phải một role của nhà hàng.
 
+## Nhiều nhà hàng với cùng tài khoản
+
+Owner mở **Nhà hàng của tôi** tại `/staff/restaurants` để tạo thêm tenant trống và chuyển workspace. Đăng nhập nhiều membership có bước chọn sau xác thực mật khẩu; tenant đích áp dụng role riêng. Switch thu hồi session nguồn, giữ hạn tuyệt đối, làm mới cache/realtime/giỏ staff và đồng bộ tab. Xem [cách dùng, API và kiểm chứng](tenancy-verification.md).
+
 ## Admin nền tảng
 
 Tài khoản admin được cấp bằng CLI, không có đường đăng ký admin công khai. Trên máy local hiện đã tạo `admin@dineflow.local`; mật khẩu là **PLATFORM_ADMIN_PASSWORD trong `.env`**, riêng với SEED_DEMO_PASSWORD. Nếu bạn cấu hình email khác, dùng PLATFORM_ADMIN_EMAIL trong `.env`.
@@ -19,7 +23,7 @@ Tài khoản admin được cấp bằng CLI, không có đường đăng ký ad
 - Tổng số tenants, active/suspended và users; uptime API, kiểm tra PostgreSQL thật, số dining sessions chưa đóng.
 - Tìm tên/slug, lọc trạng thái, xem owners và số staff/bàn/menu records theo tenant; phân trang.
 - Tạm ngừng/mở lại tenant với lý do và expectedUpdatedAt; conflict cần đóng/mở lại form để lấy phiên bản hiện tại.
-- Bật/tắt đăng ký nhà hàng mới; không ảnh hưởng tenant đang dùng.
+- Bật/tắt đăng ký và tạo thêm nhà hàng; không ảnh hưởng tenant đang dùng.
 - Nhật ký riêng cho login/logout/bootstrap, suspension/resumption và thay đổi đăng ký; không chứa passwords/tokens/hash.
 
 Admin sử dụng opaque token ngẫu nhiên 32 bytes, chỉ hash SHA-256 trong PlatformSession; cookie HttpOnly/SameSite=Strict, path `/api/v1/platform`, Secure theo env. Phiên tuyệt đối 8 giờ, không refresh/sliding; hết hạn phải đăng nhập lại. Backend kiểm tra session/User active/isPlatformAdmin mỗi request. Owner/Manager cookies không được dùng cho platform APIs; platform cookie không cấp quyền business tenant.
@@ -70,12 +74,12 @@ Platform controllers skip staff authentication để dùng guard riêng, vẫn c
 
 ## Kiểm chứng
 
-- Lint, typecheck, 17 unit tests và 84 integration tests đều qua; shared/API/Next production build qua. Có 11 SaaS checks mới (10 subtests + parent) về signup atomic/races, tenant isolation, manager restrictions, platform auth separation, suspension/guest/QR/refresh, resume, registration settings/audit, waiting writer recheck, admin expiry/logout và signup IP limit.
+- Lint, typecheck, 17 unit tests và 94 integration tests đều qua; shared/API/Next production build qua. Có 11 SaaS foundation checks và 10 multi-restaurant checks mới về signup atomic/races, tenant isolation, manager restrictions, platform auth separation, suspension/guest/QR/refresh, resume, registration settings/audit, waiting writer recheck, admin expiry/logout, signup IP limit, tenant creation/selection/switch/target role/concurrency.
 - Docker rebuild và migration exit 0; API/PostgreSQL/Redis/MinIO healthy. Direct container smoke qua auth/reports/history/staff, platform login/overview/tenants/audit/logout, Socket.IO và sharp/MinIO.
 - Luồng Docker thực tế tạo tenant fixture trống → Owner tạo Manager → admin list/suspend/resume → phiên Owner/Manager cũ 401 → login mới được; cleanup đúng tenant/user IDs, giữ dữ liệu hiện có.
 - Bootstrap local thành công, account không có membership nhà hàng. FE có `/register`, `/platform/login`, `/platform`; kiểu dữ liệu/build đã kiểm chứng. Tham chiếu Stitch signup được xem và lưu, không chạy scripts HTML mẫu.
-- Browser discover đủ **15 flows**, gồm SaaS mới trên desktop/390/320px. Chưa chạy browser suite hoặc chụp UI SaaS thực tế vì web do người dùng tự chạy; không khởi động web. Sau khi web sẵn sàng, chạy `pnpm test:browser` (runner dùng server bên ngoài/chia batch). Lần suite Phase 7 trước đó 13/14, setup owner gặp rate-limit 429; không tính test SaaS mới là đã qua.
+- Browser hồi quy **16/16 flows qua**, gồm signup/platform và multi-restaurant trên Chromium desktop/390/320px. Dùng API Docker và FE do người dùng mở; không khởi động server qua test. Screenshots thực tế lưu `.local/qa/`. Xem [Multi-restaurant verification](tenancy-verification.md).
 
 ## Giới hạn giai đoạn đầu
 
-Mỗi đăng ký tạo một tenant cho Owner mới; mỗi tài khoản staff đăng nhập duy nhất một membership active. Chưa có tenant switcher/chuỗi chi nhánh cho một user, custom subdomain, invitation, xác minh email, self-service password recovery, MFA admin, charging hoặc PostgreSQL RLS. Isolation được thực thi bởi auth principal, scoped queries và composite foreign keys. Production HTTPS/backup/monitoring/CI/CD và full browser QA tiếp tục trong roadmap; đây là bản SaaS foundation chạy local.
+Mỗi đăng ký tạo tenant đầu tiên; cùng tài khoản Owner có thể tạo thêm tenant và chuyển workspace. Mỗi phiên chỉ thuộc một membership; role đích được đọc từ DB. Chưa có quản lý nhóm chi nhánh, custom subdomain, invitation/gắn staff account có sẵn sang tenant khác, xác minh email, self-service password recovery, MFA admin, charging hoặc PostgreSQL RLS. Isolation được thực thi bởi auth principal, scoped queries và composite foreign keys. Production HTTPS/backup/monitoring/CI/CD tiếp tục trong roadmap; đây là bản SaaS chạy local.
