@@ -75,6 +75,11 @@ model User {
   passwordHash String
   isActive Boolean @default(true)
   isPlatformAdmin Boolean @default(false)
+  requiresEmailVerification Boolean @default(false)
+  emailVerifiedAt DateTime? @db.Timestamptz(3)
+  credentialVersion Int @default(0)
+  mfaSecret String?
+  mfaLastCounter BigInt?
   createdAt DateTime @default(now()) @db.Timestamptz(3)
   updatedAt DateTime @updatedAt @db.Timestamptz(3)
   memberships StaffMembership[]
@@ -82,6 +87,10 @@ model User {
   activityLogs ActivityLog[]
   platformSessions PlatformSession[]
   platformLogs PlatformAudit[]
+  accountTokens AccountToken[]
+  emailMessages EmailOutbox[]
+  mfaChallenges MfaChallenge[]
+  securityEvents SecurityEvent[]
 }
 
 model Restaurant {
@@ -121,6 +130,8 @@ model PlatformSession {
   tokenHash String @unique @db.Char(64)
   expiresAt DateTime @db.Timestamptz(3)
   revokedAt DateTime? @db.Timestamptz(3)
+  credentialVersion Int @default(0)
+  mfaVerified Boolean @default(false)
   createdAt DateTime @default(now()) @db.Timestamptz(3)
   user User @relation(fields: [userId], references: [id], onDelete: Restrict)
   @@index([userId, expiresAt])
@@ -165,6 +176,7 @@ model AuthSession {
   membershipId String @db.Uuid
   expiresAt DateTime @db.Timestamptz(3)
   revokedAt DateTime? @db.Timestamptz(3)
+  credentialVersion Int @default(0)
   createdAt DateTime @default(now()) @db.Timestamptz(3)
   user User @relation(fields: [userId], references: [id], onDelete: Restrict)
   membership StaffMembership @relation(fields: [membershipId, userId], references: [id, userId], onDelete: Restrict)
@@ -172,6 +184,52 @@ model AuthSession {
   @@index([userId, expiresAt])
 }
 
+model AccountToken {
+  id String @id @default(uuid()) @db.Uuid
+  userId String @db.Uuid
+  kind String @db.VarChar(20)
+  tokenHash String @unique @db.Char(64)
+  credentialVersion Int
+  expiresAt DateTime @db.Timestamptz(3)
+  consumedAt DateTime? @db.Timestamptz(3)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId, kind, createdAt])
+}
+model EmailOutbox {
+  id String @id @default(uuid()) @db.Uuid
+  userId String @db.Uuid
+  payload String
+  expiresAt DateTime @db.Timestamptz(3)
+  attempts Int @default(0)
+  nextAttemptAt DateTime @default(now()) @db.Timestamptz(3)
+  claimedUntil DateTime? @db.Timestamptz(3)
+  sentAt DateTime? @db.Timestamptz(3)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([sentAt, nextAttemptAt])
+}
+model MfaChallenge {
+  id String @id @default(uuid()) @db.Uuid
+  userId String @db.Uuid
+  tokenHash String @unique @db.Char(64)
+  credentialVersion Int
+  setupSecret String?
+  attempts Int @default(0)
+  expiresAt DateTime @db.Timestamptz(3)
+  consumedAt DateTime? @db.Timestamptz(3)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId, expiresAt])
+}
+model SecurityEvent {
+  id String @id @default(uuid()) @db.Uuid
+  userId String? @db.Uuid
+  action String @db.VarChar(80)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+  @@index([userId, createdAt])
+}
 model RefreshToken {
   id String @id @default(uuid()) @db.Uuid
   tokenHash String @unique @db.Char(64)

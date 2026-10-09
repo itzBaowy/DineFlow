@@ -31,6 +31,15 @@ services:
       DATABASE_HOST: postgres
       DATABASE_PORT: "5432"
       JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:?Run pnpm setup:env}
+      ACCOUNT_SECURITY_KEY: ${ACCOUNT_SECURITY_KEY:?Run pnpm setup:env}
+      SMTP_HOST: ${DOCKER_SMTP_HOST:-mailpit}
+      SMTP_PORT: ${SMTP_PORT:-1025}
+      SMTP_SECURE: ${SMTP_SECURE:-false}
+      EMAIL_FROM: ${EMAIL_FROM:-no-reply@dineflow.local}
+      EMAIL_PROVIDER: ${EMAIL_PROVIDER:-smtp}
+      RESEND_API_KEY: ${RESEND_API_KEY:-}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
       ACCESS_TOKEN_TTL_SECONDS: ${ACCESS_TOKEN_TTL_SECONDS:-900}
       REFRESH_TOKEN_TTL_SECONDS: ${REFRESH_TOKEN_TTL_SECONDS:-604800}
       GUEST_TOKEN_TTL_SECONDS: ${GUEST_TOKEN_TTL_SECONDS:-14400}
@@ -65,6 +74,13 @@ services:
       - /tmp
     cap_drop: [ALL]
     security_opt: [no-new-privileges:true]
+  mailpit:
+    image: axllent/mailpit:v1.31.4
+    profiles: [storage, api]
+    ports:
+      - "127.0.0.1:1025:1025"
+      - "127.0.0.1:8025:8025"
+    restart: unless-stopped
   postgres:
     image: postgres:17-alpine
     environment:

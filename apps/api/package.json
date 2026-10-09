@@ -2,7 +2,11 @@
   "name": "@dineflow/api",
   "version": "0.1.0",
   "private": true,
-  "files": ["dist/src", "dist/prisma", "prisma"],
+  "files": [
+    "dist/src",
+    "dist/prisma",
+    "prisma"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "predev": "pnpm build",
@@ -34,6 +38,7 @@
     "cookie-parser": "^1.4.7",
     "dotenv": "^17.0.0",
     "helmet": "^8.0.0",
+    "nodemailer": "10.0.16",
     "pg": "^8.0.0",
     "qrcode": "1.5.4",
     "reflect-metadata": "^0.2.2",
@@ -46,6 +51,7 @@
     "@types/cookie-parser": "^1.4.0",
     "@types/express": "^5.0.0",
     "@types/multer": "2.3.0",
+    "@types/nodemailer": "8.0.2",
     "@types/pg": "^8.0.0",
     "@types/qrcode": "1.5.6",
     "concurrently": "^9.0.0",
