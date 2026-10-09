@@ -4,7 +4,7 @@ Web dự kiến: `https://dineflow.khuugiabao.com` (Vercel). API: `https://dinef
 
 ## Kết quả triển khai 2026-10-10
 
-API/PostgreSQL/MinIO đã chạy healthy trên VPS. Tám migrations đã áp dụng; không demo seed. Readiness công khai qua HTTPS trả `status: ok, database: up`; preflight cho đúng origin web và tenant headers. Kho ảnh private đã qua đọc/ghi/xóa bằng user ứng dụng, từ chối admin access và truy cập ẩn danh. Backup DB đã tạo và khôi phục thử thành công vào database riêng, sau đó xóa database thử.
+API/PostgreSQL/MinIO đã chạy healthy trên VPS. Tám migrations đã áp dụng; không demo seed. Readiness công khai qua HTTPS trả `status: ok, database: up`; preflight cho đúng origin web và tenant headers. CSRF origin lạ bị từ chối 403, Socket.IO polling nhận đúng CORS và từ chối origin lạ, WebSocket upgrade qua Caddy đã thành công. Kho ảnh private đã qua đọc/ghi/xóa bằng user ứng dụng, từ chối admin access và truy cập ẩn danh. Backup DB đã tạo và khôi phục thử thành công vào database riêng, sau đó xóa database thử.
 
 Resend dùng `no-reply@dineflow.khuugiabao.com`, key chỉ có quyền gửi email, lưu trong `.env.production` mode 600 trên VPS. Yêu cầu gửi đến địa chỉ mô phỏng `delivered@resend.dev` được Resend chấp nhận HTTP 200; chưa kiểm tra hộp thư thật của chủ quán. File key tạm trên VPS đã xóa sau khi cập nhật cấu hình.
 
