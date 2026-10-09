@@ -1,5 +1,7 @@
 # Database ERD
 
+Phase 7 dùng các bảng hiện có, không thêm migration. Revenue dựa trên Payment COMPLETED/completedAt và tiền snapshot; best-sellers đọc OrderItem snapshots của phiên đã thanh toán, bỏ CANCELLED. History/audit vẫn restaurant-scoped và giữ dữ liệu phiên CLOSED. Staff mutations dùng StaffMembership/User/AuthSession/ActivityLog trong transaction, không xóa người thao tác hoặc lịch sử. API Docker chạy migrate deploy trước startup, dùng nguyên named volume PostgreSQL hiện có.
+
 ```mermaid
 erDiagram
   Restaurant ||--o{ StaffMembership : employs

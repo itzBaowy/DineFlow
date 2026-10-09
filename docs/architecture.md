@@ -2,11 +2,11 @@
 
 ## Phạm vi thực hiện
 
-Repository ban đầu chỉ có README và Requirement.md. Triển khai theo từng phase; hiện có **Phase 1–6**, chưa hoàn thành toàn bộ MVP.
+Repository ban đầu chỉ có README và Requirement.md. Triển khai theo từng phase; hiện có **Phase 1–7**, chưa hoàn thành toàn bộ MVP.
 
 Phase 1 chạy được: workspace pnpm; Next.js App Router tiếng Việt; NestJS REST + Swagger; PostgreSQL + Prisma + migration; Redis qua Compose; kiểm tra môi trường; seed; đăng nhập/đăng xuất nhân viên, JWT, refresh rotation, RBAC; dashboard đọc nhà hàng, vai trò và số lượng cấu hình từ database. Không đưa đơn hàng giả vào dashboard.
 
-Phase 2 thêm settings/menu/modifiers, upload ảnh S3/MinIO, bàn và QR. Phase 3 thêm staff-opened dining sessions, guest admission, menu/cart/checkout, snapshot và lịch sử đơn riêng. Phase 4 thêm dashboard vận hành, xác nhận/từ chối, kitchen display, phục vụ và đơn thủ công. Phase 5 thêm Socket.IO, tracking, yêu cầu phục vụ/thanh toán và reconnect/refetch. Phase 6 thêm bill cả phiên, discount có hạn mức, cash/chuyển khoản thủ công, đóng phiên nguyên tử và receipt snapshot/in. Báo cáo thuộc Phase 7. Schema dự kiến cho MVP được migration ngay trong foundation để kiểm chứng quan hệ và constraints; các chức năng triển khai khi tới phase tương ứng.
+Phase 2 thêm settings/menu/modifiers, upload ảnh S3/MinIO, bàn và QR. Phase 3 thêm staff-opened dining sessions, guest admission, menu/cart/checkout, snapshot và lịch sử đơn riêng. Phase 4 thêm dashboard vận hành, xác nhận/từ chối, kitchen display, phục vụ và đơn thủ công. Phase 5 thêm Socket.IO, tracking, yêu cầu phục vụ/thanh toán và reconnect/refetch. Phase 6 thêm bill cả phiên, discount có hạn mức, cash/chuyển khoản thủ công, đóng phiên nguyên tử và receipt snapshot/in. Phase 7 thêm doanh thu COMPLETED theo timezone, lịch sử mọi phiên, audit an toàn và quản lý nhân viên. API đã đóng gói Docker, web chạy trên host bằng terminal. Schema dự kiến cho MVP được migration ngay trong foundation để kiểm chứng quan hệ và constraints; các chức năng triển khai khi tới phase tương ứng.
 
 ## Kiến trúc
 
@@ -46,6 +46,8 @@ apps/
       dining-sessions/      # open, empty close, cleaning
       orders/               # guest/manual orders, pricing, staff/kitchen transitions
       payments/             # scoped bills, discounts, settlement, immutable receipts
+      reports/              # completed revenue, history, safe activity reads
+      staff/                # scoped staff management and session revocation
       realtime/             # single-use tickets, scoped socket delivery, revocation checks
       generated/            # Prisma, không commit
     test/                   # integration HTTP với PostgreSQL thật
@@ -59,12 +61,15 @@ apps/
     src/features/operations/ # staff orders, kitchen display, manual order provider
     src/features/realtime/  # connection status, notifications, table/staff service requests
     src/features/billing/   # cashier, guest totals, explicit payment/recovery, printing
+    src/features/admin/     # reports, historical orders, activity and staff
+    src/app/(workspace)/admin/
     src/app/t/[tableCode]/  # nested layout preserves cart across navigation
     src/lib/                # typed API client
 packages/shared/            # DTO Zod, role labels, domain state machines
 docs/                       # ERD, state models, roadmap, hướng dẫn
 scripts/                    # tạo env local, smoke checks
-compose.yaml                # PostgreSQL, Redis, MinIO tùy profile
+docker/                     # API runtime/migration targets, container URL routing
+compose.yaml                # API + migration (profile api), PostgreSQL, Redis, MinIO
 ```
 
 Nest bổ sung modules tables, dining-sessions, menu, orders, kitchen, payments, realtime, reports, storage, audit khi phase tương ứng bắt đầu. Không tạo module rỗng để giả hoàn thành.
@@ -101,6 +106,16 @@ Room do server chọn: staff theo restaurant/role; guest theo guest ID và phiê
 Auth được kiểm tra lại trước mỗi event và mỗi 15 giây; logout, role/membership thay đổi, hết hạn guest/token hoặc session đóng sẽ disconnect. Closing hint chỉ chứa scope đã biết, gửi trước disconnect guest bị revoke. Client lấy vé mới với backoff 1–30 giây, refetch sau ready và khi tab visible; offline cập nhật badge và đóng socket. Không retry mutation tự động. Staff refresh dùng cơ chế GET hiện có trước khi xin vé mới.
 
 Mỗi publication nằm sau transaction commit và không làm rollback nghiệp vụ khi delivery lỗi. Events best-effort, không có replay/outbox: reconnect/tab visible/manual refresh bù dữ liệu bị lỡ bằng REST. Tickets/connections/rooms chỉ ở một API instance, tối đa 8 connections/principal và 10.000 vé chưa hết hạn; chưa benchmark fan-out/auth revalidation. Redis adapter, vé dùng chung và durable outbox cần đánh giá trước scale. Socket.IO dùng path không trailing slash qua Next để tránh 308 redirect; browser đã kiểm tra cả WebSocket upgrade và polling fallback.
+
+## Admin/Analytics Phase 7
+
+OWNER/MANAGER đọc `/reports/revenue`, `/reports/orders`, `/reports/orders/:id`, `/reports/activity` và quản lý `/staff`. Scope chỉ từ principal; filters strict, ID ngoài scope trả 404. Khoảng ngày gồm cả hai đầu, tối đa 366 ngày; SQL tạo mốc UTC từ ngày local/timezone nhà hàng, bao gồm ngày DST dài 23/25 giờ. Revenue lấy Payment COMPLETED theo completedAt; không cộng đơn chưa thanh toán/hủy. Các tổng, buckets, methods và best-sellers đọc trong cùng RepeatableRead transaction. SUM dùng BigInt, kiểm tra giới hạn safe integer khi trả JSON; không giới hạn tổng nhiều payments theo Int32 của từng bill.
+
+History dùng ngày tạo đơn, chứa cả phiên CLOSED, giữ snapshots món/tùy chọn/giá và các mốc trạng thái; tên bàn được ghi rõ là tên hiện tại, receipt giữ tên lúc thanh toán. Best-sellers nhóm menu ID + tên snapshot, lấy món của phiên có eligible completed payment, bỏ CANCELLED; tiền món trước discount/fees/tax. Activity chỉ trả scalar details được whitelist, không trả JSON tùy ý hoặc credentials.
+
+Staff mutation khóa Restaurant và recheck actor trong transaction, kiểm tra updatedAt. MANAGER không quản lý OWNER; không tự đổi role/khóa/reset mật khẩu; luôn còn ít nhất một OWNER active. User/email mới không được gắn vào tài khoản có sẵn của tenant khác. Với User có memberships nhiều nhà hàng, chặn sửa tên/password toàn cục; role/trạng thái vẫn scoped. Đổi role/khóa/reset revoke AuthSessions, password scrypt và audit ghi nguyên tử, không ghi secret. Reenable không khôi phục phiên cũ. Phạm vi này chưa cung cấp self-service đổi mật khẩu, email invitation hoặc xóa tài khoản.
+
+API Docker chạy Linux generated client/compiled code và production dependencies; migration one-shot hoàn tất trước API readiness. `.env` không nằm trong image. Đây là cấu hình local HTTP, không phải xác nhận production deployment. Web Next do người dùng chạy trên host.
 
 ## Lựa chọn phiên bản
 

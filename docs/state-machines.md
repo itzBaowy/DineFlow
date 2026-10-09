@@ -55,12 +55,14 @@ CALL_STAFF / REQUEST_PAYMENT chỉ trong phiên OPEN hoặc PAYMENT_REQUESTED v�
 |---|---|---|---|---|---|
 | Dashboard cơ bản | ✓ | ✓ | ✓ | ✓ | ✓ |
 | Thiết lập menu/bàn | ✓ | ✓ | | | |
-| Nhân viên | ✓ | Có giới hạn, không cấp OWNER | | | |
+| Nhân viên | ✓ | Không tạo/sửa/khóa/reset OWNER | | | |
 | Mở bàn / nhận đơn / phục vụ | ✓ | ✓ | | ✓ | |
 | Bắt đầu / hoàn thành bếp | ✓ | ✓ | | | ✓ |
 | Xem bill / receipt; yêu cầu / mở lại trước thanh toán | ✓ | ✓ | ✓ | ✓ | |
 | Thanh toán / đóng phiên | ✓ | ✓ | ✓ | | |
 | Giảm giá | ✓ | ✓ | Chỉ trong hạn mức được cấu hình | | |
-| Báo cáo | ✓ | ✓ | | | |
+| Báo cáo / lịch sử mọi phiên / audit | ✓ | ✓ | | | |
+
+Phase 7 đã triển khai quản trị nhân viên và các admin reads. Không tự đổi role/khóa/reset mật khẩu; luôn còn ít nhất một OWNER active. Đổi quyền/khóa/reset revoke các AuthSessions của membership; bật lại không khôi phục phiên cũ. Đối chiếu expectedUpdatedAt, khóa Restaurant và recheck actor trong transaction chống stale/concurrent permission changes. Password và audit ghi nguyên tử, không ghi secrets. Các role ngoài OWNER/MANAGER không được đọc lịch sử mọi phiên hoặc staff audit qua admin endpoints.
 
 Khách đọc menu công khai; gửi/đọc đơn của mình, service request và tổng bill trong **phiên đang hoạt động** được cấp token. Guest bill không trả chi tiết đơn/ghi chú của khách khác; không truy cập receipt/session lịch sử bằng QR cố định. QR không xác minh khách có mặt. Rate limit public API, nhân viên xác nhận đơn trước bếp; PIN/QR động có thể thêm sau.
