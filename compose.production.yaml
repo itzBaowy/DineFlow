@@ -1,0 +1,137 @@
+name: dineflow-prod
+
+x-api-environment: &api-environment
+  NODE_ENV: production
+  API_PORT: "4000"
+  APP_ORIGIN: ${APP_ORIGIN:?Configure production web origin}
+  DATABASE_URL: ${DATABASE_URL:?Generate production env}
+  DATABASE_HOST: postgres
+  DATABASE_PORT: "5432"
+  JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:?Generate production env}
+  ACCOUNT_SECURITY_KEY: ${ACCOUNT_SECURITY_KEY:?Generate production env}
+  COOKIE_SECURE: "true"
+  TRUST_PROXY_HOPS: "1"
+  EMAIL_PROVIDER: resend
+  EMAIL_FROM: ${EMAIL_FROM:?Configure verified Resend sender}
+  RESEND_API_KEY: ${RESEND_API_KEY:?Configure Resend API key}
+  S3_ENDPOINT: http://minio:9000
+  S3_REGION: us-east-1
+  S3_BUCKET: ${S3_BUCKET:-dineflow-menu}
+  S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID:?Generate production env}
+  S3_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY:?Generate production env}
+  S3_AUTO_CREATE_BUCKET: "false"
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-dineflow}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Generate production env}
+      POSTGRES_DB: ${POSTGRES_DB:-dineflow}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+  minio:
+    image: dineflow-minio:RELEASE.2025-10-15T17-29-55Z
+    build:
+      context: .
+      dockerfile: docker/minio.Dockerfile
+    command: server /data --console-address ':9001'
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:?Generate production env}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?Generate production env}
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: [CMD, curl, -fsS, http://localhost:9000/minio/health/live]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+  storage-init:
+    image: dineflow-minio-client:RELEASE.2025-08-13T08-35-41Z
+    build:
+      context: .
+      dockerfile: docker/minio-client.Dockerfile
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:?Generate production env}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?Generate production env}
+      S3_BUCKET: ${S3_BUCKET:-dineflow-menu}
+      S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID:?Generate production env}
+      S3_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY:?Generate production env}
+    depends_on:
+      minio:
+        condition: service_healthy
+    restart: "no"
+    read_only: true
+    tmpfs: [/tmp]
+  api-migrate:
+    image: dineflow-api-migrate:${DEPLOY_TAG:-production}
+    build:
+      context: .
+      dockerfile: docker/api.Dockerfile
+      target: migrate
+    environment:
+      DATABASE_URL: ${DATABASE_URL:?Generate production env}
+      DATABASE_HOST: postgres
+      DATABASE_PORT: "5432"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+    init: true
+  api:
+    image: dineflow-api:${DEPLOY_TAG:-production}
+    build:
+      context: .
+      dockerfile: docker/api.Dockerfile
+      target: runtime
+    environment: *api-environment
+    ports:
+      - "127.0.0.1:${API_HOST_PORT:-4001}:4000"
+    depends_on:
+      api-migrate:
+        condition: service_completed_successfully
+      storage-init:
+        condition: service_completed_successfully
+    healthcheck:
+      test: [CMD, node, -e, "fetch('http://127.0.0.1:4000/api/v1/health/ready', {signal: AbortSignal.timeout(3000)}).then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      start_period: 20s
+      retries: 10
+    restart: unless-stopped
+    init: true
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+  admin-bootstrap:
+    image: dineflow-api:${DEPLOY_TAG:-production}
+    profiles: [ops]
+    environment:
+      <<: *api-environment
+      PLATFORM_ADMIN_EMAIL: ${PLATFORM_ADMIN_EMAIL:?Set admin email}
+      PLATFORM_ADMIN_NAME: ${PLATFORM_ADMIN_NAME:-DineFlow Admin}
+      PLATFORM_ADMIN_PASSWORD: ${PLATFORM_ADMIN_PASSWORD:?Generate admin password}
+    command: [node, docker/entrypoint.mjs, bootstrap]
+    depends_on:
+      api-migrate:
+        condition: service_completed_successfully
+    restart: "no"
+    read_only: true
+    tmpfs: [/tmp]
+
+volumes:
+  postgres_data:
+  minio_data:

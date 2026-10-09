@@ -9,6 +9,10 @@ if (mode === 'migrate') {
   process.exit(result.status ?? 1);
 } else if (mode === 'api') {
   await import('../dist/src/main.js');
+} else if (mode === 'bootstrap') {
+  await import('../dist/prisma/platform-admin.js');
+} else if (mode === 'mfa-recovery') {
+  await import('../dist/prisma/platform-mfa-recovery.js');
 } else {
-  throw new Error('Expected api or migrate entrypoint mode');
+  throw new Error('Expected api, migrate, bootstrap or mfa-recovery entrypoint mode');
 }
