@@ -30,7 +30,7 @@ import { Dialog } from 'radix-ui';
 import { roleLabels } from '@dineflow/shared';
 import { Brand } from '@/components/brand';
 import { Button } from '@/components/ui/button';
-import { api, ApiError } from '@/lib/api';
+import { api, ApiError, bindStaffRestaurant, clearStaffDrafts } from '@/lib/api';
 import { cn } from '@/lib/utils';
 import { useStaff } from './use-staff';
 import { LiveSync } from '@/features/realtime/live-sync';
@@ -41,6 +41,36 @@ export function Workspace({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const path = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [transitioning, setTransitioning] = useState(false);
+  const [transitionError, setTransitionError] = useState('');
+  useEffect(() => {
+    if (staffQuery.data)
+      bindStaffRestaurant(staffQuery.data.restaurantId, staffQuery.data.userId);
+  }, [staffQuery.data]);
+  useEffect(() => {
+    const start = () => {
+        setTransitionError('');
+        setTransitioning(true);
+      },
+      end = (event: Event) => {
+        setTransitionError((event as CustomEvent<string>).detail);
+        setTransitioning(false);
+      };
+    const sync = (event: StorageEvent) => {
+      if (event.key === 'dineflow:staff-scope-change') {
+        if (staffQuery.data?.userId) clearStaffDrafts(staffQuery.data.userId);
+        window.location.replace('/staff/dashboard');
+      }
+    };
+    window.addEventListener('dineflow:transition', start);
+    window.addEventListener('dineflow:transition-end', end);
+    window.addEventListener('storage', sync);
+    return () => {
+      window.removeEventListener('dineflow:transition', start);
+      window.removeEventListener('dineflow:transition-end', end);
+      window.removeEventListener('storage', sync);
+    };
+  }, [staffQuery.data?.userId]);
   const logout = useMutation({
     mutationFn: () => api('/auth/logout', z.undefined(), { method: 'POST', refresh: false }),
     onSuccess: () => {
@@ -48,16 +78,17 @@ export function Workspace({ children }: { children: React.ReactNode }) {
       router.replace('/staff/login');
     },
   });
-  const unauthenticated = staffQuery.error instanceof ApiError && staffQuery.error.status === 401;
+  const unauthenticated =
+    staffQuery.error instanceof ApiError && staffQuery.error.status === 401;
   useEffect(() => {
     if (unauthenticated) router.replace('/staff/login');
   }, [unauthenticated, router]);
-  if (staffQuery.isPending || unauthenticated)
+  if (staffQuery.isPending || unauthenticated || transitioning)
     return (
       <main className="grid min-h-screen place-items-center">
         <div className="flex items-center gap-3 text-sm text-muted-foreground" role="status">
           <LoaderCircle className="size-5 animate-spin text-primary" />
-          Đang mở không gian làm việc…
+          {transitioning ? 'Đang chuyển nhà hàng…' : 'Đang mở không gian làm việc…'}
         </div>
       </main>
     );
@@ -75,6 +106,7 @@ export function Workspace({ children }: { children: React.ReactNode }) {
   const admin = staff.role === 'OWNER' || staff.role === 'MANAGER';
   const links = [
     { href: '/staff/dashboard', title: 'Tổng quan', icon: LayoutDashboard },
+    { href: '/staff/restaurants', title: 'Nhà hàng của tôi', icon: Building2 },
     ...(['OWNER', 'MANAGER', 'WAITER', 'CASHIER'].includes(staff.role)
       ? [
           { href: '/staff/tables', title: 'Phiên bàn', icon: Armchair },
@@ -220,8 +252,19 @@ export function Workspace({ children }: { children: React.ReactNode }) {
           </div>
         </header>
         {logout.isError && (
-          <p role="alert" className="mx-6 mt-4 rounded-xl bg-red-50 p-3 text-sm text-destructive">
+          <p
+            role="alert"
+            className="mx-6 mt-4 rounded-xl bg-red-50 p-3 text-sm text-destructive"
+          >
             {logout.error.message}
+          </p>
+        )}
+        {transitionError && (
+          <p
+            role="alert"
+            className="mx-6 mt-4 rounded-xl bg-red-50 p-3 text-sm text-destructive"
+          >
+            {transitionError}
           </p>
         )}
         <main data-workspace-main className="mx-auto max-w-7xl p-5 sm:p-8 xl:p-10">

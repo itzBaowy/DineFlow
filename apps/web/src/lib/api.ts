@@ -9,7 +9,46 @@ export class ApiError extends Error {
   }
 }
 let refreshInFlight: Promise<void> | null = null;
+let staffRestaurantId: string | null = null;
+let staffUserId: string | null = null;
+let staffTransition = false;
+export function bindStaffRestaurant(id: string, userId: string) {
+  staffRestaurantId = id;
+  staffUserId = userId;
+}
+export function clearStaffDrafts(userId: string) {
+  try {
+    for (const storage of [sessionStorage, localStorage])
+      for (const key of Object.keys(storage))
+        if (key.startsWith(`dineflow:cart:staff:${userId}:`)) storage.removeItem(key);
+  } catch {
+    /* Storage can be disabled; in-memory drafts are discarded on reload. */
+  }
+}
+const staffPath = (path: string) =>
+  !path.startsWith('/public/') &&
+  !path.startsWith('/platform/') &&
+  !path.startsWith('/health/') &&
+  !['/auth/login', '/auth/register', '/auth/registration-settings'].includes(path);
+export async function beginStaffTransition() {
+  staffTransition = true;
+  window.dispatchEvent(new Event('dineflow:transition'));
+  await refreshInFlight?.catch(() => undefined);
+}
+export function endStaffTransition(message: string) {
+  staffTransition = false;
+  window.dispatchEvent(new CustomEvent('dineflow:transition-end', { detail: message }));
+}
+export function reloadStaffWorkspace() {
+  try {
+    localStorage.setItem('dineflow:staff-scope-change', crypto.randomUUID());
+  } catch {
+    /* Scope header also protects tabs without storage. */
+  }
+  window.location.replace('/staff/dashboard');
+}
 async function refreshSession(): Promise<void> {
+  if (staffTransition) throw new DOMException('Đang chuyển nhà hàng', 'AbortError');
   if (!refreshInFlight) {
     refreshInFlight = fetch('/api/v1/auth/refresh', {
       method: 'POST',
@@ -37,6 +76,8 @@ export async function api<T>(
   } = {},
 ): Promise<T> {
   const method = options.method ?? 'GET';
+  if (staffTransition && staffPath(path) && path !== '/auth/switch-restaurant')
+    throw new DOMException('Đang chuyển nhà hàng', 'AbortError');
   const multipart = options.body instanceof FormData;
   const init: RequestInit = {
     method,
@@ -46,6 +87,9 @@ export async function api<T>(
     headers: {
       ...(multipart ? {} : { 'Content-Type': 'application/json' }),
       'X-DineFlow-Client': 'web',
+      ...(staffRestaurantId && staffPath(path)
+        ? { 'X-DineFlow-Restaurant': staffRestaurantId }
+        : {}),
     },
     ...(method !== 'GET'
       ? { body: multipart ? (options.body as FormData) : JSON.stringify(options.body ?? {}) }
@@ -65,6 +109,11 @@ export async function api<T>(
     throw new ApiError('Không thể kết nối máy chủ. Vui lòng kiểm tra kết nối và thử lại.', 0);
   }
   if (!response.ok) {
+    if (response.headers.get('X-DineFlow-Scope-Mismatch') === '1') {
+      if (staffUserId) clearStaffDrafts(staffUserId);
+      window.location.replace('/staff/dashboard');
+      throw new DOMException('Nhà hàng đã thay đổi', 'AbortError');
+    }
     const errorBody: unknown = await response.json().catch(() => null);
     const parsed = z.object({ message: z.string() }).safeParse(errorBody);
     const issues = z
@@ -85,12 +134,19 @@ export async function api<T>(
 }
 
 export async function downloadFile(path: string, filename: string): Promise<void> {
-  let response = await fetch(`/api/v1${path}`, { credentials: 'same-origin', cache: 'no-store' });
+  if (staffTransition) throw new DOMException('Đang chuyển nhà hàng', 'AbortError');
+  const init: RequestInit = {
+    credentials: 'same-origin',
+    cache: 'no-store',
+    headers: staffRestaurantId ? { 'X-DineFlow-Restaurant': staffRestaurantId } : {},
+  };
+  let response = await fetch(`/api/v1${path}`, init);
   if (response.status === 401) {
     await refreshSession();
-    response = await fetch(`/api/v1${path}`, { credentials: 'same-origin', cache: 'no-store' });
+    response = await fetch(`/api/v1${path}`, init);
   }
-  if (!response.ok) throw new ApiError('Không thể tải mã QR. Vui lòng thử lại.', response.status);
+  if (!response.ok)
+    throw new ApiError('Không thể tải mã QR. Vui lòng thử lại.', response.status);
   const url = URL.createObjectURL(await response.blob());
   const link = document.createElement('a');
   link.href = url;
