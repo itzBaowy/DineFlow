@@ -20,7 +20,7 @@ if (existsSync(target)) {
     S3_BUCKET: 'dineflow-menu',
     S3_ACCESS_KEY_ID: 'dineflow-api-storage',
     S3_SECRET_ACCESS_KEY: randomBytes(32).toString('hex'),
-    EMAIL_FROM: 'no-reply@khuugiabao.com',
+    EMAIL_FROM: 'no-reply@dineflow.khuugiabao.com',
     RESEND_API_KEY: 'SET_ME_RESEND_KEY',
     PLATFORM_ADMIN_EMAIL: 'admin@khuugiabao.com',
     PLATFORM_ADMIN_NAME: 'DineFlow Admin',
