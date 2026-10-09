@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start --hostname 0.0.0.0",
     "lint": "eslint src tests next.config.ts playwright.config.ts",
-    "typecheck": "next typegen && tsc --noEmit",
+    "typecheck": "next typegen && tsc --noEmit && tsc -p tsconfig.tests.json --noEmit",
     "test:browser": "node ../../scripts/test-browser.mjs"
   },
   "dependencies": {
