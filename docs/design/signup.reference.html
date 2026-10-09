@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+
+<html class="h-full bg-background" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Đăng ký Chủ nhà hàng | DineFlow Artisanal Operations</title>
+<!-- Google Fonts: Newsreader & Be Vietnam Pro -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-secondary-fixed": "#131f00",
+            "surface-container": "#efeeea",
+            "outline": "#717975",
+            "surface-container-high": "#e9e8e4",
+            "tertiary-container": "#313934",
+            "surface-bright": "#faf9f5",
+            "primary-fixed": "#c2ecda",
+            "on-secondary-container": "#596a39",
+            "surface-dim": "#dbdad6",
+            "secondary-container": "#d6eaad",
+            "outline-variant": "#c1c8c3",
+            "on-error": "#ffffff",
+            "secondary-fixed": "#d6eaad",
+            "surface-container-lowest": "#ffffff",
+            "on-tertiary-fixed": "#151d19",
+            "on-error-container": "#93000a",
+            "on-secondary-fixed-variant": "#3c4c1f",
+            "surface-container-low": "#f4f4f0",
+            "on-primary-fixed-variant": "#284e41",
+            "on-tertiary-fixed-variant": "#404944",
+            "on-surface": "#1b1c1a",
+            "on-primary-fixed": "#002117",
+            "inverse-primary": "#a6cfbf",
+            "on-primary": "#ffffff",
+            "tertiary": "#1b241f",
+            "surface-variant": "#e3e2df",
+            "on-primary-container": "#81a999",
+            "primary-container": "#173e32",
+            "surface": "#faf9f5",
+            "on-surface-variant": "#414845",
+            "tertiary-fixed": "#dce5de",
+            "surface-container-highest": "#e3e2df",
+            "on-tertiary-container": "#9aa39c",
+            "inverse-on-surface": "#f2f1ed",
+            "primary": "#00281d",
+            "inverse-surface": "#2f312e",
+            "secondary-fixed-dim": "#bace93",
+            "on-secondary": "#ffffff",
+            "tertiary-fixed-dim": "#c0c9c2",
+            "background": "#faf9f5",
+            "on-tertiary": "#ffffff",
+            "error": "#ba1a1a",
+            "primary-fixed-dim": "#a6cfbf",
+            "on-background": "#1b1c1a",
+            "secondary": "#536434",
+            "surface-tint": "#406658",
+            "error-container": "#ffdad6"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-md": "1rem",
+            "margin": "1rem",
+            "gutter-desktop": "1.5rem",
+            "space-xs": "0.25rem",
+            "margin-desktop": "3rem",
+            "margin-tablet": "2rem",
+            "space-xl": "2.5rem",
+            "space-lg": "1.5rem",
+            "space-sm": "0.5rem",
+            "gutter": "1rem"
+          },
+          "fontFamily": {
+            "headline-sm": ["Be Vietnam Pro"],
+            "label-md": ["Be Vietnam Pro"],
+            "body-md": ["Be Vietnam Pro"],
+            "headline-display": ["Newsreader"],
+            "label-lg": ["Be Vietnam Pro"],
+            "headline-lg-mobile": ["Newsreader"],
+            "body-sm": ["Be Vietnam Pro"],
+            "headline-md": ["Be Vietnam Pro"],
+            "label-sm": ["Be Vietnam Pro"],
+            "headline-lg": ["Newsreader"],
+            "body-lg": ["Be Vietnam Pro"],
+            "headline-display-mobile": ["Newsreader"]
+          },
+          "fontSize": {
+            "headline-sm": ["18px", {"lineHeight": "26px", "letterSpacing": "0em", "fontWeight": "600"}],
+            "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "600"}],
+            "body-md": ["14px", {"lineHeight": "22px", "letterSpacing": "0.005em", "fontWeight": "400"}],
+            "headline-display": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}],
+            "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+            "headline-lg-mobile": ["26px", {"lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "500"}],
+            "body-sm": ["12px", {"lineHeight": "18px", "letterSpacing": "0.01em", "fontWeight": "400"}],
+            "headline-md": ["22px", {"lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+            "label-sm": ["10px", {"lineHeight": "14px", "letterSpacing": "0.06em", "fontWeight": "700"}],
+            "headline-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.015em", "fontWeight": "500"}],
+            "body-lg": ["16px", {"lineHeight": "26px", "letterSpacing": "0em", "fontWeight": "400"}],
+            "headline-display-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "400"}]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    /* Subtle custom pattern */
+    .vietnamese-wood-texture {
+      background-blend-mode: multiply;
+    }
+  </style>
+</head>
+<body class="min-h-full flex flex-col font-body-md text-on-surface bg-background antialiased selection:bg-secondary-container selection:text-primary">
+<!-- ================= TOP BAR / HEADER ================= -->
+<header class="sticky top-0 z-30 w-full bg-surface/90 backdrop-blur-md border-b border-outline-variant/30">
+<div class="max-w-[1440px] mx-auto px-4 sm:px-8 py-3.5 flex items-center justify-between">
+<!-- Logo brand DineFlow with culinary spoon & fork emblem -->
+<a class="flex items-center gap-3 group focus:outline-none" href="#">
+<div class="w-10 h-10 rounded-xl bg-primary-container text-primary-fixed flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform duration-200">
+<span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' 1;">restaurant</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-headline-display text-[22px] tracking-tight font-semibold text-primary leading-none">DineFlow</span>
+<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold tracking-wide bg-secondary-container text-on-secondary-container">MULTI-TENANT</span>
+</div>
+<p class="font-body-sm text-[11px] text-on-surface-variant leading-tight">Nền tảng vận hành ẩm thực số</p>
+</div>
+</a>
+<!-- Right Action: Return to existing staff / tenant login -->
+<div class="flex items-center gap-3">
+<span class="hidden sm:inline font-body-md text-on-surface-variant">Đã có tài khoản?</span>
+<a class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg border border-outline-variant/60 bg-surface-container-lowest text-primary hover:bg-surface-container hover:border-primary-container/40 transition-colors duration-150 font-label-md" href="#login">
+<span class="material-symbols-outlined text-[18px]">login</span>
+<span>Đăng nhập</span>
+</a>
+</div>
+</div>
+</header>
+<!-- ================= MAIN WORKSPACE CANVAS ================= -->
+<main class="flex-1 w-full max-w-[1440px] mx-auto px-4 sm:px-8 py-6 md:py-10">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+<!-- ================= LEFT NARRATIVE PANEL (Bistro Ambience & Trust) ================= -->
+<section class="lg:col-span-5 flex flex-col gap-6">
+<!-- Hero Visual Frame with image https://lh3.googleusercontent.com/aida/AEtjO1Ws1WYqNkM2FRksAPWeV1F8NNgY9qHDVIyYbtXO0htaxyvZZSUE7_VOe155c-0-2M323k1Oj8YIKrYatVmXjx-cmArLKSCG_yeHhjMLTogAUHZPEO851Ca2M16xJkHWbwof-fmIh8-OyvEnj6LN0FjL2qAD6aOphdvjZZs5FQrluaz9SsjlDMQjrd5_AQVZYUMZexkOGXs_BCSuntfMfT0opq2wXJ3WGzEyN__moW-ITysnmskQYfKOW0g -->
+<div class="relative rounded-2xl overflow-hidden border border-outline-variant/40 shadow-sm bg-primary-container text-on-primary">
+<!-- Background image layer with artisanal food feast atmosphere -->
+<div class="absolute inset-0">
+<img alt="DineFlow Vietnamese Culinary Canvas" class="w-full h-full object-cover opacity-25 mix-blend-luminosity scale-105" src="https://lh3.googleusercontent.com/aida/AEtjO1Ws1WYqNkM2FRksAPWeV1F8NNgY9qHDVIyYbtXO0htaxyvZZSUE7_VOe155c-0-2M323k1Oj8YIKrYatVmXjx-cmArLKSCG_yeHhjMLTogAUHZPEO851Ca2M16xJkHWbwof-fmIh8-OyvEnj6LN0FjL2qAD6aOphdvjZZs5FQrluaz9SsjlDMQjrd5_AQVZYUMZexkOGXs_BCSuntfMfT0opq2wXJ3WGzEyN__moW-ITysnmskQYfKOW0g"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary via-primary-container/90 to-primary-container/70"></div>
+</div>
+<!-- Content overlay -->
+<div class="relative p-6 sm:p-8 flex flex-col justify-between min-h-[340px]">
+<div class="space-y-3">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface/10 backdrop-blur-md border border-white/10 text-primary-fixed font-label-sm uppercase tracking-wider">
+<span class="w-2 h-2 rounded-full bg-secondary-fixed animate-pulse"></span>
+<span>Không gian vận hành riêng biệt (Private Tenant)</span>
+</div>
+<h1 class="font-headline-display text-3xl sm:text-4xl text-surface leading-tight pt-1">
+                Quán của bạn.<br/>
+<span class="italic font-normal text-secondary-fixed">Nhịp phục vụ của bạn.</span>
+</h1>
+<p class="font-body-md text-surface/85 leading-relaxed pt-1">
+                Mỗi nhà hàng khi khởi tạo sở hữu một không gian cơ sở dữ liệu riêng biệt. Bảo mật tuyệt đối từ danh mục thực đơn, sơ đồ bàn ăn, đơn gọi món KDS tới doanh thu thu ngân theo ca.
+              </p>
+</div>
+<!-- Transparency & No credit card guarantee badge -->
+<div class="mt-6 pt-5 border-t border-white/15 flex items-center justify-between gap-3">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-full bg-secondary-container/20 text-secondary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[18px]">verified_user</span>
+</div>
+<div>
+<p class="font-label-md text-surface text-xs leading-none">Miễn phí hoàn toàn giai đoạn trải nghiệm</p>
+<p class="font-body-sm text-surface/70 text-[11px] mt-0.5">Không yêu cầu thẻ tín dụng • Không cam kết ràng buộc</p>
+</div>
+</div>
+<span class="shrink-0 text-secondary-fixed">
+<span class="material-symbols-outlined text-[20px]">check_circle</span>
+</span>
+</div>
+</div>
+</div>
+<!-- 3-Step Setup Guide Card -->
+<div class="rounded-2xl border border-outline-variant/40 bg-surface-container-lowest p-6 sm:p-7 shadow-sm">
+<div class="flex items-center justify-between mb-5">
+<h2 class="font-headline-sm text-primary flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px] text-secondary">explore</span>
+<span>3 bước thiết lập chuẩn mực</span>
+</h2>
+<span class="font-label-sm text-on-surface-variant uppercase tracking-wider bg-surface-container px-2 py-0.5 rounded">Quy trình 2 phút</span>
+</div>
+<ol class="space-y-4">
+<!-- Step 1 -->
+<li class="flex items-start gap-3.5">
+<div class="w-7 h-7 rounded-full bg-primary-container text-primary-fixed flex items-center justify-center font-label-md shrink-0 mt-0.5 shadow-sm">
+                1
+              </div>
+<div>
+<p class="font-label-lg text-primary">Tạo tài khoản Chủ nhà hàng (Owner)</p>
+<p class="font-body-sm text-on-surface-variant mt-0.5">
+                  Xác lập định danh URL riêng cho quán (`dineflow.vn/r/slug`) để quản lý toàn diện.
+                </p>
+</div>
+</li>
+<!-- Step 2 -->
+<li class="flex items-start gap-3.5">
+<div class="w-7 h-7 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-label-md shrink-0 mt-0.5">
+                2
+              </div>
+<div>
+<p class="font-label-lg text-primary">Nhập món, bàn &amp; in tem mã QR bàn</p>
+<p class="font-body-sm text-on-surface-variant mt-0.5">
+                  Tùy chỉnh nhóm thực đơn và in bộ mã QR đặt món trực tiếp tại từng bàn ăn.
+                </p>
+</div>
+</li>
+<!-- Step 3 -->
+<li class="flex items-start gap-3.5">
+<div class="w-7 h-7 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-label-md shrink-0 mt-0.5">
+                3
+              </div>
+<div>
+<p class="font-label-lg text-primary">Mời FOH phục vụ &amp; BOH bếp vào ca</p>
+<p class="font-body-sm text-on-surface-variant mt-0.5">
+                  Cấp mã PIN nhanh cho nhân viên chạy bàn và kết nối màn hình hiển thị KDS bếp.
+                </p>
+</div>
+</li>
+</ol>
+<!-- System Cleanliness Guarantee Notice -->
+<div class="mt-6 p-3.5 rounded-xl bg-surface-container-low border border-outline-variant/30 flex items-start gap-3">
+<span class="material-symbols-outlined text-[20px] text-secondary mt-0.5 shrink-0">cleaning_services</span>
+<p class="font-body-sm text-on-surface-variant text-[12px] leading-relaxed">
+<strong class="font-semibold text-primary">Cam kết dữ liệu sạch:</strong> Sau khi khởi tạo, hệ thống hoàn toàn là không gian trống 100%, không chứa đơn hàng ảo hay dữ liệu thử nghiệm rác, sẵn sàng đưa vào vận hành thực tế tại quán ngay.
+            </p>
+</div>
+</div>
+<!-- Operational Status Snippet -->
+<div class="rounded-xl border border-outline-variant/30 bg-surface-container-low p-4 flex items-center justify-between text-xs text-on-surface-variant">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
+<span class="font-medium text-on-surface">Cụm máy chủ Đông Nam Á (Cloud VN)</span>
+</div>
+<span class="font-mono text-[11px]">Độ trễ KDS: ~18ms</span>
+</div>
+</section>
+<!-- ================= RIGHT REGISTRATION CARD ================= -->
+<section class="lg:col-span-7">
+<div class="bg-surface-container-lowest rounded-2xl border border-outline-variant/40 p-6 sm:p-10 shadow-sm relative overflow-hidden">
+<!-- Decorative Top Accent Line -->
+<div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-primary-container to-secondary"></div>
+<!-- Header Titles -->
+<div class="mb-8">
+<div class="flex items-center justify-between gap-4">
+<h2 class="font-headline-display text-2xl sm:text-3xl font-normal text-primary">
+                Bắt đầu với nhà hàng của bạn
+              </h2>
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-secondary-container/40 text-on-secondary-container text-xs font-semibold">
+<span class="material-symbols-outlined text-[14px]">lock</span>
+<span>Bảo mật Tenant</span>
+</span>
+</div>
+<p class="font-body-md text-on-surface-variant mt-1.5">
+              Thiết lập tài khoản quản trị cao nhất (Owner) và không gian nhà hàng mới chỉ trong 2 phút.
+            </p>
+</div>
+<!-- Alert / Maintenance or Conflict Callout Demo -->
+<div class="hidden mb-6 p-4 rounded-xl border border-amber-200 bg-amber-50/70 text-amber-900 text-sm flex items-start gap-3" id="statusNotice">
+<span class="material-symbols-outlined text-amber-700 text-[20px] shrink-0 mt-0.5">info</span>
+<div>
+<p class="font-semibold text-amber-950">Lưu ý kiểm tra tên đường dẫn quán</p>
+<p class="text-xs text-amber-800 mt-0.5">Nếu mã slug đã có quán khác sử dụng, hệ thống sẽ đề xuất đuôi số tự động (vd: `quan-pho-2`).</p>
+</div>
+</div>
+<!-- The Registration Form -->
+<form class="space-y-6" id="restaurantRegistrationForm" onsubmit="event.preventDefault(); handleRegistration();">
+<!-- SECTION 1: OWNER IDENTITY -->
+<div class="space-y-4">
+<div class="flex items-center gap-2 pb-1 border-b border-outline-variant/20">
+<span class="material-symbols-outlined text-[18px] text-primary">person_outline</span>
+<span class="font-label-sm uppercase tracking-wider text-on-surface-variant">Thông tin Chủ sở hữu (Owner)</span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<!-- Full Name Input -->
+<div class="space-y-1.5">
+<label class="block font-label-md text-on-surface text-xs" for="ownerName">
+                    Họ và tên chủ nhà hàng <span class="text-error">*</span>
+</label>
+<div class="relative">
+<input class="w-full h-12 px-3.5 bg-surface-container-lowest border border-outline-variant/60 rounded-lg text-on-surface placeholder:text-outline/60 focus:border-primary-container focus:ring-0 focus:outline-none transition-colors duration-150 font-body-md" id="ownerName" name="ownerName" placeholder="Nguyễn Văn An" required="" type="text"/>
+</div>
+</div>
+<!-- Email Input (Tenant Owner ID) -->
+<div class="space-y-1.5">
+<label class="block font-label-md text-on-surface text-xs" for="ownerEmail">
+                    Email đăng nhập quản trị <span class="text-error">*</span>
+</label>
+<div class="relative">
+<input class="w-full h-12 px-3.5 bg-surface-container-lowest border border-outline-variant/60 rounded-lg text-on-surface placeholder:text-outline/60 focus:border-primary-container focus:ring-0 focus:outline-none transition-colors duration-150 font-body-md" id="ownerEmail" name="ownerEmail" placeholder="chuquan@bepnha.vn" required="" type="email"/>
+</div>
+</div>
+</div>
+<!-- Password Input with security guidelines & strength meter -->
+<div class="space-y-2">
+<div class="flex items-center justify-between">
+<label class="block font-label-md text-on-surface text-xs" for="ownerPassword">
+                    Mật khẩu bảo mật quản trị <span class="text-error">*</span>
+</label>
+<span class="text-[11px] text-on-surface-variant font-body-sm">Tối thiểu 12 ký tự</span>
+</div>
+<div class="relative">
+<input class="w-full h-12 px-3.5 pr-11 bg-surface-container-lowest border border-outline-variant/60 rounded-lg text-on-surface placeholder:text-outline/60 focus:border-primary-container focus:ring-0 focus:outline-none transition-colors duration-150 font-body-md" id="ownerPassword" minlength="8" name="ownerPassword" oninput="evaluatePasswordStrength(this.value)" placeholder="Nhập mật khẩu an toàn..." required="" type="password"/>
+<button aria-label="Hiển thị mật khẩu" class="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-on-surface p-1 focus:outline-none" id="togglePwdBtn" onclick="togglePasswordVisibility()" type="button">
+<span class="material-symbols-outlined text-[20px]" id="pwdIcon">visibility</span>
+</button>
+</div>
+<!-- Visual Password Strength Meter -->
+<div class="space-y-1.5 pt-1">
+<div class="flex gap-1.5 h-1.5 w-full">
+<div class="h-full flex-1 rounded-full bg-surface-container-highest transition-colors duration-200" id="bar1"></div>
+<div class="h-full flex-1 rounded-full bg-surface-container-highest transition-colors duration-200" id="bar2"></div>
+<div class="h-full flex-1 rounded-full bg-surface-container-highest transition-colors duration-200" id="bar3"></div>
+<div class="h-full flex-1 rounded-full bg-surface-container-highest transition-colors duration-200" id="bar4"></div>
+</div>
+<div class="flex items-center justify-between text-[11px] text-on-surface-variant">
+<span id="strengthText">Độ mạnh mật khẩu: Chưa nhập</span>
+<span class="text-outline">Nên gồm chữ hoa, số và ký tự đặc biệt</span>
+</div>
+</div>
+</div>
+</div>
+<!-- SECTION 2: RESTAURANT & SLUG CONFIG -->
+<div class="space-y-4 pt-2">
+<div class="flex items-center gap-2 pb-1 border-b border-outline-variant/20">
+<span class="material-symbols-outlined text-[18px] text-primary">storefront</span>
+<span class="font-label-sm uppercase tracking-wider text-on-surface-variant">Định danh Nhà hàng &amp; Không gian (Tenant Workspace)</span>
+</div>
+<!-- Restaurant Name -->
+<div class="space-y-1.5">
+<label class="block font-label-md text-on-surface text-xs" for="restaurantName">
+                  Tên nhà hàng / Thương hiệu quán <span class="text-error">*</span>
+</label>
+<input class="w-full h-12 px-3.5 bg-surface-container-lowest border border-outline-variant/60 rounded-lg text-on-surface placeholder:text-outline/60 focus:border-primary-container focus:ring-0 focus:outline-none transition-colors duration-150 font-body-md" id="restaurantName" name="restaurantName" oninput="handleRestaurantNameInput(this.value)" placeholder="Ví dụ: Bếp Nhà DineFlow, Cơm Niêu Phố Cổ" required="" type="text"/>
+</div>
+<!-- Slug Identifier with live check preview -->
+<div class="space-y-1.5">
+<div class="flex items-center justify-between">
+<label class="block font-label-md text-on-surface text-xs" for="restaurantSlug">
+                    Mã định danh không gian (Slug URL) <span class="text-error">*</span>
+</label>
+<span class="text-[11px] text-secondary font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+<span id="slugStatusLabel">Mã hợp lệ và sẵn sàng</span>
+</span>
+</div>
+<div class="flex rounded-lg border border-outline-variant/60 overflow-hidden focus-within:border-primary-container transition-colors">
+<span class="inline-flex items-center px-3.5 bg-surface-container text-on-surface-variant text-xs font-mono select-none border-r border-outline-variant/40">
+                    dineflow.vn/r/
+                  </span>
+<input class="flex-1 h-12 px-3.5 bg-surface-container-lowest border-0 text-primary font-mono text-xs focus:ring-0 focus:outline-none" id="restaurantSlug" name="restaurantSlug" oninput="updateSlugDisplay(this.value)" required="" type="text" value="bep-nha-dineflow"/>
+</div>
+<!-- Live Preview of actual QR Ordering URL -->
+<div class="flex items-center justify-between px-3 py-2 bg-surface-container-low rounded-lg text-[11px]">
+<span class="text-on-surface-variant">Liên kết thực khách quét mã QR bàn:</span>
+<span class="font-mono font-medium text-primary flex items-center gap-1">
+<span id="urlPreview">https://dineflow.vn/r/bep-nha-dineflow</span>
+<span class="material-symbols-outlined text-[14px] text-secondary">open_in_new</span>
+</span>
+</div>
+</div>
+<!-- Timezone & Operational Locale -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<div class="space-y-1.5">
+<label class="block font-label-md text-on-surface text-xs" for="operatingTimezone">
+                    Múi giờ vận hành ca <span class="text-error">*</span>
+</label>
+<div class="relative">
+<select class="w-full h-12 px-3.5 bg-surface-container-lowest border border-outline-variant/60 rounded-lg text-on-surface text-xs focus:border-primary-container focus:ring-0 focus:outline-none appearance-none cursor-pointer" id="operatingTimezone" name="operatingTimezone">
+<option selected="" value="Asia/Ho_Chi_Minh">GMT+7 (Asia/Ho_Chi_Minh - Giờ Việt Nam)</option>
+<option value="Asia/Bangkok">GMT+7 (Asia/Bangkok)</option>
+<option value="Asia/Singapore">GMT+8 (Asia/Singapore)</option>
+<option value="Asia/Tokyo">GMT+9 (Asia/Tokyo)</option>
+</select>
+<span class="material-symbols-outlined absolute right-3.5 top-1/2 -translate-y-1/2 text-outline pointer-events-none text-[20px]">
+                      expand_more
+                    </span>
+</div>
+</div>
+<div class="space-y-1.5">
+<label class="block font-label-md text-on-surface text-xs" for="currencyCode">
+                    Đơn vị tiền tệ hiển thị thực đơn
+                  </label>
+<div class="relative">
+<select class="w-full h-12 px-3.5 bg-surface-container-lowest border border-outline-variant/60 rounded-lg text-on-surface text-xs focus:border-primary-container focus:ring-0 focus:outline-none appearance-none cursor-pointer" id="currencyCode" name="currencyCode">
+<option selected="" value="VND">Việt Nam Đồng (đ - VND)</option>
+<option value="USD">Đô la Mỹ ($ - USD)</option>
+</select>
+<span class="material-symbols-outlined absolute right-3.5 top-1/2 -translate-y-1/2 text-outline pointer-events-none text-[20px]">
+                      expand_more
+                    </span>
+</div>
+</div>
+</div>
+</div>
+<!-- Terms & Consent Checkbox -->
+<div class="pt-2">
+<label class="flex items-start gap-3 cursor-pointer select-none">
+<input class="mt-1 w-4 h-4 rounded border-outline-variant text-primary-container focus:ring-primary-container focus:ring-offset-0 cursor-pointer" required="" type="checkbox"/>
+<span class="text-xs text-on-surface-variant font-body-sm leading-relaxed">
+                  Tôi xác nhận là chủ sở hữu hoặc người được ủy quyền vận hành nhà hàng. Tôi đồng ý với các tiêu chuẩn bảo mật dữ liệu thực khách và quy chuẩn vận hành POS độc lập của DineFlow.
+                </span>
+</label>
+</div>
+<!-- PRIMARY SUBMIT BUTTON -->
+<div class="pt-2 space-y-3">
+<button class="w-full h-13 py-3.5 px-6 rounded-xl bg-primary-container text-on-primary font-label-lg text-[15px] flex items-center justify-center gap-2 hover:bg-primary active:scale-[0.99] transition-all duration-150 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-container/40" id="submitBtn" type="submit">
+<span class="material-symbols-outlined text-[20px] text-primary-fixed">add_business</span>
+<span id="btnText">Tạo nhà hàng miễn phí</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+<div class="flex items-center justify-center gap-2 text-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-secondary">verified</span>
+<span>Không cần thẻ ngân hàng • Kích hoạt ngay lập tức</span>
+</div>
+</div>
+</form>
+<!-- Success Modal Simulation -->
+<div class="hidden absolute inset-0 bg-surface/95 backdrop-blur-md z-20 flex flex-col items-center justify-center p-8 text-center animate-fade-in" id="successOverlay">
+<div class="w-16 h-16 rounded-2xl bg-secondary-container text-primary flex items-center justify-center mb-4 shadow-sm">
+<span class="material-symbols-outlined text-[36px]" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<h3 class="font-headline-display text-2xl text-primary font-medium">Khởi tạo không gian thành công!</h3>
+<p class="font-body-md text-on-surface-variant max-w-sm mt-2">
+              Không gian nhà hàng của bạn đã sẵn sàng tại <span class="font-mono text-primary font-medium">dineflow.vn/r/bep-nha-dineflow</span>. Bạn có thể đăng nhập ngay để thiết lập menu.
+            </p>
+<div class="mt-6 flex flex-col sm:flex-row gap-3 w-full max-w-xs">
+<button class="flex-1 py-3 px-4 rounded-xl bg-primary-container text-on-primary font-label-md text-xs hover:bg-primary transition-colors" onclick="window.location.reload()">
+                Vào bàn điều khiển Owner
+              </button>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- ================= FOOTER / ARTISANAL OPERATIONS ================= -->
+<footer class="mt-auto w-full bg-surface-container-low border-t border-outline-variant/30 text-on-surface-variant">
+<div class="max-w-[1440px] mx-auto px-4 sm:px-8 py-8 space-y-6">
+<!-- Top note inside footer: Role distinction -->
+<div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 rounded-xl bg-surface-container border border-outline-variant/30 text-xs">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-[20px] text-primary shrink-0">badge</span>
+<p class="font-body-sm text-[12px] text-on-surface">
+<strong>Chú thích quyền hạn:</strong> Tài khoản nhân viên phục vụ, thu ngân và bếp được cấp quyền trực tiếp bởi Chủ nhà hàng bên trong không gian quản trị sau khi kích hoạt.
+          </p>
+</div>
+<!-- Distinct link for Platform Admin to avoid role confusion -->
+<a class="shrink-0 font-label-md text-xs text-primary hover:text-primary-container flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-surface-container-high transition-colors" href="#platform-admin">
+<span class="material-symbols-outlined text-[16px]">admin_panel_settings</span>
+<span>Cổng Quản trị nền tảng (Platform Ops Admin)</span>
+</a>
+</div>
+<!-- Bottom Metadata & Copyright -->
+<div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2 text-[12px]">
+<div class="flex items-center gap-3">
+<span class="font-headline-display text-sm font-semibold text-primary">DineFlow</span>
+<span class="text-outline/60">•</span>
+<span>© 2025 DineFlow POS Operations • Artisanal Table Engine v2.4</span>
+</div>
+<div class="flex flex-wrap items-center gap-6 text-on-surface-variant font-label-md text-[11px]">
+<span class="flex items-center gap-1 text-emerald-800">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+            Mã hóa dữ liệu FOH &amp; BOH
+          </span>
+<a class="hover:text-primary transition-colors" href="#">Tiêu chuẩn KDS Realtime</a>
+<a class="hover:text-primary transition-colors" href="#">Điều khoản dịch vụ</a>
+<a class="hover:text-primary transition-colors" href="#">Trung tâm trợ giúp</a>
+</div>
+</div>
+</div>
+</footer>
+<!-- ================= MICRO-INTERACTIONS JAVASCRIPT ================= -->
+<script>
+    // Live Slug Generation from Restaurant Name
+    function slugify(text) {
+      return text
+        .toString()
+        .toLowerCase()
+        .normalize('NFD') // Normalize Vietnamese diacritics
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[đĐ]/g, 'd')
+        .replace(/[^a-z0-9 -]/g, '')
+        .trim()
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-');
+    }
+
+    function handleRestaurantNameInput(val) {
+      const generated = slugify(val);
+      const slugInput = document.getElementById('restaurantSlug');
+      if (generated) {
+        slugInput.value = generated;
+        updateSlugDisplay(generated);
+      } else {
+        slugInput.value = 'bep-nha-dineflow';
+        updateSlugDisplay('bep-nha-dineflow');
+      }
+    }
+
+    function updateSlugDisplay(slug) {
+      const clean = slugify(slug);
+      document.getElementById('urlPreview').textContent = 'https://dineflow.vn/r/' + (clean || 'ten-quan');
+
+      const statusLabel = document.getElementById('slugStatusLabel');
+      if (clean.length < 3) {
+        statusLabel.textContent = 'Mã quá ngắn';
+        statusLabel.className = 'text-error';
+      } else {
+        statusLabel.textContent = 'Mã hợp lệ và sẵn sàng';
+        statusLabel.className = 'text-secondary';
+      }
+    }
+
+    // Toggle Password Visibility
+    function togglePasswordVisibility() {
+      const pwdInput = document.getElementById('ownerPassword');
+      const icon = document.getElementById('pwdIcon');
+      if (pwdInput.type === 'password') {
+        pwdInput.type = 'text';
+        icon.textContent = 'visibility_off';
+      } else {
+        pwdInput.type = 'password';
+        icon.textContent = 'visibility';
+      }
+    }
+
+    // Password Strength Meter
+    function evaluatePasswordStrength(password) {
+      let score = 0;
+      if (password.length >= 8) score++;
+      if (password.length >= 12) score++;
+      if (/[A-Z]/.test(password)) score++;
+      if (/[0-9]/.test(password) || /[^A-Za-z0-9]/.test(password)) score++;
+
+      const bars = [
+        document.getElementById('bar1'),
+        document.getElementById('bar2'),
+        document.getElementById('bar3'),
+        document.getElementById('bar4')
+      ];
+      const strengthText = document.getElementById('strengthText');
+
+      // Reset colors
+      bars.forEach(b => {
+        b.className = 'h-full flex-1 rounded-full bg-surface-container-highest transition-colors duration-200';
+      });
+
+      if (password.length === 0) {
+        strengthText.textContent = 'Độ mạnh mật khẩu: Chưa nhập';
+        return;
+      }
+
+      if (score === 1) {
+        bars[0].className = 'h-full flex-1 rounded-full bg-error transition-colors duration-200';
+        strengthText.textContent = 'Độ mạnh: Yếu (cần thêm ký tự)';
+      } else if (score === 2) {
+        bars[0].className = 'h-full flex-1 rounded-full bg-amber-500 transition-colors duration-200';
+        bars[1].className = 'h-full flex-1 rounded-full bg-amber-500 transition-colors duration-200';
+        strengthText.textContent = 'Độ mạnh: Trung bình';
+      } else if (score === 3) {
+        bars[0].className = 'h-full flex-1 rounded-full bg-secondary transition-colors duration-200';
+        bars[1].className = 'h-full flex-1 rounded-full bg-secondary transition-colors duration-200';
+        bars[2].className = 'h-full flex-1 rounded-full bg-secondary transition-colors duration-200';
+        strengthText.textContent = 'Độ mạnh: Khá an toàn';
+      } else if (score >= 4) {
+        bars.forEach(b => {
+          b.className = 'h-full flex-1 rounded-full bg-emerald-600 transition-colors duration-200';
+        });
+        strengthText.textContent = 'Độ mạnh: Rất mạnh (Tối ưu cho Quản trị viên)';
+      }
+    }
+
+    // Submission Simulation
+    function handleRegistration() {
+      const btn = document.getElementById('submitBtn');
+      const btnText = document.getElementById('btnText');
+
+      btn.disabled = true;
+      btnText.textContent = 'Đang khởi tạo không gian cơ sở dữ liệu...';
+
+      setTimeout(() => {
+        document.getElementById('successOverlay').classList.remove('hidden');
+      }, 1200);
+    }
+  </script>
+</body></html>

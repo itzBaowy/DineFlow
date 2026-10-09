@@ -34,7 +34,9 @@
       "id": "28286b6e065a40099e85e90ec680c865",
       "title": "DineFlow - Quản lý Bàn phục vụ & Mã QR",
       "route": "/admin/tables",
-      "relatedRoutes": ["/admin/qr-codes"],
+      "relatedRoutes": [
+        "/admin/qr-codes"
+      ],
       "reference": "design/tables.reference.html"
     }
   ],
@@ -60,7 +62,11 @@
   "reportsScreen": {
     "id": "b352c7f92d5e45ce92c795188410b3e2",
     "route": "/admin/reports",
-    "relatedRoutes": ["/admin/orders", "/admin/activity", "/admin/staff"],
+    "relatedRoutes": [
+      "/admin/orders",
+      "/admin/activity",
+      "/admin/staff"
+    ],
     "reference": "design/reports.reference.html",
     "prompt": "design/phase-7-prompts.md"
   },
@@ -69,5 +75,15 @@
     "route": "/t/[tableCode]",
     "reference": "design/customer-menu.reference.html",
     "prompt": "design/phase-3-prompts.md"
+  },
+  "signupScreen": {
+    "id": "ce9149eaeb584af09dcee22d15b0d4de",
+    "route": "/register",
+    "relatedRoutes": [
+      "/platform/login",
+      "/platform"
+    ],
+    "reference": "design/signup.reference.html",
+    "prompt": "design/saas-prompts.md"
   }
 }
