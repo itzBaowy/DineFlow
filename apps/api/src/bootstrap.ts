@@ -20,7 +20,8 @@ export async function createApp(logger: false | undefined = undefined) {
   app.disable('x-powered-by');
   app.set('trust proxy', config.TRUST_PROXY_HOPS);
   app.useWebSocketAdapter(new RealtimeAdapter(app, config.APP_ORIGIN));
-  app.use(helmet());
+  // Protected QR images are loaded directly by the sibling web subdomain.
+  app.use(helmet({ crossOriginResourcePolicy: { policy: 'same-site' } }));
   app.use((request: Request, response: Response, next: NextFunction) => {
     request.headers['x-request-id'] = randomUUID();
     response.setHeader('X-Request-Id', request.headers['x-request-id']);

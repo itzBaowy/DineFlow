@@ -51,6 +51,7 @@ test('Production split origins, scoped CORS and trusted proxy rate limits', asyn
           read.headers.get('access-control-expose-headers')!,
           /X-DineFlow-Scope-Mismatch/i,
         );
+        assert.equal(read.headers.get('cross-origin-resource-policy'), 'same-site');
       },
     );
     await t.test(
