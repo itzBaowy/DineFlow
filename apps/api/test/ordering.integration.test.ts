@@ -1,3 +1,4 @@
+import { loginStaff } from './login-staff';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { randomBytes, randomUUID } from 'node:crypto';
@@ -42,7 +43,7 @@ test('Phase 3 dining sessions and guest ordering with real PostgreSQL', async (t
   const cookies = await Promise.all(
     users.map(
       async (user) =>
-        `df_access=${(await auth.login({ email: user.email, password })).accessToken}`,
+        `df_access=${(await loginStaff(auth, { email: user.email, password })).accessToken}`,
     ),
   );
   const table = await db.diningTable.create({

@@ -1,3 +1,4 @@
+import { loginStaff } from './login-staff';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { randomBytes, randomUUID } from 'node:crypto';
@@ -63,7 +64,7 @@ test('Phase 7 real scoped revenue, local dates, history, audit and staff adminis
       include: { memberships: true },
     });
     userIds.push(user.id);
-    const login = await auth.login({ email: user.email, password });
+    const login = await loginStaff(auth, { email: user.email, password });
     return {
       user,
       member: user.memberships[0]!,
@@ -557,7 +558,7 @@ test('Phase 7 real scoped revenue, local dates, history, audit and staff adminis
     await t.test(
       'role/status changes revoke old sessions; stale updates and self/OWNER/foreign changes are rejected',
       async () => {
-        const credentials = await auth.login({ email: created.email, password });
+        const credentials = await loginStaff(auth, { email: created.email, password });
         const input = {
           name: created.name,
           role: 'CASHIER',
@@ -616,7 +617,7 @@ test('Phase 7 real scoped revenue, local dates, history, audit and staff adminis
             }),
           ),
         );
-        await assert.rejects(auth.login({ email: created.email, password }));
+        await assert.rejects(loginStaff(auth, { email: created.email, password }));
         created = staffMemberSchema.parse(
           await json(
             await request(`/staff/${created.id}`, owner.cookie, 'PATCH', {
@@ -636,7 +637,7 @@ test('Phase 7 real scoped revenue, local dates, history, audit and staff adminis
     await t.test(
       'password reset requires a reason, replaces hash, revokes refresh/access and never logs password',
       async () => {
-        const credentials = await auth.login({ email: created.email, password });
+        const credentials = await loginStaff(auth, { email: created.email, password });
         const changedPassword = `New!${randomBytes(24).toString('base64url')}`;
         assert.equal(
           (
@@ -667,8 +668,8 @@ test('Phase 7 real scoped revenue, local dates, history, audit and staff adminis
             .status,
           401,
         );
-        await assert.rejects(auth.login({ email: created.email, password }));
-        assert.ok(await auth.login({ email: created.email, password: changedPassword }));
+        await assert.rejects(loginStaff(auth, { email: created.email, password }));
+        assert.ok(await loginStaff(auth, { email: created.email, password: changedPassword }));
         const audit = await db.activityLog.findFirstOrThrow({
           where: { entityId: created.id, action: 'staff.password_reset' },
         });

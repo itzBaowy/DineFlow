@@ -1,3 +1,4 @@
+import { loginStaff } from './login-staff';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { randomBytes, randomUUID } from 'node:crypto';
@@ -150,7 +151,7 @@ test('Phase 5 real Socket.IO authorization, isolation, post-commit events and se
       ),
     );
     const credentials = await Promise.all(
-      users.map((user) => auth.login({ email: user.email, password })),
+      users.map((user) => loginStaff(auth, { email: user.email, password })),
     );
     const cookies = credentials.map((value) => `df_access=${value.accessToken}`);
     const [owner, manager, waiter, cashier, kitchen, foreign] = cookies as [

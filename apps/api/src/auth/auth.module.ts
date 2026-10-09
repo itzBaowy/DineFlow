@@ -7,11 +7,15 @@ import { AuthService } from './auth.service';
 import { MutationGuard, RolesGuard, StaffAuthGuard } from './guards';
 import { AuthThrottlerGuard } from './auth-throttler.guard';
 import { RegistrationService } from './registration.service';
+import { TenancyService } from './tenancy.service';
 
 @Module({
   imports: [JwtModule.register({}), ThrottlerModule.forRoot([{ ttl: 60000, limit: 120 }])],
   controllers: [AuthController],
-  providers: [AuthService, RegistrationService,
+  providers: [
+    AuthService,
+    RegistrationService,
+    TenancyService,
     { provide: APP_GUARD, useClass: MutationGuard },
     { provide: APP_GUARD, useClass: AuthThrottlerGuard },
     { provide: APP_GUARD, useClass: StaffAuthGuard },

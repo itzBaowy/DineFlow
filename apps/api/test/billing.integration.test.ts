@@ -1,3 +1,4 @@
+import { loginStaff } from './login-staff';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { randomBytes, randomUUID } from 'node:crypto';
@@ -121,7 +122,7 @@ test('Phase 6 real billing, full payment, immutable receipts and atomic session 
       ),
     );
     const logins = await Promise.all(
-        users.map((user) => auth.login({ email: user.email, password })),
+        users.map((user) => loginStaff(auth, { email: user.email, password })),
       ),
       cookies = logins.map((login) => `df_access=${login.accessToken}`);
     const [owner, manager, cashier, waiter, kitchen, foreign] = cookies as [

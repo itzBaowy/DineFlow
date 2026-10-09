@@ -1,3 +1,4 @@
+import { loginStaff } from './login-staff';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { randomBytes, randomUUID } from 'node:crypto';
@@ -34,7 +35,7 @@ test('Phase 1 integration with real PostgreSQL and HTTP', async t => {
   async function post(path: string, body: unknown = {}, cookie = '', customHeaders: Record<string, string> = {}) {
     return fetch(`${base}${path}`, { method: 'POST', headers: { ...headers, Cookie: cookie, ...customHeaders }, body: JSON.stringify(body) });
   }
-  function cookieFor(credentials: Awaited<ReturnType<AuthService['login']>>) { return `df_access=${credentials.accessToken}; df_refresh=${credentials.refreshToken}`; }
+  function cookieFor(credentials: Awaited<ReturnType<typeof loginStaff>>) { return `df_access=${credentials.accessToken}; df_refresh=${credentials.refreshToken}`; }
   function responseCookies(response: Response) { return response.headers.getSetCookie().map(cookie => cookie.split(';')[0]).join('; '); }
   try {
     await t.test('health readiness reaches PostgreSQL and unauthorized access fails', async () => {
@@ -69,13 +70,13 @@ test('Phase 1 integration with real PostgreSQL and HTTP', async t => {
     });
     await t.test('RBAC checks all five roles on the backend', async () => {
       for (const user of fixtures) {
-        const credentials = await auth.login({ email: user.email, password });
+        const credentials = await loginStaff(auth, { email: user.email, password });
         const settings = await get('/restaurant/settings', cookieFor(credentials));
         assert.equal(settings.status, user.name === 'OWNER' || user.name === 'MANAGER' ? 200 : 403, user.name);
       }
     });
     await t.test('rotation invalidates reuse and revocation is committed', async () => {
-      const initial = await auth.login({ email: waiter.email, password });
+      const initial = await loginStaff(auth, { email: waiter.email, password });
       const fresh = await post('/auth/refresh', {}, cookieFor(initial));
       assert.equal(fresh.status, 200);
       const freshCookies = responseCookies(fresh);
@@ -86,7 +87,7 @@ test('Phase 1 integration with real PostgreSQL and HTTP', async t => {
       assert.ok((await db.authSession.findUniqueOrThrow({ where: { id: initial.staff.authSessionId } })).revokedAt);
     });
     await t.test('concurrent refresh cannot consume a token twice', async () => {
-      const initial = await auth.login({ email: waiter.email, password });
+      const initial = await loginStaff(auth, { email: waiter.email, password });
       const responses = await Promise.all([post('/auth/refresh', {}, cookieFor(initial)), post('/auth/refresh', {}, cookieFor(initial))]);
       assert.deepEqual(responses.map(response => response.status).sort(), [200, 401]);
       assert.equal(await db.refreshToken.count({ where: { authSessionId: initial.staff.authSessionId } }), 2);
@@ -94,7 +95,7 @@ test('Phase 1 integration with real PostgreSQL and HTTP', async t => {
       assert.equal((await get('/auth/me', responseCookies(winner))).status, 401); // Strict replay family revocation.
     });
     await t.test('logout clears cookies and immediately invalidates access JWT', async () => {
-      const initial = await auth.login({ email: waiter.email, password });
+      const initial = await loginStaff(auth, { email: waiter.email, password });
       const response = await post('/auth/logout', {}, cookieFor(initial));
       assert.equal(response.status, 204);
       assert.ok(response.headers.getSetCookie().every(cookie => cookie.includes('Expires=Thu, 01 Jan 1970')));
@@ -102,7 +103,7 @@ test('Phase 1 integration with real PostgreSQL and HTTP', async t => {
       assert.equal((await post('/auth/logout', {}, cookieFor(initial))).status, 204);
     });
     await t.test('expiry, membership changes and disabled users are enforced immediately', async () => {
-      const initial = await auth.login({ email: waiter.email, password });
+      const initial = await loginStaff(auth, { email: waiter.email, password });
       const membership = waiter.memberships[0]!;
       await db.staffMembership.update({ where: { id: membership.id }, data: { role: 'MANAGER' } });
       assert.equal((await get('/restaurant/settings', cookieFor(initial))).status, 200);
