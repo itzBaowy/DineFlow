@@ -103,6 +103,12 @@ export function PlatformConsole() {
             >
               <LogOut />
             </Button>
+            <Link
+              href="/platform/security"
+              className="text-xs font-medium text-primary underline"
+            >
+              Bảo mật tài khoản
+            </Link>
           </div>
         </header>
         <section className="flex flex-wrap items-end justify-between gap-5">

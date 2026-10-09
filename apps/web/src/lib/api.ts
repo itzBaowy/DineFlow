@@ -29,7 +29,15 @@ const staffPath = (path: string) =>
   !path.startsWith('/public/') &&
   !path.startsWith('/platform/') &&
   !path.startsWith('/health/') &&
-  !['/auth/login', '/auth/register', '/auth/registration-settings'].includes(path);
+  ![
+    '/auth/login',
+    '/auth/register',
+    '/auth/registration-settings',
+    '/auth/forgot-password',
+    '/auth/request-verification',
+    '/auth/verify-email',
+    '/auth/reset-password',
+  ].includes(path);
 export async function beginStaffTransition() {
   staffTransition = true;
   window.dispatchEvent(new Event('dineflow:transition'));

@@ -56,14 +56,17 @@ export function RegisterForm() {
         <CheckCircle2 className="text-primary" />
         <h2 className="editorial text-3xl text-primary">Nhà hàng của bạn đã sẵn sàng.</h2>
         <p className="text-sm leading-7">
-          Đăng nhập bằng email và mật khẩu vừa tạo, sau đó thêm thực đơn, bàn và tài khoản đội
-          ngũ trong mục Nhân viên.
+          Kiểm tra hộp thư và xác minh email trước khi đăng nhập. Sau đó thêm thực đơn, bàn và
+          tài khoản đội ngũ trong mục Nhân viên.
         </p>
         <Link
           href="/staff/login"
           className="inline-flex min-h-12 items-center gap-3 rounded-xl bg-primary px-5 text-sm font-semibold text-white"
         >
           Đăng nhập và bắt đầu <ArrowRight className="size-4" />
+        </Link>
+        <Link href="/verify-email" className="block text-sm font-medium text-primary underline">
+          Gửi lại email xác minh
         </Link>
       </section>
     );

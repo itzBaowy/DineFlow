@@ -107,6 +107,7 @@ export function Workspace({ children }: { children: React.ReactNode }) {
   const links = [
     { href: '/staff/dashboard', title: 'Tổng quan', icon: LayoutDashboard },
     { href: '/staff/restaurants', title: 'Nhà hàng của tôi', icon: Building2 },
+    { href: '/staff/security', title: 'Bảo mật tài khoản', icon: ShieldCheck },
     ...(['OWNER', 'MANAGER', 'WAITER', 'CASHIER'].includes(staff.role)
       ? [
           { href: '/staff/tables', title: 'Phiên bàn', icon: Armchair },

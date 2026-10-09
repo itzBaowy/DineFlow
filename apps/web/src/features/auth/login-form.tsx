@@ -208,6 +208,14 @@ export function LoginForm() {
           Tạo nhà hàng miễn phí
         </Link>
       </p>
+      <div className="flex flex-wrap justify-center gap-5 text-xs text-primary">
+        <Link href="/forgot-password" className="underline">
+          Quên mật khẩu?
+        </Link>
+        <Link href="/verify-email" className="underline">
+          Gửi lại email xác minh
+        </Link>
+      </div>
     </form>
   );
 }
