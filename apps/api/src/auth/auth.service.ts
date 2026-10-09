@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  ForbiddenException,
   Inject,
   Injectable,
   NotFoundException,
@@ -49,6 +50,7 @@ export class AuthService {
       !session.revokedAt &&
       session.expiresAt > new Date() &&
       session.user.isActive &&
+      session.credentialVersion === session.user.credentialVersion &&
       session.membership.isActive &&
       session.membership.restaurant.status === 'ACTIVE'
     );
@@ -104,6 +106,10 @@ export class AuthService {
     );
     if (!user?.isActive || !validPassword || !user.memberships.length)
       throw new UnauthorizedException('Email hoặc mật khẩu không đúng');
+    if (user.requiresEmailVerification && !user.emailVerifiedAt)
+      throw new ForbiddenException(
+        'Xác minh email trước khi đăng nhập. Bạn có thể yêu cầu gửi lại email xác minh.',
+      );
     if (!input.restaurantId && user.memberships.length > 1) {
       const choices = await this.restaurants(user.id);
       return {
@@ -119,11 +125,19 @@ export class AuthService {
     const expiresAt = new Date(Date.now() + this.config.REFRESH_TOKEN_TTL_SECONDS * 1000);
     const session = await this.prisma.$transaction(async (tx) => {
       await lockActiveRestaurant(tx, membership.restaurantId);
+      await tx.$queryRaw`SELECT id FROM "User" WHERE id=${user.id}::uuid FOR NO KEY UPDATE`;
+      const currentUser = await tx.user.findUniqueOrThrow({ where: { id: user.id } });
+      if (
+        currentUser.passwordHash !== user.passwordHash ||
+        currentUser.credentialVersion !== user.credentialVersion
+      )
+        throw new UnauthorizedException('Thông tin đăng nhập đã thay đổi');
       const created = await tx.authSession.create({
         data: {
           userId: user.id,
           membershipId: membership.id,
           expiresAt,
+          credentialVersion: user.credentialVersion,
           refreshTokens: { create: { tokenHash: hashToken(refreshToken), expiresAt } },
         },
         include: authInclude,
@@ -177,6 +191,7 @@ export class AuthService {
           userId: staff.userId,
           membershipId: membership.id,
           expiresAt: current.expiresAt,
+          credentialVersion: current.credentialVersion,
           refreshTokens: {
             create: { tokenHash: hashToken(refreshToken), expiresAt: current.expiresAt },
           },

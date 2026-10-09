@@ -8,9 +8,14 @@ import { MutationGuard, RolesGuard, StaffAuthGuard } from './guards';
 import { AuthThrottlerGuard } from './auth-throttler.guard';
 import { RegistrationService } from './registration.service';
 import { TenancyService } from './tenancy.service';
+import { SecurityModule } from '../security/security.module';
 
 @Module({
-  imports: [JwtModule.register({}), ThrottlerModule.forRoot([{ ttl: 60000, limit: 120 }])],
+  imports: [
+    SecurityModule,
+    JwtModule.register({}),
+    ThrottlerModule.forRoot([{ ttl: 60000, limit: 120 }]),
+  ],
   controllers: [AuthController],
   providers: [
     AuthService,

@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  Inject,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -14,6 +15,9 @@ import type {
 import { PrismaService } from '../database/prisma.service';
 import { DUMMY_PASSWORD_HASH, verifyPassword } from '../auth/password';
 import type { Prisma } from '../generated/prisma/client';
+import { CONFIG, type AppConfig } from '../config/env';
+import { newTotpSecret, seal, unseal, totpCounter } from '../security/crypto';
+import QRCode from 'qrcode';
 
 const hash = (value: string) => createHash('sha256').update(value).digest('hex');
 const principalInclude = { user: true } as const;
@@ -52,7 +56,10 @@ function tenantDto(row: Prisma.RestaurantGetPayload<{ include: typeof tenantIncl
 }
 @Injectable()
 export class PlatformService {
-  constructor(private readonly db: PrismaService) {}
+  constructor(
+    private readonly db: PrismaService,
+    @Inject(CONFIG) private readonly config: AppConfig,
+  ) {}
   private actor(session: Session): PlatformActor {
     return {
       userId: session.userId,
@@ -69,7 +76,10 @@ export class PlatformService {
       !session.revokedAt &&
       session.expiresAt > new Date() &&
       session.user.isActive &&
-      session.user.isPlatformAdmin
+      session.user.isPlatformAdmin &&
+      session.mfaVerified &&
+      !!session.user.mfaSecret &&
+      session.credentialVersion === session.user.credentialVersion
     );
   }
   async login(input: LoginInput) {
@@ -78,26 +88,141 @@ export class PlatformService {
       input.password,
       user?.passwordHash ?? DUMMY_PASSWORD_HASH,
     );
-    if (!user?.isActive || !user.isPlatformAdmin || !verified)
+    if (!user?.isActive || !user.isPlatformAdmin || !verified) {
+      if (user?.isPlatformAdmin)
+        await this.db.securityEvent.create({
+          data: { userId: user.id, action: 'platform.login_failed' },
+        });
       throw new UnauthorizedException('Email hoặc mật khẩu không đúng');
+    }
     const token = randomBytes(32).toString('base64url');
-    const session = await this.db.$transaction(async (tx) => {
+    const challenge = await this.db.$transaction(async (tx) => {
+      await tx.$queryRaw`SELECT id FROM "User" WHERE id=${user.id}::uuid FOR NO KEY UPDATE`;
       const current = await tx.user.findUnique({ where: { id: user.id } });
-      if (!current?.isActive || !current.isPlatformAdmin) throw new UnauthorizedException();
-      const created = await tx.platformSession.create({
+      if (
+        !current?.isActive ||
+        !current.isPlatformAdmin ||
+        current.passwordHash !== user.passwordHash
+      )
+        throw new UnauthorizedException();
+      const created = await tx.mfaChallenge.create({
         data: {
           userId: user.id,
           tokenHash: hash(token),
+          expiresAt: new Date(Date.now() + 5 * 60000),
+          credentialVersion: current.credentialVersion,
+          setupSecret: current.mfaSecret
+            ? null
+            : seal(newTotpSecret(), this.config.ACCOUNT_SECURITY_KEY, `mfa:${user.id}`),
+        },
+      });
+      return created;
+    });
+    return { challengeToken: token, setupRequired: !!challenge.setupSecret };
+  }
+  private async challenge(token: unknown) {
+    if (typeof token !== 'string' || !/^[A-Za-z0-9_-]{43}$/.test(token))
+      throw new UnauthorizedException('Bước xác thực đã hết hạn. Đăng nhập lại.');
+    const challenge = await this.db.mfaChallenge.findUnique({
+      where: { tokenHash: hash(token) },
+      include: { user: true },
+    });
+    if (
+      !challenge ||
+      challenge.consumedAt ||
+      challenge.expiresAt <= new Date() ||
+      challenge.attempts >= 5 ||
+      !challenge.user.isActive ||
+      !challenge.user.isPlatformAdmin ||
+      challenge.credentialVersion !== challenge.user.credentialVersion
+    )
+      throw new UnauthorizedException('Bước xác thực đã hết hạn. Đăng nhập lại.');
+    return challenge;
+  }
+  async setup(token: unknown) {
+    const challenge = await this.challenge(token);
+    if (!challenge.setupSecret || challenge.user.mfaSecret)
+      throw new UnauthorizedException('Không thể thiết lập MFA trong phiên này');
+    const secret = unseal(
+      challenge.setupSecret,
+      this.config.ACCOUNT_SECURITY_KEY,
+      `mfa:${challenge.userId}`,
+    );
+    const uri = `otpauth://totp/${encodeURIComponent(`DineFlow:${challenge.user.email}`)}?secret=${secret}&issuer=DineFlow&algorithm=SHA1&digits=6&period=30`;
+    return { secret, uri, qr: await QRCode.toDataURL(uri, { width: 240, margin: 1 }) };
+  }
+  async finishMfa(token: unknown, code: string) {
+    const initial = await this.challenge(token),
+      sessionToken = randomBytes(32).toString('base64url');
+    const result = await this.db.$transaction(async (tx) => {
+      await tx.$queryRaw`SELECT id FROM "User" WHERE id=${initial.userId}::uuid FOR NO KEY UPDATE`;
+      await tx.$queryRaw`SELECT id FROM "MfaChallenge" WHERE id=${initial.id}::uuid FOR UPDATE`;
+      const challenge = await tx.mfaChallenge.findUniqueOrThrow({
+          where: { id: initial.id },
+          include: { user: true },
+        }),
+        user = challenge.user;
+      if (
+        challenge.consumedAt ||
+        challenge.expiresAt <= new Date() ||
+        challenge.attempts >= 5 ||
+        !user.isActive ||
+        !user.isPlatformAdmin ||
+        challenge.credentialVersion !== user.credentialVersion
+      )
+        return null;
+      const encrypted = user.mfaSecret ?? challenge.setupSecret;
+      if (!encrypted) return null;
+      const counter = totpCounter(
+        unseal(encrypted, this.config.ACCOUNT_SECURITY_KEY, `mfa:${user.id}`),
+        code,
+        user.mfaLastCounter,
+      );
+      if (counter === null) {
+        await tx.mfaChallenge.update({
+          where: { id: challenge.id },
+          data: { attempts: { increment: 1 } },
+        });
+        await tx.securityEvent.create({
+          data: { userId: user.id, action: 'platform.mfa_failed' },
+        });
+        return null; // Commit the failed attempt instead of rolling it back.
+      }
+      await tx.user.update({
+        where: { id: user.id },
+        data: { mfaSecret: encrypted, mfaLastCounter: counter },
+      });
+      await tx.mfaChallenge.updateMany({
+        where: { userId: user.id, consumedAt: null },
+        data: { consumedAt: new Date() },
+      });
+      if (!user.mfaSecret) {
+        await tx.platformSession.updateMany({
+          where: { userId: user.id, revokedAt: null },
+          data: { revokedAt: new Date() },
+        });
+        await tx.securityEvent.create({
+          data: { userId: user.id, action: 'platform.mfa_enabled' },
+        });
+      }
+      const session = await tx.platformSession.create({
+        data: {
+          userId: user.id,
+          tokenHash: hash(sessionToken),
           expiresAt: new Date(Date.now() + 8 * 3600000),
+          credentialVersion: user.credentialVersion,
+          mfaVerified: true,
         },
         include: principalInclude,
       });
       await tx.platformAudit.create({
-        data: { actorUserId: user.id, action: 'platform.login', targetId: created.id },
+        data: { actorUserId: user.id, action: 'platform.login', targetId: session.id },
       });
-      return created;
+      return session;
     });
-    return { token, principal: this.actor(session) };
+    if (!result)
+      throw new UnauthorizedException('Mã xác thực sai, đã dùng hoặc bước xác thực hết hạn');
+    return { token: sessionToken, principal: this.actor(result) };
   }
   async authenticate(token: unknown): Promise<PlatformActor> {
     if (typeof token !== 'string' || !/^[A-Za-z0-9_-]{43}$/.test(token))
@@ -108,6 +233,13 @@ export class PlatformService {
     });
     if (!this.valid(session)) throw new UnauthorizedException('Phiên quản trị đã hết hạn');
     return this.actor(session);
+  }
+  async cancelChallenge(token: unknown) {
+    if (typeof token !== 'string' || !/^[A-Za-z0-9_-]{43}$/.test(token)) return;
+    await this.db.mfaChallenge.updateMany({
+      where: { tokenHash: hash(token), consumedAt: null },
+      data: { consumedAt: new Date() },
+    });
   }
   async logout(token: unknown) {
     if (typeof token !== 'string' || !/^[A-Za-z0-9_-]{43}$/.test(token)) return;

@@ -29,6 +29,13 @@ import { ZodPipe } from '../common/zod.pipe';
 import { CurrentStaff } from './current-staff';
 import { RegistrationService } from './registration.service';
 import { TenancyService } from './tenancy.service';
+import { AccountService } from '../security/account.service';
+import {
+  accountTokenSchema,
+  emailRequestSchema,
+  resetPasswordSchema,
+  changePasswordSchema,
+} from '@dineflow/shared';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -37,6 +44,7 @@ export class AuthController {
     private readonly auth: AuthService,
     private readonly registration: RegistrationService,
     private readonly tenancy: TenancyService,
+    private readonly accounts: AccountService,
     @Inject(CONFIG) private readonly config: AppConfig,
   ) {}
   @Public()
@@ -216,5 +224,60 @@ export class AuthController {
   @ApiOperation({ summary: 'Thông tin user, membership và restaurant scope hiện tại' })
   me(@CurrentStaff() staff: StaffPrincipal): StaffPrincipal {
     return staff;
+  }
+  @Public()
+  @Post('request-verification')
+  @Throttle({ default: { limit: 5, ttl: 3600000 } })
+  async requestVerification(@Body(new ZodPipe(emailRequestSchema)) input: { email: string }) {
+    await this.accounts.request(input.email, 'VERIFY_EMAIL');
+    return { accepted: true };
+  }
+  @Public()
+  @Post('forgot-password')
+  @Throttle({ default: { limit: 5, ttl: 3600000 } })
+  async forgot(@Body(new ZodPipe(emailRequestSchema)) input: { email: string }) {
+    await this.accounts.request(input.email, 'RESET_PASSWORD');
+    return { accepted: true };
+  }
+  @Public()
+  @Post('verify-email')
+  @HttpCode(200)
+  @Throttle({ default: { limit: 20, ttl: 60000 } })
+  async verifyEmail(@Body(new ZodPipe(accountTokenSchema)) input: { token: string }) {
+    await this.accounts.verify(input.token);
+    return { accepted: true };
+  }
+  @Public()
+  @Post('reset-password')
+  @HttpCode(200)
+  @Throttle({ default: { limit: 10, ttl: 60000 } })
+  async resetPassword(
+    @Body(new ZodPipe(resetPasswordSchema)) input: { token: string; password: string },
+  ) {
+    await this.accounts.reset(input.token, input.password);
+    return { accepted: true };
+  }
+  @Get('security')
+  security(@CurrentStaff() staff: StaffPrincipal) {
+    return this.accounts.status(staff.userId);
+  }
+  @Post('change-password')
+  @HttpCode(200)
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
+  async changePassword(
+    @CurrentStaff() staff: StaffPrincipal,
+    @Body(new ZodPipe(changePasswordSchema))
+    input: { currentPassword: string; password: string },
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    await this.accounts.change(
+      staff.userId,
+      staff.authSessionId,
+      false,
+      input.currentPassword,
+      input.password,
+    );
+    this.clearCookies(response);
+    return { accepted: true };
   }
 }

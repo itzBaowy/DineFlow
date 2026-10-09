@@ -213,7 +213,25 @@ export class StaffService {
           'Dùng tài khoản quản lý khác để đặt lại mật khẩu của tài khoản này',
         );
       await this.singleRestaurant(tx, row.userId, staff.restaurantId);
-      await tx.user.update({ where: { id: row.userId }, data: { passwordHash } });
+      await tx.user.update({
+        where: { id: row.userId },
+        data: { passwordHash, credentialVersion: { increment: 1 } },
+      });
+      await tx.accountToken.updateMany({
+        where: { userId: row.userId, consumedAt: null },
+        data: { consumedAt: new Date() },
+      });
+      await tx.mfaChallenge.updateMany({
+        where: { userId: row.userId, consumedAt: null },
+        data: { consumedAt: new Date() },
+      });
+      await tx.platformSession.updateMany({
+        where: { userId: row.userId, revokedAt: null },
+        data: { revokedAt: new Date() },
+      });
+      await tx.securityEvent.create({
+        data: { userId: row.userId, action: 'account.password_reset_by_manager' },
+      });
       const updated = await tx.staffMembership.update({
         where: { id },
         data: { updatedAt: new Date() },

@@ -1,3 +1,4 @@
+import { platformLogin } from './platform-login';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { randomBytes, randomUUID } from 'node:crypto';
@@ -109,6 +110,7 @@ test('SaaS registration, platform separation and tenant lifecycle with real Post
         assert.equal(user.isPlatformAdmin, false);
         assert.equal(user.memberships.length, 1);
         assert.equal(user.memberships[0]!.role, 'OWNER');
+        await db.user.update({ where: { id: user.id }, data: { emailVerifiedAt: new Date() } });
         tenantId = user.memberships[0]!.restaurantId;
         assert.equal(await db.menuItem.count({ where: { restaurantId: tenantId } }), 0);
         assert.equal(await db.diningTable.count({ where: { restaurantId: tenantId } }), 0);
@@ -147,6 +149,10 @@ test('SaaS registration, platform separation and tenant lifecycle with real Post
         const otherUser = await db.user.findUniqueOrThrow({
           where: { email: input('other').email },
           include: { memberships: true },
+        });
+        await db.user.update({
+          where: { id: otherUser.id },
+          data: { emailVerifiedAt: new Date() },
         });
         otherId = otherUser.memberships[0]!.restaurantId;
         const login = await send('/auth/login', { email: otherUser.email, password });
@@ -232,7 +238,7 @@ test('SaaS registration, platform separation and tenant lifecycle with real Post
             .status,
           401,
         );
-        const login = await send('/platform/auth/login', { email: admin.email, password });
+        const login = await platformLogin(base, db, config, admin.email, password);
         assert.equal(login.status, 200);
         const principal = platformPrincipalSchema.parse(await login.json());
         assert.equal(principal.role, 'PLATFORM_ADMIN');
@@ -470,9 +476,12 @@ test('SaaS registration, platform separation and tenant lifecycle with real Post
       async () => {
         assert.equal((await send('/platform/auth/logout', {}, platformCookie)).status, 204);
         assert.equal((await get('/platform/overview', platformCookie)).status, 401);
-        const login = await send('/platform/auth/login', { email: admin.email, password });
+        const login = await platformLogin(base, db, config, admin.email, password);
         const cookie = cookies(login),
-          token = cookie.split('=')[1]!;
+          token = cookie
+            .split('; ')
+            .find((value) => value.startsWith('df_platform='))!
+            .slice('df_platform='.length);
         await db.platformSession.update({
           where: { tokenHash: createHash('sha256').update(token).digest('hex') },
           data: { expiresAt: new Date(Date.now() - 1000) },

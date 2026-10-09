@@ -3,10 +3,14 @@ import type { RegisterInput } from '@dineflow/shared';
 import { PrismaService } from '../database/prisma.service';
 import { Prisma } from '../generated/prisma/client';
 import { hashPassword } from './password';
+import { AccountService } from '../security/account.service';
 
 @Injectable()
 export class RegistrationService {
-  constructor(private readonly db: PrismaService) {}
+  constructor(
+    private readonly db: PrismaService,
+    private readonly accounts: AccountService,
+  ) {}
   async settings() {
     const settings = await this.db.platformSettings.findUniqueOrThrow({
       where: { id: 'global' },
@@ -33,9 +37,11 @@ export class RegistrationService {
             email: input.email,
             name: input.name,
             passwordHash,
+            requiresEmailVerification: true,
             memberships: { create: { restaurantId: restaurant.id, role: 'OWNER' } },
           },
         });
+        await this.accounts.issue(tx, user, 'VERIFY_EMAIL');
         await tx.activityLog.create({
           data: {
             restaurantId: restaurant.id,

@@ -18,6 +18,7 @@ import { PrismaService } from '../src/database/prisma.service';
 import { AuthService } from '../src/auth/auth.service';
 import { CONFIG, type AppConfig } from '../src/config/env';
 import { hashPassword, verifyPassword } from '../src/auth/password';
+import { AccountService } from '../src/security/account.service';
 import { testDatabaseUrl } from './test-env';
 
 test('Phase 7 real scoped revenue, local dates, history, audit and staff administration', async (t) => {
@@ -639,6 +640,13 @@ test('Phase 7 real scoped revenue, local dates, history, audit and staff adminis
       async () => {
         const credentials = await loginStaff(auth, { email: created.email, password });
         const changedPassword = `New!${randomBytes(24).toString('base64url')}`;
+        const accounts = app.get(AccountService);
+        await accounts.request(created.email, 'RESET_PASSWORD');
+        const pendingToken = await db.accountToken.findFirstOrThrow({
+          where: { userId: created.userId, consumedAt: null },
+        });
+        const version = (await db.user.findUniqueOrThrow({ where: { id: created.userId } }))
+          .credentialVersion;
         assert.equal(
           (
             await request(`/staff/${created.id}/password`, manager.cookie, 'POST', {
@@ -669,6 +677,16 @@ test('Phase 7 real scoped revenue, local dates, history, audit and staff adminis
           401,
         );
         await assert.rejects(loginStaff(auth, { email: created.email, password }));
+        assert.equal(
+          (await db.accountToken.findUniqueOrThrow({ where: { id: pendingToken.id } }))
+            .consumedAt !== null,
+          true,
+        );
+        assert.equal(
+          (await db.user.findUniqueOrThrow({ where: { id: created.userId } }))
+            .credentialVersion,
+          version + 1,
+        );
         assert.ok(await loginStaff(auth, { email: created.email, password: changedPassword }));
         const audit = await db.activityLog.findFirstOrThrow({
           where: { entityId: created.id, action: 'staff.password_reset' },
