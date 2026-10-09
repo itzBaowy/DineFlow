@@ -85,5 +85,11 @@
     ],
     "reference": "design/signup.reference.html",
     "prompt": "design/saas-prompts.md"
+  },
+  "restaurantsScreen": {
+    "id": "0c6eaddfbb594d2fa7dfe08af9034963",
+    "route": "/staff/restaurants",
+    "reference": "design/restaurants.reference.html",
+    "prompt": "design/tenancy-prompts.md"
   }
 }
