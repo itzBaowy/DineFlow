@@ -30,7 +30,7 @@ export function LiveSync({
     const seen = new Set<string>();
     const invalidate = () => {
       const prefixes = staff
-        ? ['operations', 'setup', 'service-requests', 'restaurant', 'billing']
+        ? ['operations', 'setup', 'service-requests', 'restaurant', 'billing', 'admin-reports', 'admin-history', 'admin-activity', 'admin-staff']
         : ['customer-orders', 'customer-menu', 'customer-guest', 'guest-service-requests', 'guest-bill'];
       for (const prefix of prefixes) void client.invalidateQueries({ queryKey: [prefix] });
     };

@@ -22,6 +22,9 @@ import {
   Armchair,
   ClipboardList,
   Bell,
+  BarChart3,
+  Users,
+  History,
 } from 'lucide-react';
 import { Dialog } from 'radix-ui';
 import { roleLabels } from '@dineflow/shared';
@@ -90,6 +93,10 @@ export function Workspace({ children }: { children: React.ReactNode }) {
           { href: '/admin/modifiers', title: 'Size & topping', icon: SlidersHorizontal },
           { href: '/admin/tables', title: 'Bàn phục vụ', icon: Armchair },
           { href: '/admin/qr-codes', title: 'Mã QR', icon: QrCode },
+          { href: '/admin/reports', title: 'Báo cáo', icon: BarChart3 },
+          { href: '/admin/orders', title: 'Lịch sử đơn', icon: History },
+          { href: '/admin/activity', title: 'Nhật ký hoạt động', icon: ClipboardList },
+          { href: '/admin/staff', title: 'Nhân viên', icon: Users },
           { href: '/admin/settings', title: 'Thông tin nhà hàng', icon: Settings2 },
         ]
       : []),
@@ -131,20 +138,6 @@ export function Workspace({ children }: { children: React.ReactNode }) {
           </Link>
         ))}
       </nav>
-      <div className="mt-6 border-t pt-5">
-        <p className="mb-3 px-3 text-[9px] font-semibold tracking-[0.15em] text-muted-foreground">
-          SẮP RA MẮT
-        </p>
-        {[{ icon: Receipt, title: 'Báo cáo' }].map(({ icon: Icon, title }) => (
-          <div
-            key={title}
-            className="flex h-10 items-center gap-3 px-3 text-xs text-muted-foreground/70"
-          >
-            <Icon className="size-4" strokeWidth={1.5} />
-            {title}
-          </div>
-        ))}
-      </div>
       <div className="mt-auto border-t pt-5">
         <div className="flex items-center gap-3 rounded-xl bg-white/60 p-3">
           <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-primary text-xs font-semibold text-accent">
