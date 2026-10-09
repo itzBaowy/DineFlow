@@ -12,6 +12,8 @@ import { DiningSessionsModule } from './dining-sessions/dining-sessions.module';
 import { OrdersModule } from './orders/orders.module';
 import { RealtimeModule } from './realtime/realtime.module';
 import { PaymentsModule } from './payments/payments.module';
+import { ReportsModule } from './reports/reports.module';
+import { StaffModule } from './staff/staff.module';
 
-@Module({ imports: [ConfigModule, DatabaseModule, AuthModule, RealtimeModule, SetupModule, MenuModule, TablesModule, StorageModule, DiningSessionsModule, OrdersModule, PaymentsModule], controllers: [HealthController, RestaurantController] })
+@Module({ imports: [ConfigModule, DatabaseModule, AuthModule, RealtimeModule, SetupModule, MenuModule, TablesModule, StorageModule, DiningSessionsModule, OrdersModule, PaymentsModule, ReportsModule, StaffModule], controllers: [HealthController, RestaurantController] })
 export class AppModule {}
