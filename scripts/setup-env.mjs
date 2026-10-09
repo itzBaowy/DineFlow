@@ -9,7 +9,7 @@ if (existsSync('.env')) {
   Object.assign(additions, { ACCOUNT_SECURITY_KEY: randomBytes(32).toString('hex'), SMTP_HOST: 'localhost', SMTP_PORT: '1025', SMTP_SECURE: 'false', EMAIL_FROM: 'no-reply@dineflow.local', EMAIL_PROVIDER: 'smtp' });
   const missing = Object.entries(additions).filter(([key, content]) => value(key) === undefined && content !== undefined);
   if (missing.length) writeFileSync('.env', existing.trimEnd() + '\n' + missing.map(([key, content]) => `${key}=${content}`).join('\n') + '\n', { mode: 0o600 });
-  console.log('.env đã tồn tại; giữ nguyên giá trị cũ, chỉ bổ sung cấu hình guest/S3 còn thiếu.');
+  console.log('.env đã tồn tại; giữ nguyên giá trị cũ, chỉ bổ sung cấu hình guest/S3/admin/email/bảo mật còn thiếu.');
 } else {
   const dbPassword = randomBytes(24).toString('hex');
   const values = {

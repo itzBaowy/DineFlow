@@ -41,6 +41,36 @@ test('env validation fails closed for weak secrets and insecure production', () 
     envSchema.safeParse({ ...base, APP_ORIGIN: 'http://localhost:3000/path' }).success,
     false,
   );
+  const production = {
+    ...base,
+    NODE_ENV: 'production',
+    APP_ORIGIN: 'https://dineflow.example',
+    COOKIE_SECURE: 'true',
+    EMAIL_PROVIDER: 'resend',
+    SMTP_USER: '',
+    SMTP_PASSWORD: '',
+  };
+  assert.equal(envSchema.safeParse(production).success, false);
+  assert.equal(
+    envSchema.safeParse({ ...production, RESEND_API_KEY: 're_private_test_key' }).success,
+    true,
+  );
+  assert.equal(
+    envSchema.safeParse({
+      ...production,
+      RESEND_API_KEY: 're_private_test_key',
+      EMAIL_FROM: 'no-reply@dineflow.local',
+    }).success,
+    false,
+  );
+  assert.equal(
+    envSchema.safeParse({
+      ...production,
+      RESEND_API_KEY: 're_private_test_key',
+      ACCOUNT_SECURITY_KEY: '0'.repeat(64),
+    }).success,
+    false,
+  );
 });
 test('TOTP matches RFC 6238 vectors and rejects replay', () => {
   const secret = 'GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ';
