@@ -1,5 +1,10 @@
 import { z } from 'zod';
 
+export const apiOrigin = process.env.NEXT_PUBLIC_API_URL || '';
+export function apiUrl(path: string) {
+  return `${apiOrigin}/api/v1${path}`;
+}
+
 export class ApiError extends Error {
   constructor(
     message: string,
@@ -58,9 +63,9 @@ export function reloadStaffWorkspace() {
 async function refreshSession(): Promise<void> {
   if (staffTransition) throw new DOMException('Đang chuyển nhà hàng', 'AbortError');
   if (!refreshInFlight) {
-    refreshInFlight = fetch('/api/v1/auth/refresh', {
+    refreshInFlight = fetch(apiUrl('/auth/refresh'), {
       method: 'POST',
-      credentials: 'same-origin',
+      credentials: 'include',
       headers: { 'Content-Type': 'application/json', 'X-DineFlow-Client': 'web' },
       body: '{}',
     })
@@ -89,7 +94,7 @@ export async function api<T>(
   const multipart = options.body instanceof FormData;
   const init: RequestInit = {
     method,
-    credentials: 'same-origin',
+    credentials: 'include',
     cache: 'no-store',
     signal: options.signal,
     headers: {
@@ -105,11 +110,11 @@ export async function api<T>(
   };
   let response: Response;
   try {
-    response = await fetch(`/api/v1${path}`, init);
+    response = await fetch(apiUrl(path), init);
     // Only retry reads. Mutations require an explicit user retry or business idempotency.
     if (response.status === 401 && method === 'GET' && options.refresh !== false) {
       await refreshSession();
-      response = await fetch(`/api/v1${path}`, init);
+      response = await fetch(apiUrl(path), init);
     }
   } catch (error) {
     if (error instanceof ApiError || (error instanceof Error && error.name === 'AbortError'))
@@ -144,14 +149,14 @@ export async function api<T>(
 export async function downloadFile(path: string, filename: string): Promise<void> {
   if (staffTransition) throw new DOMException('Đang chuyển nhà hàng', 'AbortError');
   const init: RequestInit = {
-    credentials: 'same-origin',
+    credentials: 'include',
     cache: 'no-store',
     headers: staffRestaurantId ? { 'X-DineFlow-Restaurant': staffRestaurantId } : {},
   };
-  let response = await fetch(`/api/v1${path}`, init);
+  let response = await fetch(apiUrl(path), init);
   if (response.status === 401) {
     await refreshSession();
-    response = await fetch(`/api/v1${path}`, init);
+    response = await fetch(apiUrl(path), init);
   }
   if (!response.ok)
     throw new ApiError('Không thể tải mã QR. Vui lòng thử lại.', response.status);

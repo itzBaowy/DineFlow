@@ -8,13 +8,15 @@ import { tableSchema } from '@dineflow/shared';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useStaff } from '@/features/auth/use-staff';
-import { downloadFile } from '@/lib/api';
+import { downloadFile, apiUrl } from '@/lib/api';
 import { ConfirmAction, EmptyState, PageHeader, QueryState, useSetupQuery } from './shared';
 
 export function QrPage({ initialTable }: { initialTable?: string }) {
   const query = useSetupQuery('/tables', z.array(tableSchema));
   const { data: staff } = useStaff();
-  const [selected, setSelected] = useState<string[] | null>(initialTable ? [initialTable] : null);
+  const [selected, setSelected] = useState<string[] | null>(
+    initialTable ? [initialTable] : null,
+  );
   const [imageErrors, setImageErrors] = useState<string[]>([]);
   const [loadedCodes, setLoadedCodes] = useState<string[]>([]);
   const rows = query.data ?? [];
@@ -111,7 +113,7 @@ export function QrPage({ initialTable }: { initialTable?: string }) {
                         key={table.publicCode}
                         unoptimized
                         loading="eager"
-                        src={`/api/v1/tables/${table.id}/qr.png?code=${table.publicCode}`}
+                        src={apiUrl(`/tables/${table.id}/qr.png?code=${table.publicCode}`)}
                         alt={`Mã QR ${table.name}`}
                         width={220}
                         height={220}
@@ -171,8 +173,8 @@ export function QrPage({ initialTable }: { initialTable?: string }) {
               })}
             </div>
             <p className="rounded-xl border bg-background p-4 text-xs leading-6 text-muted-foreground print:hidden">
-              Mã QR chỉ chứa địa chỉ công khai của bàn. Đổi mã hoặc lưu trữ bàn sẽ vô hiệu hóa mã
-              cũ. Chọn “Lưu thành PDF” trong hộp thoại in để tải bố cục nhãn A4.
+              Mã QR chỉ chứa địa chỉ công khai của bàn. Đổi mã hoặc lưu trữ bàn sẽ vô hiệu hóa
+              mã cũ. Chọn “Lưu thành PDF” trong hộp thoại in để tải bố cục nhãn A4.
             </p>
           </>
         ) : (

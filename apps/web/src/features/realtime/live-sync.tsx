@@ -9,7 +9,7 @@ import {
   staffPrincipalSchema,
 } from '@dineflow/shared';
 import { Radio, WifiOff, RefreshCw, Bell } from 'lucide-react';
-import { api } from '@/lib/api';
+import { api, apiOrigin } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 
 export function LiveSync({
@@ -30,8 +30,24 @@ export function LiveSync({
     const seen = new Set<string>();
     const invalidate = () => {
       const prefixes = staff
-        ? ['operations', 'setup', 'service-requests', 'restaurant', 'billing', 'admin-reports', 'admin-history', 'admin-activity', 'admin-staff']
-        : ['customer-orders', 'customer-menu', 'customer-guest', 'guest-service-requests', 'guest-bill'];
+        ? [
+            'operations',
+            'setup',
+            'service-requests',
+            'restaurant',
+            'billing',
+            'admin-reports',
+            'admin-history',
+            'admin-activity',
+            'admin-staff',
+          ]
+        : [
+            'customer-orders',
+            'customer-menu',
+            'customer-guest',
+            'guest-service-requests',
+            'guest-bill',
+          ];
       for (const prefix of prefixes) void client.invalidateQueries({ queryKey: [prefix] });
     };
     const schedule = () => {
@@ -59,13 +75,13 @@ export function LiveSync({
           refresh: false,
         });
         if (disposed || !navigator.onLine) return;
-        const next = io({
+        const next = io(apiOrigin || window.location.origin, {
           path: realtimePath,
           addTrailingSlash: false,
           auth: { ticket },
           autoConnect: false,
           reconnection: false,
-          withCredentials: true,
+          withCredentials: false,
           timeout: 10000,
         });
         socket = next;
