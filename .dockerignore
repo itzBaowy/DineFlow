@@ -8,3 +8,8 @@ node_modules
 **/.next
 **/dist
 **/test-results
+.stitch
+**/src/generated
+**/playwright-report
+**/*.log
+**/*.tsbuildinfo

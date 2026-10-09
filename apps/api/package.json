@@ -2,6 +2,7 @@
   "name": "@dineflow/api",
   "version": "0.1.0",
   "private": true,
+  "files": ["dist/src", "dist/prisma", "prisma"],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "predev": "pnpm build",
