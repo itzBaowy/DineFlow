@@ -4,6 +4,7 @@ import { randomBytes, randomUUID } from 'node:crypto';
 import { resolve } from 'node:path';
 import { mkdirSync } from 'node:fs';
 import type { PrismaClient } from '../../api/src/generated/prisma/client';
+import { mailToken, privateAdmin, platformSignIn } from './security-helpers';
 
 const apiRequire = createRequire(resolve(__dirname, '../../api/package.json'));
 const { PrismaService } = apiRequire('./dist/src/database/prisma.service.js') as {
@@ -24,11 +25,10 @@ test('free owner signup creates empty tenant; platform console lists, suspends a
     password = `Test!${randomBytes(20).toString('base64url')}`,
     name = `Quán SaaS ${suffix.slice(0, 8)}`;
   let restaurantId = '';
+  const admin = await privateAdmin(db);
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
   try {
-    expect(process.env.PLATFORM_ADMIN_EMAIL).toBeTruthy();
-    expect(process.env.PLATFORM_ADMIN_PASSWORD).toBeTruthy();
     await page.goto('/register');
     await expect(
       page.getByRole('button', { name: 'Tạo nhà hàng miễn phí', exact: true }),
@@ -59,7 +59,11 @@ test('free owner signup creates empty tenant; platform console lists, suspends a
     restaurantId = tenant.id;
     expect(await db.menuItem.count({ where: { restaurantId } })).toBe(0);
     expect(await db.diningTable.count({ where: { restaurantId } })).toBe(0);
-    await page.getByRole('link', { name: 'Đăng nhập và bắt đầu' }).click();
+    const token = await mailToken(email, 'Xác minh');
+    await page.goto(`/verify-email#token=${token}`);
+    await page.getByRole('button', { name: 'Xác nhận email', exact: true }).click();
+    await expect(page.getByRole('status')).toContainText('Email đã được xác minh');
+    await page.getByRole('link', { name: 'Đăng nhập nhà hàng', exact: true }).click();
     await page.getByLabel('Email nhân viên').fill(email);
     await page.getByLabel('Mật khẩu', { exact: true }).fill(password);
     await page.getByRole('button', { name: 'Đăng nhập', exact: true }).click();
@@ -68,11 +72,7 @@ test('free owner signup creates empty tenant; platform console lists, suspends a
     expect(me.ok()).toBeTruthy();
     expect((await me.json()).restaurantId).toBe(restaurantId);
     expect((await context.request.get('/api/v1/platform/overview')).status()).toBe(401);
-    await page.goto('/platform/login');
-    await page.getByLabel('Email quản trị').fill(process.env.PLATFORM_ADMIN_EMAIL!);
-    await page.getByLabel('Mật khẩu quản trị').fill(process.env.PLATFORM_ADMIN_PASSWORD!);
-    await page.getByRole('button', { name: 'Vào quản trị nền tảng' }).click();
-    await expect(page).toHaveURL(/\/platform$/);
+    await platformSignIn(page, admin.user.email, admin.password);
     await expect(
       page.getByRole('heading', { name: 'Một nền tảng, nhiều nhịp quán.' }),
     ).toBeVisible();
@@ -126,6 +126,7 @@ test('free owner signup creates empty tenant; platform console lists, suspends a
       await db.refreshToken.deleteMany({ where: { authSession: { userId: { in: users } } } });
       await db.authSession.deleteMany({ where: { userId: { in: users } } });
       await db.staffMembership.deleteMany({ where: { restaurantId: tenant.id } });
+      await db.securityEvent.deleteMany({ where: { userId: { in: users } } });
       await db.user.deleteMany({ where: { id: { in: users } } });
       await db.restaurant.delete({ where: { id: tenant.id } });
     }
@@ -135,6 +136,7 @@ test('free owner signup creates empty tenant; platform console lists, suspends a
         data: {},
       })
       .catch(() => null);
+    await admin.cleanup();
     await db.$disconnect();
   }
 });

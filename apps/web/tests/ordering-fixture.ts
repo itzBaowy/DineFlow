@@ -13,7 +13,8 @@ const { hashPassword } = apiRequire('./dist/src/auth/password.js') as {
 
 // Each browser flow has a private tenant; cleanup can never target the seeded demo restaurant.
 export async function orderingFixture() {
-  if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL is required for browser fixtures');
+  if (!process.env.DATABASE_URL)
+    throw new Error('DATABASE_URL is required for browser fixtures');
   const db = new PrismaService({ DATABASE_URL: process.env.DATABASE_URL });
   const suffix = randomUUID(),
     restaurantId = randomUUID();
@@ -43,6 +44,7 @@ export async function orderingFixture() {
       await db.refreshToken.deleteMany({ where: { authSession: { userId: { in: userIds } } } });
       await db.authSession.deleteMany({ where: { userId: { in: userIds } } });
       await db.staffMembership.deleteMany({ where: { restaurantId } });
+      await db.securityEvent.deleteMany({ where: { userId: { in: userIds } } });
       await db.user.deleteMany({ where: { id: { in: userIds } } });
       await db.restaurant.delete({ where: { id: restaurantId } });
     } finally {
